@@ -1,4 +1,4 @@
-# men
+# Inheritance_app
 
 A new Flutter project.
 
