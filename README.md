@@ -1,4 +1,4 @@
-# Inheritance_app
+# Inheritance_calculator
 
 A new Flutter project.
 
