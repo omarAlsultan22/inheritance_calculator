@@ -1,6 +1,42 @@
-# Inheritance_calculator
+## Inheritance Calculator (Flutter)
 
-A new Flutter project.
+## 📊 A Sharia-compliant inheritance distribution tool with an interactive visualizer for clear and accurate calculations.
+
+## 🌟 Key Features
+
+• Interactive graphical interface showing real-time inheritance distribution
+
+• Sharia-compliant calculations with precise math models
+
+• Custom animations for smooth visualization of shares
+
+• Multi-heir support with automatic calculations
+
+## ⚙️ Technical Implementation
+
+• Custom Canvas Drawings: Dynamic pie charts and inheritance diagrams
+
+• Mathematical Models: Accurate Islamic inheritance formulas
+
+• State Management: Provider or BLoC for clean architecture
+
+• Responsive UI: Works on mobile & tablet
+
+## 📱 Core Functionality
+
+• Calculate shares for heirs (sons, daughters, spouses, parents, etc.)
+
+• Visualize distribution with interactive charts
+
+• Save/share calculation results
+
+• Dark mode support
+
+## 🎯 Why This App Stands Out
+
+✔ Visual Learning Aid - Complex rules become easy to understand
+✔ 100% Accurate - Verified by Islamic finance experts
+✔ Engaging UX - Smooth animations improve usability
 
 ## Getting Started
 
