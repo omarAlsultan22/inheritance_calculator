@@ -1,6 +1,6 @@
 ## Inheritance Calculator (Flutter)
 
-## 📊 A Sharia-compliant inheritance distribution tool with an interactive visualizer for clear and accurate calculations.
+📊 A Sharia-compliant inheritance distribution tool with an interactive visualizer for clear and accurate calculations.
 
 ## 🌟 Key Features
 
