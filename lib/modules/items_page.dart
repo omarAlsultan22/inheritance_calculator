@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../models/data_model.dart';
+
+
 const List<int> pal = [
   0xFFF2387C, // Light Pink
   0xFF05C7F2, // Sky Blue
@@ -8,15 +11,6 @@ const List<int> pal = [
   0xFFF26241, // Dark Red
   0xFFF25241  // Red
 ];
-
-class DataItem {
-  final double value;
-  final String label;
-  final Color color;
-
-  const DataItem(this.value, this.label, this.color);
-}
-
 
 class InheritanceState extends ChangeNotifier {
   bool done = false;
@@ -27,7 +21,7 @@ class InheritanceState extends ChangeNotifier {
   final Map<String, int> heirsCount = {};
   final Map<String, bool> heirsDone = {};
   final Map<String, String> heirsDetails = {};
-  final List<DataItem> dataset = [];
+  final List<DataItems> dataset = [];
 
   void reset() {
     done = false;
@@ -44,7 +38,7 @@ class InheritanceState extends ChangeNotifier {
     if (!heirsDone.containsKey(heir)) {
       heirsDetails[heir] = detailsText;
       extra -= share;
-      dataset.add(DataItem(share, heir, Color(pal[colorIndex])));
+      dataset.add(DataItems(share, heir, Color(pal[colorIndex])));
       heirsDone[heir] = true;
       notifyListeners();
     }

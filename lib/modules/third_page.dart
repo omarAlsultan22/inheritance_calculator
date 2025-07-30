@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:men/shared/cubit/cubit.dart';
 
 class ThirdPage extends StatelessWidget {
-  final Map<String, String> details;
-
   const ThirdPage({
-    required this.details,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: _buildAppBar(context),
-        backgroundColor: Colors.grey[900],
-        body: _buildBody(),
-      ),
-    );
+    return BlocBuilder(builder: (context, state) {
+      final detailsItems = CubitData
+          .get(context)
+          .detailsItems;
+      return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: _buildAppBar(context),
+          backgroundColor: Colors.grey[900],
+          body: _buildBody(detailsItems),
+        ),
+      );
+    });
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -39,12 +43,12 @@ class ThirdPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(Map<String, String> detailsItems) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ListView.separated(
         shrinkWrap: true,
-        itemCount: details.length,
+        itemCount: detailsItems.length,
         separatorBuilder: (context, index) =>
         const Divider(
           height: 1,
@@ -52,8 +56,8 @@ class ThirdPage extends StatelessWidget {
           thickness: 0.1,
         ),
         itemBuilder: (context, index) {
-          final key = details.keys.elementAt(index);
-          final value = details[key]!;
+          final key = detailsItems.keys.elementAt(index);
+          final value = detailsItems[key]!;
           return _buildDetailRow(key, value);
         },
       ),

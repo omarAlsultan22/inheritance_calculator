@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:men/modules/third_page.dart';
-import 'items_page.dart';
+import 'package:men/shared/cubit/cubit.dart';
+import '../models/data_model.dart';
 
 class SecondPage extends StatefulWidget {
-  final List<DataItem> dataset;
-  final Map<String, String> details;
-
-  SecondPage({required this.dataset, required this.details, Key? key}) : super(key: key);
+  SecondPage({Key? key}) : super(key: key);
 
   @override
   _SecondPageState createState() => _SecondPageState();
@@ -23,13 +22,14 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
   List<int> degrees = [];
   List<bool> showLines = [];
   List<Animation<double>> animations = [];
+  late CubitData cubitData;
 
   @override
   void initState() {
     super.initState();
-
+    cubitData = CubitData.get(context);
     // Initialize degrees and showLines lists
-    for (var i = 0; i < widget.dataset.length; i++) {
+    for (var i = 0; i < cubitData.dataItems.length; i++) {
       degrees.add(0);
       showLines.add(false);
     }
@@ -53,7 +53,7 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
           timer.cancel();
           // Start showing lines after chart completes
         }
-        for (int i = 0; i < widget.dataset.length; i++) {
+        for (int i = 0; i < cubitData.dataItems.length; i++) {
           startLineTimer(i);
         }
       });
@@ -66,7 +66,7 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
     );
 
     // Initialize line animations
-    for (var item in widget.dataset) {
+    for (var item in cubitData.dataItems) {
       animations.add(
           Tween<double>(begin: 0, end: item.value * 200).animate(
             CurvedAnimation(
@@ -89,7 +89,7 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
-          if (degrees[index] < (widget.dataset[index].value * 100).toInt()) {
+          if (degrees[index] < (cubitData.dataItems[index].value * 100).toInt()) {
             degrees[index]++;
           } else {
             timer.cancel();
@@ -148,97 +148,102 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.grey[900],
-        appBar: AppBar(
-          scrolledUnderElevation: 0.0,
-          title: const Text(
-            'النتيجة',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-              onPressed: () {
-                widget.dataset.clear();
-                Navigator.of(context).pop();
-              }
-          ),
+    return BlocBuilder(builder: (context, state) {
+      final dataItems = cubitData.dataItems;
+      return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
           backgroundColor: Colors.grey[900],
-        ),
-        body: Column(
-          children: [
-            Center(
-              child: Container(
-                width: 300.0,
-                height: 300.0,
-                child: CustomPaint(
-                  painter: DonutChartPainter(
-                      widget.dataset, fullAngle, context),
-                ),
+          appBar: AppBar(
+            scrolledUnderElevation: 0.0,
+            title: const Text(
+              'النتيجة',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            Expanded(
-              child: Container(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.only(top: 20, bottom: 20),// هامش سفلي
-                  itemCount: widget.dataset.length,
-                  itemBuilder: (context, index) {
-                    return buildLabel(
-                        widget.dataset[index].label,
-                        animation.value,
-                        degrees[index],
-                        showLines[index],
-                        animations[index],
-                        widget.dataset[index].color,
-                        LinePainter(
-                            animations[index],
-                            widget.dataset[index].value,
-                            widget.dataset[index].color,
-                            showLines[index]
-                        )
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            // الجزء السفلي الثابت (زر التفاصيل)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: MaterialButton(
-                height: 50,
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ThirdPage(details: widget.details)));
-                },
-                child: const Text(
-                  "التفاصيل",
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  CubitData.get(context).clear();
+                  Navigator.of(context).pop();
+                }
+            ),
+            backgroundColor: Colors.grey[900],
+          ),
+          body: Column(
+            children: [
+              Center(
+                child: Container(
+                  width: 300.0,
+                  height: 300.0,
+                  child: CustomPaint(
+                    painter: DonutChartPainter(
+                        dataItems, fullAngle, context),
                   ),
                 ),
-                color: Colors.amber,
               ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    // هامش سفلي
+                    itemCount: cubitData.dataItems.length,
+                    itemBuilder: (context, index) {
+                      return buildLabel(
+                          cubitData.dataItems[index].label,
+                          animation.value,
+                          degrees[index],
+                          showLines[index],
+                          animations[index],
+                          cubitData.dataItems[index].color,
+                          LinePainter(
+                              animations[index],
+                              cubitData.dataItems[index].value,
+                              cubitData.dataItems[index].color,
+                              showLines[index]
+                          )
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // الجزء السفلي الثابت (زر التفاصيل)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: MaterialButton(
+                  height: 50,
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) =>
+                            ThirdPage()));
+                  },
+                  child: const Text(
+                    "التفاصيل",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  color: Colors.amber,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
 // Donut Chart Painter
 class DonutChartPainter extends CustomPainter {
-  final List<DataItem> dataset;
+  final List<DataItems> dataset;
   final double fullAngle;
   final BuildContext context;
 
@@ -285,7 +290,7 @@ class DonutChartPainter extends CustomPainter {
   }
 
   void drawLabel(Canvas canvas, Offset c, double radius, double startAngle,
-      double sweepAngle, DataItem di) {
+      double sweepAngle, DataItems di) {
     final r = radius * 0.4;
     final dx = r * cos(startAngle + sweepAngle / 2.0);
     final dy = r * sin(startAngle + sweepAngle / 2.0);
@@ -316,7 +321,7 @@ class DonutChartPainter extends CustomPainter {
     canvas.drawLine(c, p2, linePaint);
   }
 
-  void drawSectors(Canvas canvas, DataItem di, Rect rect, double startAngle,
+  void drawSectors(Canvas canvas, DataItems di, Rect rect, double startAngle,
       double sweepAngle) {
     final paint = Paint()
       ..style = PaintingStyle.fill

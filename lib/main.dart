@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:men/modules/first_page.dart';
+import 'package:men/shared/cubit/cubit.dart';
 
 
 void main() {
-  runApp(const MyApp());
-  /*joker.addListener(() {
-    joker.extra;
-  });
-*/
+  runApp(
+      BlocProvider(create: (context)=> CubitData(),
+      child:const MyApp()));
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

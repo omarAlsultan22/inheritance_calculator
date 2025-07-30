@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'second_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:men/shared/cubit/cubit.dart';
+import 'package:men/shared/cubit/states.dart';
+import '../models/item_model.dart';
 import 'items_page.dart';
+import 'second_page.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -38,7 +42,13 @@ class _FirstPageState extends State<FirstPage> {
   static const List<String> category1 = ["الزوج", "الزوجة"];
   static const List<String> category2 = ["الأب", "الجد"];
   static const List<String> category3 = ["الأم", "الجدة لأب", "الجدة لأم"];
-  static const List<String> category4 = ["البنت", "بنت الابن", "الأخت الشقيقة", "الأخت لأب", "الأخوة لأم"];
+  static const List<String> category4 = [
+    "البنت",
+    "بنت الابن",
+    "الأخت الشقيقة",
+    "الأخت لأب",
+    "الأخوة لأم"
+  ];
 
   final List<List<TextValue>> multiList = [
     firstList,
@@ -144,7 +154,14 @@ class _FirstPageState extends State<FirstPage> {
 
   void _handleItemTap(TextValue e) {
     setState(() {
-      const fixedItems = ['الأب', 'الأم', 'الزوج', 'الجد', 'الجدة لأب', 'الجدة لأم'];
+      const fixedItems = [
+        'الأب',
+        'الأم',
+        'الزوج',
+        'الجد',
+        'الجدة لأب',
+        'الجدة لأم'
+      ];
       const incrementableItems = [
         'الابن', 'ابن الابن', 'الأخ الشقيق', 'الأخ لأب',
         'البنت', 'بنت الابن', 'الأخت الشقيقة', 'الأخت لأب'
@@ -181,184 +198,190 @@ class _FirstPageState extends State<FirstPage> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SecondPage(
-          dataset: List.from(inheritanceState.dataset),
-          details: inheritanceState.heirsDetails,),
-      ),
-    ).then((_) {
-      setState(() {
-      });
-    });
+    CubitData.get(context).insertData(
+        dataSet: inheritanceState.dataset,
+        details: inheritanceState.heirsDetails
+    ).whenComplete(() =>
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SecondPage(),
+          ),
+        )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.grey[900],
-        appBar: AppBar(
-          elevation: 0.0,
-          scrolledUnderElevation: 0.0,
-          backgroundColor: Colors.grey[900],
-          title: const Text(
-            "مواريث",
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        body: Column(
-          children: [
-            const SizedBox(height: 50),
-            const Text(
-              "مات وترك ؟",
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadiusDirectional.all(Radius.circular(5)),
-              ),
-              child: DropdownButton<String>(
-                menuMaxHeight: 200,
-                hint: const Text('أختر', style: TextStyle(color: Colors.white)),
-                value: selectedItem,
-                dropdownColor: Colors.grey[800],
-                borderRadius: BorderRadius.circular(10),
-                items: selectedItems.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: const TextStyle(color: Colors.white)),
-                  );
-                }).toList(),
-                onChanged: (String? value) {
-                  if (value != null && value.isNotEmpty) {
-                    setState(() {
-                      selectedItem = value;
-                      addTextValue(value);
-                      buttonLuck;
-                    });
-                  }
-                },
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: GridView.count(
-                  physics: const BouncingScrollPhysics(),
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 3,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 0.9,
-                  children: multiList.expand((list) => list).map((e) {
-                    return GestureDetector(
-                      onTap: () => _handleItemTap(e),
-                      child: Card(
-                        color: Colors.grey,
-                        child: Stack(
-                          children: [
-                            if (e.icon)
-                              Align(
-                                alignment: AlignmentDirectional.topStart,
-                                child: IconButton(
-                                  iconSize: 20,
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  icon: const Icon(
-                                    Icons.highlight_remove_outlined,
-                                    color: Colors.white70,
-                                  ),
-                                  onPressed: () => _removeItem(e),
-                                ),
-                              ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  e.toggle ? e.textValue : callBack(e.textValue, e.sum),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: e.backgroundColor ? Colors.white : Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (!e.toggle)
-                              Positioned(
-                                bottom: 4,
-                                right: 4,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    '${e.sum}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
+    return BlocConsumer(
+        listener: (context, state) {
+          if (state is DataErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.error),
+                backgroundColor: Colors.red.shade700));
+          }
+        },
+        builder: (context, state) =>
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: Scaffold(
+            backgroundColor: Colors.grey[900],
+            appBar: AppBar(
+              elevation: 0.0,
+              scrolledUnderElevation: 0.0,
+              backgroundColor: Colors.grey[900],
+              title: const Text(
+                "مواريث",
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              color: color ? Colors.amber : Colors.grey,
-              child: MaterialButton(
-                onPressed: buttonLuck ? check : null,
-                child: const Text(
-                  'أحسب',
+            body: Column(
+              children: [
+                const SizedBox(height: 50),
+                const Text(
+                  "مات وترك ؟",
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-              ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.all(
+                        Radius.circular(5)),
+                  ),
+                  child: DropdownButton<String>(
+                    menuMaxHeight: 200,
+                    hint: const Text(
+                        'أختر', style: TextStyle(color: Colors.white)),
+                    value: selectedItem,
+                    dropdownColor: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(10),
+                    items: selectedItems.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                            value, style: const TextStyle(color: Colors.white)),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      if (value != null && value.isNotEmpty) {
+                        setState(() {
+                          selectedItem = value;
+                          addTextValue(value);
+                          buttonLuck;
+                        });
+                      }
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: GridView.count(
+                      physics: const BouncingScrollPhysics(),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 3,
+                      mainAxisSpacing: 8,
+                      childAspectRatio: 0.9,
+                      children: multiList.expand((list) => list).map((e) {
+                        return GestureDetector(
+                          onTap: () => _handleItemTap(e),
+                          child: Card(
+                            color: Colors.grey,
+                            child: Stack(
+                              children: [
+                                if (e.icon)
+                                  Align(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: IconButton(
+                                      iconSize: 20,
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      icon: const Icon(
+                                        Icons.highlight_remove_outlined,
+                                        color: Colors.white70,
+                                      ),
+                                      onPressed: () => _removeItem(e),
+                                    ),
+                                  ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      e.toggle ? e.textValue : callBack(
+                                          e.textValue, e.sum),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: e.backgroundColor
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (!e.toggle)
+                                  Positioned(
+                                    bottom: 4,
+                                    right: 4,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        '${e.sum}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  color: color ? Colors.amber : Colors.grey,
+                  child: MaterialButton(
+                    onPressed: buttonLuck ? check : null,
+                    child: state is DataLoadingState ?
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator(
+                          color: Colors.black))):
+                    const Text(
+                      'أحسب',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        )
     );
   }
-}
-
-class TextValue {
-  int sum = 1;
-  bool toggle = true;
-  bool isFired = false;
-  final bool icon;
-  final bool con;
-  final String textValue;
-  final bool backgroundColor;
-
-  TextValue(this.textValue,
-      this.icon,
-      this.con,
-      this.backgroundColor,);
 }
 
 
