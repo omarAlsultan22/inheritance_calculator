@@ -18,7 +18,7 @@
 
 • Mathematical Models: Accurate Islamic inheritance formulas
 
-• State Management: Provider or BLoC for clean architecture
+• State Management: BLoC for clean architecture
 
 • Responsive UI: Works on mobile & tablet
 
