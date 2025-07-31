@@ -110,6 +110,7 @@ class ParentsInheritance {
       } else {
         state.addHeir(heir, text, state.extra + state.value, 1);
       }
+      state.extra = 0.0;
     }
   }
 
@@ -129,13 +130,11 @@ class ParentsInheritance {
       const text = "ترث الأم ثلث الباقي في أحد العمرتين مع الأب والزوج أو الزوجة";
       final share = state.extra / 3;
       state.addHeir("الأم", text, share, 2);
-      ParentsInheritance.processFather(state);
-    }
+   }
     else {
       const share = 0.3;
       const text = "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب";
       state.addHeir("الأم", text, share, 2);
-      ParentsInheritance.processFather(state);
     }
   }
 
