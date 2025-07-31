@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:men/models/data_model.dart';
 import 'package:men/shared/cubit/states.dart';
@@ -17,15 +18,13 @@ class DataCubit extends Cubit<DataStates> {
   }) async {
     try {
       emit(DataLoadingState());
-      if(extra != 0.0) {
-        if (dataSet.length == 1) {
-          dataSet[0].value += extra;
-        }
-        else {
-          double rest = extra / dataSet.length;
-          dataSet.map((e) => e.value += rest);
-        }
+      if (extra != 0.0) {
+        const String value = 'الباقي';
+        dataSet.add(DataItems(extra, value, Color(0xFF388E3C)));
+        details[value] =
+        'يقسم الباقي علي الورثة الموجودين بالتساوي في حالة عدم وجود معصب';
       }
+
       dataItems = dataSet;
       detailsItems = details;
       emit(DataSuccessState());
