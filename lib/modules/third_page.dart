@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:men/shared/cubit/cubit.dart';
+import '../shared/cubit/cubit.dart';
+import '../shared/cubit/states.dart';
 
 class ThirdPage extends StatelessWidget {
   const ThirdPage({
@@ -9,8 +10,8 @@ class ThirdPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(builder: (context, state) {
-      final detailsItems = CubitData
+    return BlocBuilder<DataCubit, DataStates>(builder: (context, state) {
+      final detailsItems = DataCubit
           .get(context)
           .detailsItems;
       return Directionality(

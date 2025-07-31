@@ -3,8 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:men/modules/third_page.dart';
-import 'package:men/shared/cubit/cubit.dart';
 import '../models/data_model.dart';
+import '../shared/cubit/cubit.dart';
+import '../shared/cubit/states.dart';
 
 class SecondPage extends StatefulWidget {
   SecondPage({Key? key}) : super(key: key);
@@ -22,12 +23,12 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
   List<int> degrees = [];
   List<bool> showLines = [];
   List<Animation<double>> animations = [];
-  late CubitData cubitData;
+  late DataCubit cubitData;
 
   @override
   void initState() {
     super.initState();
-    cubitData = CubitData.get(context);
+    cubitData = DataCubit.get(context);
     // Initialize degrees and showLines lists
     for (var i = 0; i < cubitData.dataItems.length; i++) {
       degrees.add(0);
@@ -148,7 +149,7 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(builder: (context, state) {
+    return BlocBuilder<DataCubit, DataStates>(builder: (context, state) {
       final dataItems = cubitData.dataItems;
       return Directionality(
         textDirection: TextDirection.rtl,
@@ -167,7 +168,6 @@ class _SecondPageState extends State<SecondPage> with TickerProviderStateMixin {
             leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () {
-                  CubitData.get(context).clear();
                   Navigator.of(context).pop();
                 }
             ),

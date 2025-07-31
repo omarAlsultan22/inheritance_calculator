@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/data_model.dart';
 
 
@@ -12,7 +11,7 @@ const List<int> pal = [
   0xFFF25241  // Red
 ];
 
-class InheritanceState extends ChangeNotifier {
+class InheritanceState {
   bool done = false;
   bool isHere = false;
   double extra = 1.0;
@@ -32,7 +31,6 @@ class InheritanceState extends ChangeNotifier {
     heirsDone.clear();
     heirsDetails.clear();
     dataset.clear();
-    notifyListeners();
   }
   void addHeir(String heir, String detailsText, double share, int colorIndex) {
     if (!heirsDone.containsKey(heir)) {
@@ -40,7 +38,6 @@ class InheritanceState extends ChangeNotifier {
       extra -= share;
       dataset.add(DataItems(share, heir, Color(pal[colorIndex])));
       heirsDone[heir] = true;
-      notifyListeners();
     }
   }
 }

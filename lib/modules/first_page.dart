@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:men/shared/cubit/cubit.dart';
-import 'package:men/shared/cubit/states.dart';
 import '../models/item_model.dart';
+import '../shared/cubit/cubit.dart';
+import '../shared/cubit/states.dart';
 import 'items_page.dart';
 import 'second_page.dart';
 
@@ -80,8 +80,9 @@ class _FirstPageState extends State<FirstPage> {
         thirdList.isNotEmpty ||
         fourthList.isNotEmpty ||
         fifthList.isNotEmpty;
-
-    setState(() => color = hasItems);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      setState(() => color = hasItems);
+    });
     return color;
   }
 
@@ -134,26 +135,29 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void _removeItem(TextValue e) {
-    setState(() {
-      if (firstList.contains(e)) {
-        firstList.remove(e);
-      } else if (secondList.contains(e)) {
-        secondList.remove(e);
-      } else if (thirdList.contains(e)) {
-        thirdList.remove(e);
-      } else if (fourthList.contains(e)) {
-        fourthList.remove(e);
-      } else {
-        fifthList.remove(e);
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        if (firstList.contains(e)) {
+          firstList.remove(e);
+        } else if (secondList.contains(e)) {
+          secondList.remove(e);
+        } else if (thirdList.contains(e)) {
+          thirdList.remove(e);
+        } else if (fourthList.contains(e)) {
+          fourthList.remove(e);
+        } else {
+          fifthList.remove(e);
+        }
 
-      inheritanceState.heirsCount.remove(e.textValue);
+        inheritanceState.heirsCount.remove(e.textValue);
+      });
     });
     buttonLuck;
   }
 
   void _handleItemTap(TextValue e) {
-    setState(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
       const fixedItems = [
         'الأب',
         'الأم',
@@ -179,7 +183,8 @@ class _FirstPageState extends State<FirstPage> {
         e.toggle = !e.toggle;
       }
     });
-  }
+  });
+}
 
   void check() {
     inheritanceState.reset();
@@ -198,9 +203,10 @@ class _FirstPageState extends State<FirstPage> {
       return;
     }
 
-    CubitData.get(context).insertData(
+    DataCubit.get(context).insertData(
         dataSet: inheritanceState.dataset,
-        details: inheritanceState.heirsDetails
+        details: inheritanceState.heirsDetails,
+        extra: inheritanceState.extra
     ).whenComplete(() =>
         Navigator.push(
           context,
@@ -213,7 +219,7 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
+    return BlocConsumer<DataCubit, DataStates>(
         listener: (context, state) {
           if (state is DataErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

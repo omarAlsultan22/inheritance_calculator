@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:men/modules/first_page.dart';
 import 'package:men/shared/cubit/cubit.dart';
+import 'modules/first_page.dart';
 
 
 void main() {
   runApp(
-      BlocProvider(create: (context)=> CubitData(),
-      child:const MyApp()));
+      MultiBlocProvider(
+          providers: [
+            BlocProvider<DataCubit>(create: (context) => DataCubit())
+          ],
+          child: const MyApp()));
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
