@@ -30,7 +30,7 @@ class DataCubit extends Cubit<DataStates> {
       emit(DataSuccessState());
     }
     catch (error) {
-      emit(DataErrorState(error.toString()));
+      emit(DataErrorState(error: error.toString()));
     }
   }
 }

@@ -223,7 +223,7 @@ class _FirstPageState extends State<FirstPage> {
         listener: (context, state) {
           if (state is DataErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.error),
+                content: Text(state.error!),
                 backgroundColor: Colors.red.shade700));
           }
         },
