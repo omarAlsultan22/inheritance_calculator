@@ -76,18 +76,18 @@ class _SelectionScreenState extends State<SelectionScreen> {
         value: _dataCubit.selectedItem,
         dropdownColor: Colors.grey[800],
         borderRadius: BorderRadius.circular(10),
-        items: _dataCubit.selectedItems.map((String value) {
+        items: _dataCubit.heirsMap.keys.map((String key) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: key,
             child: Text(
-              value,
+              key,
               style: const TextStyle(color: Colors.white),
             ),
           );
         }).toList(),
-        onChanged: (String? value) {
-          if (value != null) {
-            _dataCubit.checkValue(value);
+        onChanged: (String? key) {
+          if (key != null) {
+            _dataCubit.checkKey(key);
           }
         },
       ),

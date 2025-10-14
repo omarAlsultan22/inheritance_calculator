@@ -1,11 +1,13 @@
-import '../../models/inheritance_manager_model.dart';
-import '../../models/inheritance_state_model.dart';
 import '../../models/item_model.dart';
 import 'package:flutter/material.dart';
-import '../../modules/display_screen/display_screen.dart';
+import '../../models/states_models.dart';
 import 'package:men/models/data_model.dart';
 import 'package:men/shared/cubit/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/heir_processor_model.dart';
+import '../../models/inheritance_state_model.dart';
+import '../../models/inheritance_manager_model.dart';
+import '../../modules/display_screen/display_screen.dart';
 
 
 class DataCubit extends Cubit<DataStates> {
@@ -21,14 +23,30 @@ class DataCubit extends Cubit<DataStates> {
   final InheritanceState _inheritanceState = InheritanceState();
 
 
-  List<String> selectedItems = [
-    'الزوج', 'الزوجة', 'الأب', 'الأم', 'الجد',
-    'الجدة لأب', 'الجدة لأم', 'الأخت الشقيقة',
-    'الأخت لأب', 'الأخوة لأم', 'البنت', 'بنت الابن',
-    'الابن', 'ابن الابن', 'الأخ الشقيق', 'الأخ لأب',
-    'ابن الأخ الشقيق', 'ابن الأخ لأب', 'العم الشقيق',
-    'العم لأب', 'ابن العم الشقيق', 'ابن العم لأب',
-  ];
+  Map<String, HeirProcessor> heirsMap = {
+    'الزوج': HusbandProcessor(),
+    'الزوجة': WifeProcessor(),
+    'الأب': FatherProcessor(),
+    'الأم' : MotherProcessor(),
+    'الجد': PaternalGrandfatherProcessor(),
+    'الجدة لأب': PaternalGrandmotherProcessor(),
+    'الجدة لأم': MaternalGrandmotherProcessor(),
+    'البنت': DaughterProcessor(),
+    'بنت الابن': SonsDaughterProcessor(),
+    'الابن': SonProcessor(),
+    'ابن الابن': SonsSonProcessor(),
+    'الأخت الشقيقة': FullSisterProcessor(),
+    'الأخت لأب': PaternalSisterProcessor(),
+    'الأخوة لأم': MaternalSiblingsProcessor(),
+    'الأخ الشقيق': FullBrotherProcessor(),
+    'الأخ لأب': PaternalBrotherProcessor(),
+    'ابن الأخ الشقيق': FullBrothersSonProcessor(),
+    'ابن الأخ لأب': PaternalBrothersSonProcessor(),
+    'العم الشقيق': FullUncleProcessor(),
+    'العم لأب': PaternalUncleProcessor(),
+    'ابن العم الشقيق': FullCousinProcessor(),
+    'ابن العم لأب': PaternalCousinProcessor(),
+  };
 
   static const List<String> _category1 = ["الزوج", "الزوجة"];
   static const List<String> _category2 = ["الأب", "الجد"];
@@ -100,42 +118,41 @@ class DataCubit extends Cubit<DataStates> {
   }
 
 
-  void checkValue(String? value) {
-    if (value != null && value.isNotEmpty) {
-      selectedItem = value;
-      addTextValue(value);
+  void checkKey(String? key) {
+    if (key != null && key.isNotEmpty) {
+      selectedItem = key;
+      addTextValue(key);
       buttonLuck;
       emit(DataSuccessState());
     }
   }
 
-  void addTextValue(String value) {
-    final _textValue = TextValue(value, true, true, true);
+  void addTextValue(String key) {
+    final _textValue = TextValue(key, true, true, true);
 
-    if (_category1.contains(value)) {
-      if (!_firstList.any((e) => e.textValue == value)) {
+    if (_category1.contains(key)) {
+      if (!_firstList.any((e) => e.textValue == key)) {
         _firstList.add(_textValue);
-        _inheritanceState.heirsCount[value] = 1;
       }
-    } else if (_category2.contains(value)) {
-      if (!_secondList.any((e) => e.textValue == value)) {
+    } else if (_category2.contains(key)) {
+      if (!_secondList.any((e) => e.textValue == key)) {
         _secondList.add(_textValue);
-        _inheritanceState.heirsCount[value] = 1;
       }
-    } else if (_category3.contains(value)) {
-      if (!_thirdList.any((e) => e.textValue == value)) {
+    } else if (_category3.contains(key)) {
+      if (!_thirdList.any((e) => e.textValue == key)) {
         _thirdList.add(_textValue);
-        _inheritanceState.heirsCount[value] = 1;
       }
-    } else if (_category4.contains(value)) {
-      if (!_fourthList.any((e) => e.textValue == value)) {
+    } else if (_category4.contains(key)) {
+      if (!_fourthList.any((e) => e.textValue == key)) {
         _fourthList.add(_textValue);
-        _inheritanceState.heirsCount[value] = 1;
       }
-    } else if (!_fifthList.any((e) => e.textValue == value)) {
+    } else if (!_fifthList.any((e) => e.textValue == key)) {
       _fifthList.add(_textValue);
-      _inheritanceState.heirsCount[value] = 1;
     }
+
+    final heirProcess = heirsMap[key]!..state = _inheritanceState..count = 1;
+    _inheritanceState.heirsItems[key] = heirProcess;
+
     emit(DataSuccessState());
   }
 
@@ -154,7 +171,7 @@ class DataCubit extends Cubit<DataStates> {
           _fifthList.remove(e);
         }
 
-        _inheritanceState.heirsCount.remove(e.textValue);
+        _inheritanceState.heirsItems.remove(e.textValue);
     });
     buttonLuck;
     emit(DataSuccessState());
@@ -182,7 +199,7 @@ class DataCubit extends Cubit<DataStates> {
           _e.toggle = false;
           if (!_e.toggle) {
             _e.sum++;
-            _inheritanceState.heirsCount[_e.textValue] = _e.sum;
+            _inheritanceState.heirsItems[_e.textValue]!.count = _e.sum;
           }
         } else {
           _e.toggle = !_e.toggle;
@@ -196,7 +213,7 @@ class DataCubit extends Cubit<DataStates> {
     _inheritanceState.reset();
     for (final _list in multiList) {
       for (final _item in _list) {
-        _inheritanceState.heirsCount[_item.textValue] = _item.sum;
+        _inheritanceState.heirsItems[_item.textValue]!.count = _item.sum;
       }
     }
 

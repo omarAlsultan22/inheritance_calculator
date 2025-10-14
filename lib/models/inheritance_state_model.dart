@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'data_model.dart';
+import 'package:men/models/heir_processor_model.dart';
 
 
 class InheritanceState {
@@ -8,7 +9,7 @@ class InheritanceState {
   double extra = 1.0;
   double value = 0.0;
 
-  final Map<String, int> heirsCount = {};
+  final Map<String, HeirProcessor> heirsItems = {};
   final Map<String, bool> heirsDone = {};
   final Map<String, String> heirsDetails = {};
   final List<DataItems> dataset = [];
@@ -27,11 +28,12 @@ class InheritanceState {
     isHere = false;
     extra = 1.0;
     value = 0.0;
-    heirsCount.clear();
-    heirsDone.clear();
-    heirsDetails.clear();
     dataset.clear();
+    heirsDone.clear();
+    heirsItems.clear();
+    heirsDetails.clear();
   }
+
   void addHeir(String heir, String detailsText, double share, int colorIndex) {
     if (!heirsDone.containsKey(heir)) {
       heirsDetails[heir] = detailsText;

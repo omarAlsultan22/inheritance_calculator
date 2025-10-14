@@ -2,195 +2,209 @@ import 'heir_processor_model.dart';
 import 'inheritance_state_model.dart';
 
 
-class HusbandProcessor implements HeirProcessor{
-  @override
-  void process({required InheritanceState state, int? count}) {
+class HusbandProcessor extends HeirProcessor{
+  HusbandProcessor({super.state});
 
-    if (!state.done) {
-      if (_checkBranches(state)) {
+  @override
+  void process() {
+
+    if (!state!.done) {
+      if (_checkBranches(state!)) {
         const text = "يرث الزوج الربع في حالة وجود فرع وارث ذكر أو أنثي";
         const share = 0.25;
-        state.addHeir("الزوج", text, share, 0);
-        state.heirsDone["الزوج"] = true;
-        state.done = true;
+        state!.addHeir("الزوج", text, share, 0);
+        state!.heirsDone["الزوج"] = true;
+        state!.done = true;
       } else {
         const text = "يرث الزوج النصف في حالة عدم وجود فرع وارث ذكر أو أنثي";
         const share = 0.5;
-        state.addHeir("الزوج", text, share, 0);
-        state.heirsDone["الزوج"] = true;
-        state.done = true;
+        state!.addHeir("الزوج", text, share, 0);
+        state!.heirsDone["الزوج"] = true;
+        state!.done = true;
       }
     }
   }
 }
 
-class WifeProcessor implements HeirProcessor{
+class WifeProcessor extends HeirProcessor{
+  WifeProcessor({super.state});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (!state.done) {
+  void process() {
+    if (!state!.done) {
       final isSingleWife = count == 1;
       final heirName = isSingleWife ? "الزوجة" : "أكثر من زوجة";
 
-      if (_checkBranches(state)) {
+      if (_checkBranches(state!)) {
         final text = "ترث $heirName الثمن في حالة وجود فرع وارث ذكر أو أنثي";
         const share = 0.125;
-        state.addHeir(heirName, text, share, 0);
-        state.heirsDone[heirName] = true;
-        state.done = true;
+        state!.addHeir(heirName, text, share, 0);
+        state!.heirsDone[heirName] = true;
+        state!.done = true;
       } else {
         final text = "ترث $heirName الربع في حالة عدم وجود فرع وارث ذكر أو أنثي";
         const share = 0.25;
-        state.addHeir(heirName, text, share, 0);
-        state.heirsDone[heirName] = true;
-        state.done = true;
+        state!.addHeir(heirName, text, share, 0);
+        state!.heirsDone[heirName] = true;
+        state!.done = true;
       }
     }
   }
 }
 
-class FatherProcessor implements HeirProcessor{
+class FatherProcessor extends HeirProcessor{
+  FatherProcessor({super.state});
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الابن") || state.heirsCount.containsKey("ابن الابن")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الابن") || state!.heirsItems.containsKey("ابن الابن")) {
       const text = "يرث الأب السدس في وجود فرع وارث ذكر الابن أو ابن الابن";
       const share = 0.16;
-      state.addHeir("الأب", text, share, 1);
+      state!.addHeir("الأب", text, share, 1);
     }
-    else if ((state.heirsCount.containsKey("البنت") && state.value == 0.0) ||
-        (state.heirsCount.containsKey("بنت الابن") && state.value == 0.0)) {
-      state.value = 0.16;
-      state.extra -= state.value;
+    else if ((state!.heirsItems.containsKey("البنت") && state!.value == 0.0) ||
+        (state!.heirsItems.containsKey("بنت الابن") && state!.value == 0.0)) {
+      state!.value = 0.16;
+      state!.extra -= state!.value;
     }
     else {
       const heir = "الأب";
       String text = "يرث الأب بالتعصيب في غياب الفرع الوارث أبناء أو بنات";
 
-      if (state.value > 1) {
+      if (state!.value > 1) {
         text = "يرث الأب السدس وتعصيب مع وجود فرع وارث أنثي البنت أو بنت الابن";
       }
 
-      if (state.heirsCount.containsKey("الأم") && !state.isHere) {
-        state.isHere = true;
-        state.addHeir(heir, text, state.extra + state.value, 1);
+      if (state!.heirsItems.containsKey("الأم") && !state!.isHere) {
+        state!.isHere = true;
+        state!.addHeir(heir, text, state!.extra + state!.value, 1);
       } else {
-        state.addHeir(heir, text, state.extra + state.value, 1);
+        state!.addHeir(heir, text, state!.extra + state!.value, 1);
       }
-      state.extra = 0.0;
+      state!.extra = 0.0;
     }
   }
 }
 
-class MotherProcessor implements HeirProcessor{
+class MotherProcessor extends HeirProcessor{
+  MotherProcessor({super.state});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("البنت") ||
-        state.heirsCount.containsKey("بنت الابن") ||
-        state.heirsCount.containsKey("الأخت الشقيقة") ||
-        state.heirsCount.containsKey("الأخت لأب") ||
-        state.heirsCount.containsKey("الابن") ||
-        state.heirsCount.containsKey("ابن الابن") ||
-        state.heirsCount.containsKey("الأخ الشقيق")) {
+  void process() {
+    if (state!.heirsItems.containsKey("البنت") ||
+        state!.heirsItems.containsKey("بنت الابن") ||
+        state!.heirsItems.containsKey("الأخت الشقيقة") ||
+        state!.heirsItems.containsKey("الأخت لأب") ||
+        state!.heirsItems.containsKey("الابن") ||
+        state!.heirsItems.containsKey("ابن الابن") ||
+        state!.heirsItems.containsKey("الأخ الشقيق")) {
       const text = "ترث الام السدس في وجود فرع وارث الابن أو ابن الابن أو البنت أو بنت الابن أو أخوة";
       const share = 0.16;
-      state.addHeir("الأم", text, share, 2);
+      state!.addHeir("الأم", text, share, 2);
     }
-    else if (state.heirsCount.containsKey("الزوج") || state.heirsCount.containsKey("الزوجة")) {
+    else if (state!.heirsItems.containsKey("الزوج") || state!.heirsItems.containsKey("الزوجة")) {
       const text = "ترث الأم ثلث الباقي في أحد العمرتين مع الأب والزوج أو الزوجة";
-      final share = state.extra / 3;
-      state.addHeir("الأم", text, share, 2);
+      final share = state!.extra / 3;
+      state!.addHeir("الأم", text, share, 2);
     }
     else {
       const share = 0.3;
       const text = "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب";
-      state.addHeir("الأم", text, share, 2);
+      state!.addHeir("الأم", text, share, 2);
     }
   }
 }
 
-class PaternalGrandfatherProcessor implements HeirProcessor{
+class PaternalGrandfatherProcessor extends HeirProcessor{
+  PaternalGrandfatherProcessor({super.state});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الأب")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الأب")) {
       const text = "يحجب الجد بالأصل الوارث الذي يسبقه وهو الأب";
-      state.heirsDetails["الجد"] = text;
+      state!.heirsDetails["الجد"] = text;
       return;
     }
 
-    if (state.heirsCount.containsKey("الابن") || state.heirsCount.containsKey("ابن الابن")) {
+    if (state!.heirsItems.containsKey("الابن") || state!.heirsItems.containsKey("ابن الابن")) {
       const text = "يرث الجد السدس في غياب الأب ومع وجود فرع وارث ذكر الابن أو ابن الابن";
       const share = 0.16;
-      state.addHeir("الجد", text, share, 1);
+      state!.addHeir("الجد", text, share, 1);
     }
-    else if (state.heirsCount.containsKey("البنت") || state.heirsCount.containsKey("بنت الابن") && state.value == 0) {
-      state.value = 0.16;
-      state.extra -= state.value;
+    else if (state!.heirsItems.containsKey("البنت") || state!.heirsItems.containsKey("بنت الابن") && state!.value == 0) {
+      state!.value = 0.16;
+      state!.extra -= state!.value;
     }
     else {
       String text = "يرث الجد بالتعصيب في غياب الفرع الوارث أبناء أو بنات";
-      if (state.value > 1) {
+      if (state!.value > 1) {
         text = "يرث الجد السدس وتعصيب مع وجود فرع وارث أنثي البنت أو بنت الابن";
       }
-      state.addHeir("الجد", text, state.extra + state.value, 1);
+      state!.addHeir("الجد", text, state!.extra + state!.value, 1);
     }
   }
 }
 
-class PaternalGrandmotherProcessor implements HeirProcessor{
+class PaternalGrandmotherProcessor extends HeirProcessor{
+  PaternalGrandmotherProcessor({super.state});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الأب") || state.heirsCount.containsKey("الأم")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الأب") || state!.heirsItems.containsKey("الأم")) {
       const text = "تحجب الجدة لأم في حضور الأم والأصل الوارث وهو الأب";
-      state.heirsDetails["الجدة لأم"] = text;
+      state!.heirsDetails["الجدة لأم"] = text;
       return;
     }
 
-    if (state.heirsCount.containsKey("الجدة لأب")) {
+    if (state!.heirsItems.containsKey("الجدة لأب")) {
       const text = "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب";
       const share = 0.16;
-      state.addHeir("الجدة لأم", text, share, 2);
+      state!.addHeir("الجدة لأم", text, share, 2);
     }
     else {
       const text = "ترث الجدة لأم السدس منفرده في حالة عدم وجود الأم أو الجدة لأم";
       const share = 0.16;
-      state.addHeir("الجدة لأم", text, share, 2);
+      state!.addHeir("الجدة لأم", text, share, 2);
     }
   }
 }
 
-class MaternalGrandmotherProcessor implements HeirProcessor{
+class MaternalGrandmotherProcessor extends HeirProcessor{
+  MaternalGrandmotherProcessor({super.state});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الأب") || state.heirsCount.containsKey("الأم")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الأب") || state!.heirsItems.containsKey("الأم")) {
       const text = "تحجب الجدة لأب في حضور الأم والأصل الوارث وهو الأب";
-      state.heirsDetails["الجدة لأب"] = text;
+      state!.heirsDetails["الجدة لأب"] = text;
       return;
     }
 
-    if (state.heirsCount.containsKey("الجدة لأم")) {
+    if (state!.heirsItems.containsKey("الجدة لأم")) {
       const text = "ترث الجدة لأب مع الجدة لأم السدس في حالة غياب الأم والأب";
       const share = 0.16;
-      state.addHeir("الجدة لأب", text, share, 2);
+      state!.addHeir("الجدة لأب", text, share, 2);
     }
     else {
       const text = "ترث الجدة لأب السدس منفردة في حالة غياب الأب و الأم و الجدة لأم";
       const share = 0.16;
-      state.addHeir("الجدة لأب", text, share, 2);
+      state!.addHeir("الجدة لأب", text, share, 2);
     }
   }
 }
 
-class DaughterProcessor implements HeirProcessor{
+class DaughterProcessor extends HeirProcessor{
+  DaughterProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    HeirProcessor _heirProcessor;
-    final sonsCount = state.heirsCount["الابن"] ?? 0;
+  void process() {
+    final sonsCount = state!.heirsItems["الابن"]!.count ?? 0;
     final isSingle = count == 1;
 
     if (sonsCount > 0) {
-      final share = state.extra / (sonsCount * 2 + count!);
+      final share = state!.extra / (sonsCount * 2 + count!);
       final heirName = isSingle ? "البنت" : "$count من البنات";
       const text = "ترث البنات بالتعصيب في وجود المعصب لهم وهو الابن";
-      state.addHeir(heirName, text, share * count, 4);
+      state!.addHeir(heirName, text, share * count!, 4);
     }
     else {
       final share = isSingle ? 0.5 : 0.66;
@@ -199,47 +213,48 @@ class DaughterProcessor implements HeirProcessor{
           ? "ترث البنت النصف في غياب المعصب لها وهو الابن"
           : "ترث البنات الثلثان في غياب المعصب لهم وهو الابن";
 
-      state.addHeir(heirName, text, share, 4);
+      state!.addHeir(heirName, text, share, 4);
 
-      if (state.heirsCount.containsKey("الأب")) {
-        _heirProcessor = FatherProcessor()..process(state: state);
+      if (state!.heirsItems.containsKey("الأب")) {
+        FatherProcessor()..process();
       } else {
-        _heirProcessor = PaternalGrandfatherProcessor()..process(state: state);
+        PaternalGrandfatherProcessor()..process();
       }
     }
   }
 }
 
-class SonsDaughterProcessor implements HeirProcessor{
+class SonsDaughterProcessor extends HeirProcessor{
+  SonsDaughterProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    HeirProcessor _heirProcessor;
+  void process() {
     final isSingle = count == 1;
 
-    if (state.heirsCount.containsKey("الابن")) {
+    if (state!.heirsItems.containsKey("الابن")) {
       const text = "تحجب بنت الابن بحضور الابن";
-      state.heirsDetails["بنت الابن"] = text;
+      state!.heirsDetails["بنت الابن"] = text;
       return;
     }
 
-    final grandsonsCount = state.heirsCount["ابن الابن"] ?? 0;
+    final grandsonsCount = state!.heirsItems["ابن الابن"]!.count ?? 0;
     final heirName = isSingle ? "بنت الابن" : "$count من بنات الابن";
 
     if (grandsonsCount > 0) {
-      final share = state.extra / (grandsonsCount * 2 + count!);
+      final share = state!.extra / (grandsonsCount * 2 + count!);
       final text = isSingle
           ? "ترث بنت الابن بالتعصيب في وجود معصبها ابن الابن"
           : "ترث بنات الابن بالتعصيب في وجود معصبهم ابن الابن";
 
-      state.addHeir(heirName, text, share * count, 5);
+      state!.addHeir(heirName, text, share * count!, 5);
     }
-    else if (state.heirsCount.containsKey('البنت')) {
+    else if (state!.heirsItems.containsKey('البنت')) {
       const share = 0.16;
       final text = isSingle
           ? "ترث بنت الابن السدس في وجود البنت"
           : "ترث بنات الابن السدس في وجود البنت";
 
-      state.addHeir(heirName, text, share, 5);
+      state!.addHeir(heirName, text, share, 5);
     }
     else {
       final share = isSingle ? 0.5 : 0.66;
@@ -247,75 +262,81 @@ class SonsDaughterProcessor implements HeirProcessor{
           ? "ترث بنت الابن النصف في غياب البنت و معصبها ابن الابن"
           : "ترث بنات الابن الثلثين في غياب البنت ومعصبهم ابن الابن";
 
-      state.addHeir(heirName, text, share, 5);
+      state!.addHeir(heirName, text, share, 5);
 
-      if (state.heirsCount.containsKey("الأب")) {
-        _heirProcessor = FatherProcessor()..process(state: state);
+      if (state!.heirsItems.containsKey("الأب")) {
+        FatherProcessor()..process();
       } else {
-        _heirProcessor = PaternalGrandfatherProcessor()..process(state: state);
+        PaternalGrandfatherProcessor()..process();
       }
     }
   }
 }
 
-class SonProcessor implements HeirProcessor{
+class SonProcessor extends HeirProcessor{
+  SonProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
+  void process() {
     final isSingle = count == 1;
     final heirName = isSingle ? "الابن" : "$count من الأبناء";
     const text = "يرث الأبناء بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class SonsSonProcessor implements HeirProcessor{
+class SonsSonProcessor extends HeirProcessor{
+  SonsSonProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الابن")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الابن")) {
       const text = "يحجب ابن الابن بحضور الابن";
-      state.heirsDetails["ابن الابن"] = text;
+      state!.heirsDetails["ابن الابن"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "ابن الابن" : "$count من أبناء الابن";
     const text = "يرث أبناء الابن بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class FullSisterProcessor implements HeirProcessor{
+class FullSisterProcessor extends HeirProcessor{
+  FullSisterProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الابن") ||
-        state.heirsCount.containsKey("ابن الابن") ||
-        state.heirsCount.containsKey("الأب") ||
-        state.heirsCount.containsKey("الجد")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الابن") ||
+        state!.heirsItems.containsKey("ابن الابن") ||
+        state!.heirsItems.containsKey("الأب") ||
+        state!.heirsItems.containsKey("الجد")) {
       const text = "تحجب الأخت الشقيقة في حضور الابن أو ابن الابن أو الأب أو الجد";
-      state.heirsDetails["الأخت الشقيقة"] = text;
+      state!.heirsDetails["الأخت الشقيقة"] = text;
       return;
     }
 
-    final brothersCount = state.heirsCount["الأخ الشقيق"] ?? 0;
+    final brothersCount = state!.heirsItems["الأخ الشقيق"]!.count ?? 0;
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخت الشقيقة" : "$count من الأخوات الشقيقات";
 
     if (brothersCount > 0) {
       print('Hello');
-      final share = state.extra / (brothersCount * 2 + count!);
+      final share = state!.extra / (brothersCount * 2 + count!);
       final text = isSingle
           ? "ترث الأخت الشقيقة بالتعصيب مع أخيها الشقيق"
           : "ترث الأخوات الشقيقات بالتعصيب مع إخوتهم الأشقاء";
 
-      state.addHeir(heirName, text, share * count, 3);
+      state!.addHeir(heirName, text, share * count!, 3);
     }
-    else if (state.heirsCount.containsKey("البنت")) {
+    else if (state!.heirsItems.containsKey("البنت")) {
       const share = 0.16;
       final text = isSingle
           ? "ترث الأخت الشقيقة السدس في وجود البنت"
           : "ترث الأخوات الشقيقات السدس في وجود البنت";
 
-      state.addHeir(heirName, text, share, 3);
+      state!.addHeir(heirName, text, share, 3);
     }
     else {
       final share = isSingle ? 0.5 : 0.66;
@@ -323,54 +344,56 @@ class FullSisterProcessor implements HeirProcessor{
           ? "ترث الأخت الشقيقة النصف في غياب الأخ الشقيق والبنت"
           : "ترث الأخوات الشقيقات الثلثين في غياب الأخ الشقيق والبنت";
 
-      state.addHeir(heirName, text, share, 3);
+      state!.addHeir(heirName, text, share, 3);
     }
   }
 }
 
-class PaternalSisterProcessor implements HeirProcessor{
+class PaternalSisterProcessor extends HeirProcessor{
+  PaternalSisterProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الابن") ||
-        state.heirsCount.containsKey("ابن الابن") ||
-        state.heirsCount.containsKey("الأب") ||
-        state.heirsCount.containsKey("الجد")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الابن") ||
+        state!.heirsItems.containsKey("ابن الابن") ||
+        state!.heirsItems.containsKey("الأب") ||
+        state!.heirsItems.containsKey("الجد")) {
       const text = "تحجب الأخت لأب في حضور الابن أو ابن الابن أو الأب أو الجد";
-      state.heirsDetails["الأخت لأب"] = text;
+      state!.heirsDetails["الأخت لأب"] = text;
       return;
     }
 
-    final brothersCount = state.heirsCount["الأخ لأب"] ?? 0;
+    final brothersCount = state!.heirsItems["الأخ لأب"]!.count ?? 0;
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخت لأب" : "$count من الأخوات لأب";
 
     if (brothersCount > 0) {
-      final share = state.extra / (brothersCount * 2 + count!);
+      final share = state!.extra / (brothersCount * 2 + count!);
       final text = isSingle
           ? "ترث الأخت لأب بالتعصيب مع أخيها لأب"
           : "ترث الأخوات لأب بالتعصيب مع إخوتهم لأب";
 
-      state.addHeir(heirName, text, share * count, 3);
+      state!.addHeir(heirName, text, share * count!, 3);
     }
-    else if (state.heirsCount.containsKey("البنت") && state.heirsCount.containsKey("الأخت الشقيقة")) {
+    else if (state!.heirsItems.containsKey("البنت") && state!.heirsItems.containsKey("الأخت الشقيقة")) {
       const text = "تحجب الأخت لأب في حضور البنت أو الاخت الشقيقة";
-      state.heirsDetails["الأخت لأب"] = text;
+      state!.heirsDetails["الأخت لأب"] = text;
     }
-    else if (state.heirsCount.containsKey("البنت")) {
+    else if (state!.heirsItems.containsKey("البنت")) {
       const share = 0.16;
       final text = isSingle
           ? "ترث الاخت لأب السدس في وجود البنت"
           : "ترث الأخوات لأب السدس في وجود البنت";
 
-      state.addHeir(heirName, text, share, 3);
+      state!.addHeir(heirName, text, share, 3);
     }
-    else if (state.heirsCount.containsKey("الأخت الشقيقة")) {
+    else if (state!.heirsItems.containsKey("الأخت الشقيقة")) {
       const share = 0.16;
       final text = isSingle
           ? "ترث الاخت لأب السدس في وجود الأخت الشقيقة"
           : "ترث الأخوات لأب السدس في وجود الأخت الشقيقة";
 
-      state.addHeir(heirName, text, share, 3);
+      state!.addHeir(heirName, text, share, 3);
     }
     else {
       final share = isSingle ? 0.5 : 0.66;
@@ -378,22 +401,24 @@ class PaternalSisterProcessor implements HeirProcessor{
           ? "ترث الأخت لأب النصف في غياب البنت والأخت الشقيقة"
           : "ترث الأخوات لأب الثلثين في غياب البنت والأخت الشقيقة";
 
-      state.addHeir(heirName, text, share, 3);
+      state!.addHeir(heirName, text, share, 3);
     }
   }
 }
 
-class MaternalSiblingsProcessor implements HeirProcessor{
+class MaternalSiblingsProcessor extends HeirProcessor{
+  MaternalSiblingsProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey("الابن") ||
-        state.heirsCount.containsKey("البنت") ||
-        state.heirsCount.containsKey("الأب") ||
-        state.heirsCount.containsKey("الجد") ||
-        state.heirsCount.containsKey("ابن الابن") ||
-        state.heirsCount.containsKey("بنت الابن")) {
+  void process() {
+    if (state!.heirsItems.containsKey("الابن") ||
+        state!.heirsItems.containsKey("البنت") ||
+        state!.heirsItems.containsKey("الأب") ||
+        state!.heirsItems.containsKey("الجد") ||
+        state!.heirsItems.containsKey("ابن الابن") ||
+        state!.heirsItems.containsKey("بنت الابن")) {
       const text = "يحجب الأخوة لأم في حضور الابن أو ابن الابن أو البنت أو بنت الابن أو الأب أو الجد";
-      state.heirsDetails["الأخ لأم"] = text;
+      state!.heirsDetails["الأخ لأم"] = text;
       return;
     }
 
@@ -404,173 +429,188 @@ class MaternalSiblingsProcessor implements HeirProcessor{
         ? "يرث الأخ لأم السدس في حالة عدم أصل أو فرع وارث"
         : "يرث الأخوة لأم الثلث في حالة عدم أصل أو فرع وارث";
 
-    state.addHeir(heirName, text, share, 0);
+    state!.addHeir(heirName, text, share, 0);
   }
 }
 
-class  FullBrotherProcessor implements HeirProcessor{
+class  FullBrotherProcessor extends HeirProcessor{
+  FullBrotherProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب')) {
       const text = "يحجب الأخ الشقيق بحضور الابن أو ابن الابن أو الأب";
-      state.heirsDetails["الأخ الشقيق"] = text;
+      state!.heirsDetails["الأخ الشقيق"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخ الشقيق" : "$count من الأخوة الأشقاء";
     const text = "يرث الأخوة الأشقاء بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class PaternalBrotherProcessor implements HeirProcessor{
+class PaternalBrotherProcessor extends HeirProcessor{
+  PaternalBrotherProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق')) {
       const text = "يحجب الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق";
-      state.heirsDetails["الأخ لأب"] = text;
+      state!.heirsDetails["الأخ لأب"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخ لأب" : "$count من الأخوة لأب";
     const text = "يرث الأخوة لأب بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class  FullBrothersSonProcessor implements HeirProcessor{
+class  FullBrothersSonProcessor extends HeirProcessor{
+  FullBrothersSonProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق')) {
       const text = "يحجب الأخ الشقيق بحضور الابن أو ابن الابن أو الأب";
-      state.heirsDetails["ابن الأخ الشقيق"] = text;
+      state!.heirsDetails["ابن الأخ الشقيق"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "ابن الأخ الشقيق" : "$count من ابناء الأخوة الأشقاء";
     const text = "يرث الأخوة الأشقاء بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class PaternalBrothersSonProcessor implements HeirProcessor{
+class PaternalBrothersSonProcessor extends HeirProcessor{
+  PaternalBrothersSonProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state,int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق') ||
-        state.heirsCount.containsKey('الأخ لأب')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق') ||
+        state!.heirsItems.containsKey('الأخ لأب')) {
       const text = "يحجب الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق";
-      state.heirsDetails["ابن الأخ لأب"] = text;
+      state!.heirsDetails["ابن الأخ لأب"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "ابن الأخ لأب" : "$count من ابناء الأخوة لأب";
     const text = "يرث الأخوة لأب بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class FullUncleProcessor implements HeirProcessor{
+class FullUncleProcessor extends HeirProcessor{
+  FullUncleProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق') ||
-        state.heirsCount.containsKey('الأخ لأب')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق') ||
+        state!.heirsItems.containsKey('الأخ لأب')) {
       const text = "يحجب العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب";
-      state.heirsDetails["العم الشقيق"] = text;
+      state!.heirsDetails["العم الشقيق"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "العم الشقيق" : "$count من الأعمام الأشقاء";
     const text = "يرث الأعمام الأشقاء بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class PaternalUncleProcessor implements HeirProcessor{
+class PaternalUncleProcessor extends HeirProcessor{
+  PaternalUncleProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق') ||
-        state.heirsCount.containsKey('الأخ لأب') ||
-        state.heirsCount.containsKey('العم الشقيق')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق') ||
+        state!.heirsItems.containsKey('الأخ لأب') ||
+        state!.heirsItems.containsKey('العم الشقيق')) {
       const text = "يحجب العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق";
-      state.heirsDetails["العم لأب"] = text;
+      state!.heirsDetails["العم لأب"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "العم لأب" : "$count من الأعمام لأب";
     const text = "يرث الأعمام لأب بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class FullCousinProcessor implements HeirProcessor{
+class FullCousinProcessor extends HeirProcessor{
+  FullCousinProcessor({super.state, super.count});
+
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق') ||
-        state.heirsCount.containsKey('الأخ لأب') ||
-        state.heirsCount.containsKey('العم الشقيق') ||
-        state.heirsCount.containsKey('العم لأب')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق') ||
+        state!.heirsItems.containsKey('الأخ لأب') ||
+        state!.heirsItems.containsKey('العم الشقيق') ||
+        state!.heirsItems.containsKey('العم لأب')) {
       const text = "يحجب ابن العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب";
-      state.heirsDetails["ابن العم الشقيق"] = text;
+      state!.heirsDetails["ابن العم الشقيق"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "ابن العم الشقيق" : "$count من أبناء العم الشقيق";
     const text = "يرث أبناء العم الشقيق بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
-class PaternalCousinProcessor implements HeirProcessor{
+class PaternalCousinProcessor extends HeirProcessor{
+  PaternalCousinProcessor({super.state, super.count});
   @override
-  void process({required InheritanceState state, int? count}) {
-    if (state.heirsCount.containsKey('الابن') ||
-        state.heirsCount.containsKey('ابن الابن') ||
-        state.heirsCount.containsKey('الأب') ||
-        state.heirsCount.containsKey('الأخ الشقيق') ||
-        state.heirsCount.containsKey('الأخ لأب') ||
-        state.heirsCount.containsKey('العم الشقيق') ||
-        state.heirsCount.containsKey('العم لأب') ||
-        state.heirsCount.containsKey('ابن العم الشقيق')) {
+  void process() {
+    if (state!.heirsItems.containsKey('الابن') ||
+        state!.heirsItems.containsKey('ابن الابن') ||
+        state!.heirsItems.containsKey('الأب') ||
+        state!.heirsItems.containsKey('الأخ الشقيق') ||
+        state!.heirsItems.containsKey('الأخ لأب') ||
+        state!.heirsItems.containsKey('العم الشقيق') ||
+        state!.heirsItems.containsKey('العم لأب') ||
+        state!.heirsItems.containsKey('ابن العم الشقيق')) {
       const text = "يحجب ابن العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب أو ابن العم الشقيق";
-      state.heirsDetails["ابن العم لأب"] = text;
+      state!.heirsDetails["ابن العم لأب"] = text;
       return;
     }
 
     final isSingle = count == 1;
     final heirName = isSingle ? "ابن العم لأب" : "$count من أبناء العم لأب";
     const text = "يرث أبناء العم لأب بالتعصيب باقي التركة";
-    state.addHeir(heirName, text, state.extra, 5);
+    state!.addHeir(heirName, text, state!.extra, 5);
   }
 }
 
 bool _checkBranches(InheritanceState state) {
-  return state.heirsCount.containsKey("البنت") ||
-      state.heirsCount.containsKey("الابن");
+  return state.heirsItems.containsKey("البنت") ||
+      state.heirsItems.containsKey("الابن");
 }
