@@ -20,32 +20,34 @@ class DataCubit extends Cubit<DataStates> {
   late BuildContext context;
   List<DataItems> dataItems = [];
   Map<String, String> detailsItems = {};
-  final InheritanceState _inheritanceState = InheritanceState();
+  static InheritanceState _inheritanceState = InheritanceState();
 
 
   Map<String, HeirProcessor> heirsMap = {
-    'الزوج': HusbandProcessor(),
-    'الزوجة': WifeProcessor(),
-    'الأب': FatherProcessor(),
-    'الأم' : MotherProcessor(),
-    'الجد': PaternalGrandfatherProcessor(),
-    'الجدة لأب': PaternalGrandmotherProcessor(),
-    'الجدة لأم': MaternalGrandmotherProcessor(),
-    'البنت': DaughterProcessor(),
-    'بنت الابن': SonsDaughterProcessor(),
-    'الابن': SonProcessor(),
-    'ابن الابن': SonsSonProcessor(),
-    'الأخت الشقيقة': FullSisterProcessor(),
-    'الأخت لأب': PaternalSisterProcessor(),
-    'الأخوة لأم': MaternalSiblingsProcessor(),
-    'الأخ الشقيق': FullBrotherProcessor(),
-    'الأخ لأب': PaternalBrotherProcessor(),
-    'ابن الأخ الشقيق': FullBrothersSonProcessor(),
-    'ابن الأخ لأب': PaternalBrothersSonProcessor(),
-    'العم الشقيق': FullUncleProcessor(),
-    'العم لأب': PaternalUncleProcessor(),
-    'ابن العم الشقيق': FullCousinProcessor(),
-    'ابن العم لأب': PaternalCousinProcessor(),
+    'الزوج': HusbandProcessor(state: _inheritanceState),
+    'الزوجة': WifeProcessor(state: _inheritanceState, count: 1),
+    'الأب': FatherProcessor(state: _inheritanceState),
+    'الأم': MotherProcessor(state: _inheritanceState),
+    'الجد': PaternalGrandfatherProcessor(state: _inheritanceState),
+    'الجدة لأب': PaternalGrandmotherProcessor(state: _inheritanceState),
+    'الجدة لأم': MaternalGrandmotherProcessor(state: _inheritanceState),
+    'البنت': DaughterProcessor(state: _inheritanceState, count: 1),
+    'بنت الابن': SonsDaughterProcessor(state: _inheritanceState, count: 1),
+    'الابن': SonProcessor(state: _inheritanceState, count: 1),
+    'ابن الابن': SonsSonProcessor(state: _inheritanceState, count: 1),
+    'الأخت الشقيقة': FullSisterProcessor(state: _inheritanceState, count: 1),
+    'الأخت لأب': PaternalSisterProcessor(state: _inheritanceState, count: 1),
+    'الأخوة لأم': MaternalSiblingsProcessor(state: _inheritanceState, count: 1),
+    'الأخ الشقيق': FullBrotherProcessor(state: _inheritanceState, count: 1),
+    'الأخ لأب': PaternalBrotherProcessor(state: _inheritanceState, count: 1),
+    'ابن الأخ الشقيق': FullBrothersSonProcessor(
+        state: _inheritanceState, count: 1),
+    'ابن الأخ لأب': PaternalBrothersSonProcessor(
+        state: _inheritanceState, count: 1),
+    'العم الشقيق': FullUncleProcessor(state: _inheritanceState, count: 1),
+    'العم لأب': PaternalUncleProcessor(state: _inheritanceState, count: 1),
+    'ابن العم الشقيق': FullCousinProcessor(state: _inheritanceState, count: 1),
+    'ابن العم لأب': PaternalCousinProcessor(state: _inheritanceState, count: 1),
   };
 
   static const List<String> _category1 = ["الزوج", "الزوجة"];
@@ -74,7 +76,7 @@ class DataCubit extends Cubit<DataStates> {
   static List<TextValue> _fifthList = [];
 
 
-  void sendWidgetContext(BuildContext currentContext){
+  void sendWidgetContext(BuildContext currentContext) {
     context = currentContext;
     emit(DataSuccessState());
   }
@@ -127,51 +129,60 @@ class DataCubit extends Cubit<DataStates> {
     }
   }
 
-  void addTextValue(String key) {
-    final _textValue = TextValue(key, true, true, true);
 
-    if (_category1.contains(key)) {
-      if (!_firstList.any((e) => e.textValue == key)) {
-        _firstList.add(_textValue);
-      }
-    } else if (_category2.contains(key)) {
-      if (!_secondList.any((e) => e.textValue == key)) {
-        _secondList.add(_textValue);
-      }
-    } else if (_category3.contains(key)) {
-      if (!_thirdList.any((e) => e.textValue == key)) {
-        _thirdList.add(_textValue);
-      }
-    } else if (_category4.contains(key)) {
-      if (!_fourthList.any((e) => e.textValue == key)) {
-        _fourthList.add(_textValue);
-      }
-    } else if (!_fifthList.any((e) => e.textValue == key)) {
-      _fifthList.add(_textValue);
+  void addTextValue(String value) {
+    if (value.isEmpty) {
+      return;
     }
 
-    final heirProcess = heirsMap[key]!..state = _inheritanceState..count = 1;
-    _inheritanceState.heirsItems[key] = heirProcess;
 
-    emit(DataSuccessState());
+    final textValue = TextValue(value, true, true, true);
+    final List<TextValue> targetList = _getTargetList(value);
+
+    if (!_containsValue(targetList, value)) {
+      targetList.add(textValue);
+      var process = heirsMap[value];
+      if (process != null) {
+        process.count = 1;
+        process.state = _inheritanceState;
+        _inheritanceState.heirsItems[value] = process;
+      }
+      emit(DataSuccessState());
+    }
+  }
+
+
+  List<TextValue> _getTargetList(String value) {
+    if (_category1.contains(value)) return _firstList;
+    if (_category2.contains(value)) return _secondList;
+    if (_category3.contains(value)) return _thirdList;
+    if (_category4.contains(value)) return _fourthList;
+    return _fifthList;
+  }
+
+  bool _containsValue(List<TextValue> list, String value) {
+    for (final item in list) {
+      if (item.textValue == value) return true;
+    }
+    return false;
   }
 
 
   void removeItem(TextValue e) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_firstList.contains(e)) {
-          _firstList.remove(e);
-        } else if (_secondList.contains(e)) {
-          _secondList.remove(e);
-        } else if (_thirdList.contains(e)) {
-          _thirdList.remove(e);
-        } else if (_fourthList.contains(e)) {
-          _fourthList.remove(e);
-        } else {
-          _fifthList.remove(e);
-        }
+      if (_firstList.contains(e)) {
+        _firstList.remove(e);
+      } else if (_secondList.contains(e)) {
+        _secondList.remove(e);
+      } else if (_thirdList.contains(e)) {
+        _thirdList.remove(e);
+      } else if (_fourthList.contains(e)) {
+        _fourthList.remove(e);
+      } else {
+        _fifthList.remove(e);
+      }
 
-        _inheritanceState.heirsItems.remove(e.textValue);
+      _inheritanceState.heirsItems.remove(e.textValue);
     });
     buttonLuck;
     emit(DataSuccessState());
@@ -180,30 +191,36 @@ class DataCubit extends Cubit<DataStates> {
 
   void handleItemTap(TextValue _e) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        const _fixedItems = [
-          'الأب',
-          'الأم',
-          'الزوج',
-          'الجد',
-          'الجدة لأب',
-          'الجدة لأم'
-        ];
-        const _incrementableItems = [
-          'الابن', 'ابن الابن', 'الأخ الشقيق', 'الأخ لأب',
-          'البنت', 'بنت الابن', 'الأخت الشقيقة', 'الأخت لأب'
-        ];
+      final process = heirsMap[_e.textValue];
+      if (process == null) {
+        print('Processor not found for: ${_e.textValue}');
+        return;
+      }
 
-        if (_fixedItems.contains(_e.textValue)) {
-          _e.toggle = true;
-        } else if (_incrementableItems.contains(_e.textValue)) {
-          _e.toggle = false;
-          if (!_e.toggle) {
-            _e.sum++;
-            _inheritanceState.heirsItems[_e.textValue]!.count = _e.sum;
-          }
-        } else {
-          _e.toggle = !_e.toggle;
+      const _fixedItems = [
+        'الأب',
+        'الأم',
+        'الزوج',
+        'الجد',
+        'الجدة لأب',
+        'الجدة لأم'
+      ];
+      const _incrementableItems = [
+        'الابن', 'ابن الابن', 'الأخ الشقيق', 'الأخ لأب',
+        'البنت', 'بنت الابن', 'الأخت الشقيقة', 'الأخت لأب'
+      ];
+
+      if (_fixedItems.contains(_e.textValue)) {
+        _e.toggle = true;
+      } else if (_incrementableItems.contains(_e.textValue)) {
+        _e.toggle = false;
+        if (!_e.toggle) {
+          _e.sum++;
+          process.count = _e.sum;
         }
+      } else {
+        _e.toggle = !_e.toggle;
+      }
     });
     emit(DataSuccessState());
   }
@@ -213,7 +230,9 @@ class DataCubit extends Cubit<DataStates> {
     _inheritanceState.reset();
     for (final _list in multiList) {
       for (final _item in _list) {
-        _inheritanceState.heirsItems[_item.textValue]!.count = _item.sum;
+        final process = heirsMap[_item.textValue];
+        process!.count = _item.sum;
+        _inheritanceState.heirsItems[_item.textValue] = process;
       }
     }
 

@@ -7,9 +7,8 @@ import '../../../models/data_model.dart';
 class DonutChartPainter extends CustomPainter {
   final List<DataItems> dataset;
   final double fullAngle;
-  final BuildContext context;
 
-  DonutChartPainter(this.dataset, this.fullAngle, this.context);
+  DonutChartPainter(this.dataset, this.fullAngle);
 
   @override
   void paint(Canvas canvas, Size size) {

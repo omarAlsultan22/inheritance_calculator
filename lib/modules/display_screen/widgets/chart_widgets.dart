@@ -77,7 +77,7 @@ class DonutChartWidget extends StatelessWidget {
       width: 300.0,
       height: 300.0,
       child: CustomPaint(
-        painter: DonutChartPainter(dataItems, fullAngle, context),
+        painter: DonutChartPainter(dataItems, fullAngle),
       ),
     );
   }

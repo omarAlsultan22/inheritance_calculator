@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/animation.dart';
 import '../../../shared/cubit/cubit.dart';
 
 
@@ -43,7 +43,7 @@ class DisplayAnimationManager {
 
   void _initTextAnimation() {
     _textController = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
       vsync: vsync,
     );
     animation = Tween(begin: 200.0, end: -20.0).animate(_textController)
@@ -66,7 +66,7 @@ class DisplayAnimationManager {
 
   void _initLineAnimation() {
     _lineController = AnimationController(
-      duration: Duration(seconds: 6),
+      duration: Duration(seconds: 3),
       vsync: vsync,
     );
 
@@ -117,7 +117,7 @@ class DisplayAnimationManager {
         currentStep++;
         onUpdate?.call();
       } else {
-        degrees[index] = targetValue; // تأكد من الوصول للقيمة النهائية
+        degrees[index] = targetValue; // التأكد من الوصول للقيمة النهائية
         timer.cancel();
         _lineTimers.remove(timer);
         onUpdate?.call();

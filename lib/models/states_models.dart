@@ -27,7 +27,7 @@ class HusbandProcessor extends HeirProcessor{
 }
 
 class WifeProcessor extends HeirProcessor{
-  WifeProcessor({super.state});
+  WifeProcessor({super.state, super.count});
 
   @override
   void process() {
@@ -197,14 +197,14 @@ class DaughterProcessor extends HeirProcessor{
 
   @override
   void process() {
-    final sonsCount = state!.heirsItems["الابن"]!.count ?? 0;
+    final sonsCount = state!.heirsItems["الابن"]!.count;
     final isSingle = count == 1;
 
     if (sonsCount > 0) {
-      final share = state!.extra / (sonsCount * 2 + count!);
+      final share = state!.extra / (sonsCount * 2 + count);
       final heirName = isSingle ? "البنت" : "$count من البنات";
       const text = "ترث البنات بالتعصيب في وجود المعصب لهم وهو الابن";
-      state!.addHeir(heirName, text, share * count!, 4);
+      state!.addHeir(heirName, text, share * count, 4);
     }
     else {
       final share = isSingle ? 0.5 : 0.66;
@@ -237,16 +237,16 @@ class SonsDaughterProcessor extends HeirProcessor{
       return;
     }
 
-    final grandsonsCount = state!.heirsItems["ابن الابن"]!.count ?? 0;
+    final grandsonsCount = state!.heirsItems["ابن الابن"]!.count;
     final heirName = isSingle ? "بنت الابن" : "$count من بنات الابن";
 
     if (grandsonsCount > 0) {
-      final share = state!.extra / (grandsonsCount * 2 + count!);
+      final share = state!.extra / (grandsonsCount * 2 + count);
       final text = isSingle
           ? "ترث بنت الابن بالتعصيب في وجود معصبها ابن الابن"
           : "ترث بنات الابن بالتعصيب في وجود معصبهم ابن الابن";
 
-      state!.addHeir(heirName, text, share * count!, 5);
+      state!.addHeir(heirName, text, share * count, 5);
     }
     else if (state!.heirsItems.containsKey('البنت')) {
       const share = 0.16;
@@ -317,18 +317,18 @@ class FullSisterProcessor extends HeirProcessor{
       return;
     }
 
-    final brothersCount = state!.heirsItems["الأخ الشقيق"]!.count ?? 0;
+    final brothersCount = state!.heirsItems["الأخ الشقيق"]!.count;
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخت الشقيقة" : "$count من الأخوات الشقيقات";
 
     if (brothersCount > 0) {
       print('Hello');
-      final share = state!.extra / (brothersCount * 2 + count!);
+      final share = state!.extra / (brothersCount * 2 + count);
       final text = isSingle
           ? "ترث الأخت الشقيقة بالتعصيب مع أخيها الشقيق"
           : "ترث الأخوات الشقيقات بالتعصيب مع إخوتهم الأشقاء";
 
-      state!.addHeir(heirName, text, share * count!, 3);
+      state!.addHeir(heirName, text, share * count, 3);
     }
     else if (state!.heirsItems.containsKey("البنت")) {
       const share = 0.16;
@@ -363,17 +363,17 @@ class PaternalSisterProcessor extends HeirProcessor{
       return;
     }
 
-    final brothersCount = state!.heirsItems["الأخ لأب"]!.count ?? 0;
+    final brothersCount = state!.heirsItems["الأخ لأب"]!.count;
     final isSingle = count == 1;
     final heirName = isSingle ? "الأخت لأب" : "$count من الأخوات لأب";
 
     if (brothersCount > 0) {
-      final share = state!.extra / (brothersCount * 2 + count!);
+      final share = state!.extra / (brothersCount * 2 + count);
       final text = isSingle
           ? "ترث الأخت لأب بالتعصيب مع أخيها لأب"
           : "ترث الأخوات لأب بالتعصيب مع إخوتهم لأب";
 
-      state!.addHeir(heirName, text, share * count!, 3);
+      state!.addHeir(heirName, text, share * count, 3);
     }
     else if (state!.heirsItems.containsKey("البنت") && state!.heirsItems.containsKey("الأخت الشقيقة")) {
       const text = "تحجب الأخت لأب في حضور البنت أو الاخت الشقيقة";

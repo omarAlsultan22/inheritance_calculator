@@ -10,8 +10,8 @@ class InheritanceState {
   double value = 0.0;
 
   final Map<String, HeirProcessor> heirsItems = {};
-  final Map<String, bool> heirsDone = {};
   final Map<String, String> heirsDetails = {};
+  final Map<String, bool> heirsDone = {};
   final List<DataItems> dataset = [];
 
   static const List<int> _pal = [

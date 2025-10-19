@@ -1,10 +1,10 @@
 import 'inheritance_state_model.dart';
 
 abstract class HeirProcessor {
-  late int? count;
-  late InheritanceState? state;
+  int count;
+  InheritanceState? state;
 
-  HeirProcessor({this.state, this.count});
+  HeirProcessor({this.state, this.count = 0});
 
   void process();
 }
