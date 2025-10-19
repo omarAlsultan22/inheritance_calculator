@@ -15,6 +15,7 @@ class SelectionScreen extends StatelessWidget {
     return BlocConsumer<DataCubit, DataStates>(
       listener: statesListener,
       builder: (context, state) {
+        _dataCubit = DataCubit.get(context);
         initDataCubit(context, _dataCubit);
         return Directionality(
           textDirection: TextDirection.rtl,
