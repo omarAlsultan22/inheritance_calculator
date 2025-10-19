@@ -103,7 +103,7 @@ class DisplayAnimationManager {
 
   void _startLineTimer(int index) {
     final targetValue = (dataCubit.dataItems[index].value * 100).toInt();
-    final duration = const Duration(seconds: 2); // مدة زيادة الرقم
+    final duration = const Duration(seconds: 1); // مدة زيادة الرقم
     final steps = targetValue;
     final stepDuration = duration ~/ steps;
 
