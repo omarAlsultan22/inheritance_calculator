@@ -16,19 +16,43 @@ class DataCubit extends Cubit<DataStates> {
   static DataCubit get(context) => BlocProvider.of(context);
 
   bool color = false;
-  String? selectedItem;
+  HeirType? selectedItem;
   late BuildContext context;
   List<DataItems> dataItems = [];
   Map<String, String> detailsItems = {};
   static InheritanceState _inheritanceState = InheritanceState();
 
+  List<HeirType> heirsList = [
+    HeirType.husband,
+    HeirType.wife,
+    HeirType.father,
+    HeirType.mother,
+    HeirType.son,
+    HeirType.daughter,
+    HeirType.sonsSon,
+    HeirType.sonsDaughter,
+    HeirType.grandfather,
+    HeirType.paternalGrandMother,
+    HeirType.maternalGrandmother,
+    HeirType.fullSister,
+    HeirType.paternalSister,
+    HeirType.fullBrother,
+    HeirType.paternalBrother,
+    HeirType.maternalSiblings,
+    HeirType.fullUncle,
+    HeirType.paternalUncle,
+    HeirType.fullBrothersSon,
+    HeirType.paternalBrothersSon,
+    HeirType.fullCousin,
+    HeirType.paternalCousin,
+  ];
 
   Map<String, HeirProcessor> heirsMap = {
     'الزوج': HusbandProcessor(state: _inheritanceState),
     'الزوجة': WifeProcessor(state: _inheritanceState, count: 1),
     'الأب': FatherProcessor(state: _inheritanceState),
     'الأم': MotherProcessor(state: _inheritanceState),
-    'الجد': PaternalGrandfatherProcessor(state: _inheritanceState),
+    'الجد': GrandfatherProcessor(state: _inheritanceState),
     'الجدة لأب': PaternalGrandmotherProcessor(state: _inheritanceState),
     'الجدة لأم': MaternalGrandmotherProcessor(state: _inheritanceState),
     'البنت': DaughterProcessor(state: _inheritanceState, count: 1),
@@ -49,6 +73,7 @@ class DataCubit extends Cubit<DataStates> {
     'ابن العم الشقيق': FullCousinProcessor(state: _inheritanceState, count: 1),
     'ابن العم لأب': PaternalCousinProcessor(state: _inheritanceState, count: 1),
   };
+
 
   static const List<String> _category1 = ["الزوج", "الزوجة"];
   static const List<String> _category2 = ["الأب", "الجد"];
@@ -90,7 +115,6 @@ class DataCubit extends Cubit<DataStates> {
     try {
       emit(DataLoadingState());
       if (extra != 0.0) {
-        print(extra);
         const String value = 'الباقي';
         dataSet.add(DataItems(extra, value, Color(0xFF388E3C)));
         details[value] =
@@ -120,32 +144,53 @@ class DataCubit extends Cubit<DataStates> {
   }
 
 
-  void checkKey(String? key) {
-    if (key != null && key.isNotEmpty) {
-      selectedItem = key;
-      addTextValue(key);
-      buttonLuck;
-      emit(DataSuccessState());
+  void checkKey(HeirType? key) {
+    if (keyNotEmpty(key!.heirName)) {
+      if (!checkCouple(key.heirName)) {
+        selectedItem = key;
+        addTextValue(key);
+        buttonLuck;
+        emit(DataSuccessState());
+      };
     }
   }
 
+  bool keyNotEmpty(String? key) {
+    return key != null && key.isNotEmpty;
+  }
 
-  void addTextValue(String value) {
-    if (value.isEmpty) {
+  bool checkCouple(String key) {
+    if (key == 'الزوج') {
+      return _firstList.any((item) =>
+      item.textValue == 'الزوجة');
+    }
+
+    if (key == 'الزوجة') {
+      return _firstList.any((item) =>
+      item.textValue == 'الزوج');
+    }
+
+    return false;
+  }
+
+
+  void addTextValue(HeirType value) {
+    if (value.heirName.isEmpty) {
       return;
     }
 
 
-    final textValue = TextValue(value, true, true, true);
-    final List<TextValue> targetList = _getTargetList(value);
+    final textValue = TextValue(value.heirName, true, true, true);
+    final List<TextValue> targetList = _getTargetList(value.heirName);
 
-    if (!_containsValue(targetList, value)) {
+    if (!_containsValue(targetList, value.heirName)) {
       targetList.add(textValue);
       var process = heirsMap[value];
       if (process != null) {
         process.count = 1;
+        _inheritanceState.heirType = value;
         process.state = _inheritanceState;
-        _inheritanceState.heirsItems[value] = process;
+        _inheritanceState.heirsItems[value.heirName] = process;
       }
       emit(DataSuccessState());
     }
@@ -248,7 +293,7 @@ class DataCubit extends Cubit<DataStates> {
     insertData(
         dataSet: _inheritanceState.dataset,
         details: _inheritanceState.heirsDetails,
-        extra: _inheritanceState.extra
+        extra: _inheritanceState.extra!
     ).whenComplete(() =>
         Navigator.push(
           context,

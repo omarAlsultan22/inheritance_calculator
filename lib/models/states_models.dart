@@ -1,616 +1,950 @@
 import 'heir_processor_model.dart';
 import 'inheritance_state_model.dart';
+import 'package:men/models/rule_application_model.dart';
+import 'package:men/models/blocked_application_model.dart';
+import 'package:men/models/inheriting_application_model.dart';
+import 'package:men/models/inheritance_calculator_model.dart';
 
 
-class HusbandProcessor extends HeirProcessor{
+class HusbandProcessor extends HeirProcessor {
   HusbandProcessor({super.state});
 
   @override
-  void process() {
-
-    if (!state!.done) {
-      if (_checkBranches(state!)) {
-        const text = "يرث الزوج الربع في حالة وجود فرع وارث ذكر أو أنثي";
-        const share = 0.25;
-        state!.addHeir("الزوج", text, share, 0);
-        state!.heirsDone["الزوج"] = true;
-        state!.done = true;
-      } else {
-        const text = "يرث الزوج النصف في حالة عدم وجود فرع وارث ذكر أو أنثي";
-        const share = 0.5;
-        state!.addHeir("الزوج", text, share, 0);
-        state!.heirsDone["الزوج"] = true;
-        state!.done = true;
-      }
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return InheritingApplication(
+          description: "يرث الزوج الربع في حالة وجود فرع وارث ذكر أو أنثي",
+          heirName: heirName,
+          share: 0.25,
+          colorIndex: 0
+      );
     }
+    return InheritingApplication(
+        description: "يرث الزوج النصف في حالة عدم وجود فرع وارث ذكر أو أنثي",
+        heirName: heirName,
+        share: 0.5,
+        colorIndex: 0
+    );
+  }
+
+  @override
+  String get heirName => HeirType.husband.heirName;
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    return state.hasBranch();
   }
 }
 
-class WifeProcessor extends HeirProcessor{
+
+class WifeProcessor extends HeirProcessor {
   WifeProcessor({super.state, super.count});
 
   @override
-  void process() {
-    if (!state!.done) {
-      final isSingleWife = count == 1;
-      final heirName = isSingleWife ? "الزوجة" : "أكثر من زوجة";
-
-      if (_checkBranches(state!)) {
-        final text = "ترث $heirName الثمن في حالة وجود فرع وارث ذكر أو أنثي";
-        const share = 0.125;
-        state!.addHeir(heirName, text, share, 0);
-        state!.heirsDone[heirName] = true;
-        state!.done = true;
-      } else {
-        final text = "ترث $heirName الربع في حالة عدم وجود فرع وارث ذكر أو أنثي";
-        const share = 0.25;
-        state!.addHeir(heirName, text, share, 0);
-        state!.heirsDone[heirName] = true;
-        state!.done = true;
-      }
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return InheritingApplication(
+          description: "ترث $heirName الثمن في حالة وجود فرع وارث ذكر أو أنثي",
+          heirName: heirName,
+          share: 0.125,
+          colorIndex: 0,
+          count: count
+      );
     }
+    return InheritingApplication(
+        description: "ترث $heirName الربع في حالة عدم وجود فرع وارث ذكر أو أنثي",
+        heirName: heirName,
+        share: 0.25,
+        colorIndex: 0,
+        count: count
+    );
   }
-}
 
-class FatherProcessor extends HeirProcessor{
-  FatherProcessor({super.state});
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الابن") || state!.heirsItems.containsKey("ابن الابن")) {
-      const text = "يرث الأب السدس في وجود فرع وارث ذكر الابن أو ابن الابن";
-      const share = 0.16;
-      state!.addHeir("الأب", text, share, 1);
-    }
-    else if ((state!.heirsItems.containsKey("البنت") && state!.value == 0.0) ||
-        (state!.heirsItems.containsKey("بنت الابن") && state!.value == 0.0)) {
-      state!.value = 0.16;
-      state!.extra -= state!.value;
-    }
-    else {
-      const heir = "الأب";
-      String text = "يرث الأب بالتعصيب في غياب الفرع الوارث أبناء أو بنات";
+  String get heirName =>
+      isSingle ? state!.heirType!.heirName : state!.heirType!.getPluralName(count);
 
-      if (state!.value > 1) {
-        text = "يرث الأب السدس وتعصيب مع وجود فرع وارث أنثي البنت أو بنت الابن";
-      }
-
-      if (state!.heirsItems.containsKey("الأم") && !state!.isHere) {
-        state!.isHere = true;
-        state!.addHeir(heir, text, state!.extra + state!.value, 1);
-      } else {
-        state!.addHeir(heir, text, state!.extra + state!.value, 1);
-      }
-      state!.extra = 0.0;
-    }
+  @override
+  bool shouldBlock(InheritanceState state) {
+    return state.hasBranch();
   }
 }
 
-class MotherProcessor extends HeirProcessor{
+
+class FatherProcessor extends HeirProcessor {
+  FatherProcessor({super.state});
+
+  @override
+  RuleApplication getResult() {
+    final calculator = FatherAndGrandfatherInheritanceCalculator(_createContext());
+    final result = calculator.calculate();
+
+    _applyUpdates(calculator.update);
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 1,
+    );
+  }
+
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      extra: state!.extra,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  void _applyUpdates(InheritanceUpdate update) {
+    if (update.extraAdjustment != 0.0) {
+      state!.updateExtra(); //
+    }
+
+    if (update.markMotherPresent) {
+      state!.markMotherPresent();
+    }
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => HeirType.father.heirName;
+}
+
+
+class MotherProcessor extends HeirProcessor {
   MotherProcessor({super.state});
 
+  static const _blockingHeirs = [
+    HeirType.son,
+    HeirType.daughter,
+    HeirType.fullSister,
+    HeirType.sonsSon,
+    HeirType.sonsDaughter,
+    HeirType.fullBrother,
+    HeirType.paternalSister
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("البنت") ||
-        state!.heirsItems.containsKey("بنت الابن") ||
-        state!.heirsItems.containsKey("الأخت الشقيقة") ||
-        state!.heirsItems.containsKey("الأخت لأب") ||
-        state!.heirsItems.containsKey("الابن") ||
-        state!.heirsItems.containsKey("ابن الابن") ||
-        state!.heirsItems.containsKey("الأخ الشقيق")) {
-      const text = "ترث الام السدس في وجود فرع وارث الابن أو ابن الابن أو البنت أو بنت الابن أو أخوة";
-      const share = 0.16;
-      state!.addHeir("الأم", text, share, 2);
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return InheritingApplication(
+          description: "ترث $heirName السدس في وجود فرع وارث الابن أو ابن الابن أو البنت أو بنت الابن أو أخوة",
+          heirName: heirName,
+          share: 0.16,
+          colorIndex: 2
+      );
     }
-    else if (state!.heirsItems.containsKey("الزوج") || state!.heirsItems.containsKey("الزوجة")) {
-      const text = "ترث الأم ثلث الباقي في أحد العمرتين مع الأب والزوج أو الزوجة";
-      final share = state!.extra / 3;
-      state!.addHeir("الأم", text, share, 2);
+    final calculator = MotherInheritanceCalculator(
+        _createContext());
+    final result = calculator.calculate();
+
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 2,
+    );
+  }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      extra: state!.extra,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => HeirType.mother.heirName;
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
     }
-    else {
-      const share = 0.3;
-      const text = "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب";
-      state!.addHeir("الأم", text, share, 2);
-    }
+    return false;
   }
 }
 
-class PaternalGrandfatherProcessor extends HeirProcessor{
-  PaternalGrandfatherProcessor({super.state});
+
+class GrandfatherProcessor extends HeirProcessor {
+  GrandfatherProcessor({super.state});
 
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الأب")) {
-      const text = "يحجب الجد بالأصل الوارث الذي يسبقه وهو الأب";
-      state!.heirsDetails["الجد"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب $heirName بالأصل الوارث الذي يسبقه وهو الأب"
+      );
     }
 
-    if (state!.heirsItems.containsKey("الابن") || state!.heirsItems.containsKey("ابن الابن")) {
-      const text = "يرث الجد السدس في غياب الأب ومع وجود فرع وارث ذكر الابن أو ابن الابن";
-      const share = 0.16;
-      state!.addHeir("الجد", text, share, 1);
+    final calculator = FatherAndGrandfatherInheritanceCalculator(_createContext());
+    final result = calculator.calculate();
+
+    _applyUpdates(calculator.update);
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 2,
+    );
+  }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      extra: state!.extra,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  void _applyUpdates(InheritanceUpdate update) {
+    if (update.extraAdjustment != 0.0) {
+      state!.updateExtra(); //
     }
-    else if (state!.heirsItems.containsKey("البنت") || state!.heirsItems.containsKey("بنت الابن") && state!.value == 0) {
-      state!.value = 0.16;
-      state!.extra -= state!.value;
+
+    if (update.markMotherPresent) {
+      state!.markMotherPresent();
     }
-    else {
-      String text = "يرث الجد بالتعصيب في غياب الفرع الوارث أبناء أو بنات";
-      if (state!.value > 1) {
-        text = "يرث الجد السدس وتعصيب مع وجود فرع وارث أنثي البنت أو بنت الابن";
-      }
-      state!.addHeir("الجد", text, state!.extra + state!.value, 1);
-    }
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => HeirType.grandfather.heirName;
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    if (state.hasHeir(HeirType.father)) return true;
+    return false;
   }
 }
 
-class PaternalGrandmotherProcessor extends HeirProcessor{
+
+class PaternalGrandmotherProcessor extends HeirProcessor {
   PaternalGrandmotherProcessor({super.state});
 
+  static const List<HeirType> _blockingHeirs = [
+    HeirType.father, HeirType.mother
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الأب") || state!.heirsItems.containsKey("الأم")) {
-      const text = "تحجب الجدة لأم في حضور الأم والأصل الوارث وهو الأب";
-      state!.heirsDetails["الجدة لأم"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "تحجب الجدة لأب في حضور الأم والأصل الوارث وهو الأب"
+      );
     }
 
-    if (state!.heirsItems.containsKey("الجدة لأب")) {
-      const text = "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب";
-      const share = 0.16;
-      state!.addHeir("الجدة لأم", text, share, 2);
+    final calculator = PaternalGrandmotherInheritanceCalculator(_createContext());
+    final result = calculator.calculate();
+
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 1,
+    );
+  }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      extra: state!.extra,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+
+  @override
+  // TODO: implement heirName
+  String get heirName => HeirType.paternalGrandMother.heirName;
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
     }
-    else {
-      const text = "ترث الجدة لأم السدس منفرده في حالة عدم وجود الأم أو الجدة لأم";
-      const share = 0.16;
-      state!.addHeir("الجدة لأم", text, share, 2);
-    }
+    return false;
   }
 }
 
-class MaternalGrandmotherProcessor extends HeirProcessor{
+
+class MaternalGrandmotherProcessor extends HeirProcessor {
   MaternalGrandmotherProcessor({super.state});
 
+  static const List<HeirType> _blockingHeirs = [
+    HeirType.father, HeirType.mother
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الأب") || state!.heirsItems.containsKey("الأم")) {
-      const text = "تحجب الجدة لأب في حضور الأم والأصل الوارث وهو الأب";
-      state!.heirsDetails["الجدة لأب"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "تحجب الجدة لأم في حضور الأم والأصل الوارث وهو الأب"
+      );
     }
 
-    if (state!.heirsItems.containsKey("الجدة لأم")) {
-      const text = "ترث الجدة لأب مع الجدة لأم السدس في حالة غياب الأم والأب";
-      const share = 0.16;
-      state!.addHeir("الجدة لأب", text, share, 2);
+    final calculator = MaternalGrandmotherInheritanceCalculator(
+        _createContext());
+    final result = calculator.calculate();
+
+
+    return InheritingApplication(
+      description: result.description,
+      share: result.share,
+      heirName: heirName,
+      colorIndex: 2,
+    );
+  }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      extra: state!.extra,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => HeirType.mother.heirName;
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
     }
-    else {
-      const text = "ترث الجدة لأب السدس منفردة في حالة غياب الأب و الأم و الجدة لأم";
-      const share = 0.16;
-      state!.addHeir("الجدة لأب", text, share, 2);
-    }
+    return false;
   }
 }
 
-class DaughterProcessor extends HeirProcessor{
+
+class DaughterProcessor extends HeirProcessor {
   DaughterProcessor({super.state, super.count});
 
+  late final heirType = state!.heirType;
+
   @override
-  void process() {
-    final sonsCount = state!.heirsItems["الابن"]!.count;
-    final isSingle = count == 1;
+  RuleApplication getResult() {
 
-    if (sonsCount > 0) {
-      final share = state!.extra / (sonsCount * 2 + count);
-      final heirName = isSingle ? "البنت" : "$count من البنات";
-      const text = "ترث البنات بالتعصيب في وجود المعصب لهم وهو الابن";
-      state!.addHeir(heirName, text, share * count, 4);
-    }
-    else {
-      final share = isSingle ? 0.5 : 0.66;
-      final heirName = isSingle ? "البنت" : "$count من البنات";
-      final text = isSingle
-          ? "ترث البنت النصف في غياب المعصب لها وهو الابن"
-          : "ترث البنات الثلثان في غياب المعصب لهم وهو الابن";
+    final calculator = DaughterInheritanceCalculator(
+        _createContext());
+    final result = calculator.calculate();
 
-      state!.addHeir(heirName, text, share, 4);
 
-      if (state!.heirsItems.containsKey("الأب")) {
-        FatherProcessor()..process();
-      } else {
-        PaternalGrandfatherProcessor()..process();
-      }
-    }
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 4,
+      count: count
+    );
+
   }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      count: count,
+      heirName: heirName,
+      extra: state!.extra,
+      isHeirSingle: isSingle,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
 }
 
-class SonsDaughterProcessor extends HeirProcessor{
+
+class SonsDaughterProcessor extends HeirProcessor {
   SonsDaughterProcessor({super.state, super.count});
 
+
   @override
-  void process() {
-    final isSingle = count == 1;
-
-    if (state!.heirsItems.containsKey("الابن")) {
-      const text = "تحجب بنت الابن بحضور الابن";
-      state!.heirsDetails["بنت الابن"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "تحجب بنت الابن بوجود الابن"
+      );
     }
 
-    final grandsonsCount = state!.heirsItems["ابن الابن"]!.count;
-    final heirName = isSingle ? "بنت الابن" : "$count من بنات الابن";
+    final calculator = SonsDaughterInheritanceCalculator(
+        _createContext());
+    final result = calculator.calculate();
 
-    if (grandsonsCount > 0) {
-      final share = state!.extra / (grandsonsCount * 2 + count);
-      final text = isSingle
-          ? "ترث بنت الابن بالتعصيب في وجود معصبها ابن الابن"
-          : "ترث بنات الابن بالتعصيب في وجود معصبهم ابن الابن";
 
-      state!.addHeir(heirName, text, share * count, 5);
-    }
-    else if (state!.heirsItems.containsKey('البنت')) {
-      const share = 0.16;
-      final text = isSingle
-          ? "ترث بنت الابن السدس في وجود البنت"
-          : "ترث بنات الابن السدس في وجود البنت";
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 5,
+    );
+  }
 
-      state!.addHeir(heirName, text, share, 5);
-    }
-    else {
-      final share = isSingle ? 0.5 : 0.66;
-      final text = isSingle
-          ? "ترث بنت الابن النصف في غياب البنت و معصبها ابن الابن"
-          : "ترث بنات الابن الثلثين في غياب البنت ومعصبهم ابن الابن";
+  InheritanceState _createContext() {
+    return InheritanceState(
+      heirName: heirName,
+      extra: state!.extra,
+      isHeirSingle: isSingle,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
 
-      state!.addHeir(heirName, text, share, 5);
+  @override
+  // TODO: implement heirName
+  String get heirName =>
+      isSingle ? heirType!.heirName : heirType!.getPluralName(count);
 
-      if (state!.heirsItems.containsKey("الأب")) {
-        FatherProcessor()..process();
-      } else {
-        PaternalGrandfatherProcessor()..process();
-      }
-    }
+  @override
+  bool shouldBlock(InheritanceState state) {
+    if (state.hasHeir(HeirType.son)) return true;
+    return false;
   }
 }
 
-class SonProcessor extends HeirProcessor{
+
+class FullSisterProcessor extends HeirProcessor{
+  FullSisterProcessor({super.state, super.count});
+
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon,
+    HeirType.father, HeirType.grandfather
+  ];
+
+  @override
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "تحجب الأخت الشقيقة في حضور الفرع الوارث او الأصل الوارث من الذكور"
+      );
+    }
+
+    final calculator = FullSisterInheritanceCalculator(
+        _createContext());
+    final result = calculator.calculate();
+
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 5,
+    );
+  }
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      heirName: heirName,
+      extra: state!.extra,
+      isHeirSingle: isSingle,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
+  }
+}
+
+
+class PaternalSisterProcessor extends HeirProcessor{
+  PaternalSisterProcessor({super.state, super.count});
+
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon,
+    HeirType.father, HeirType.grandfather,
+  ];
+
+  @override
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "تحجب الأخت لأب في وجود الفرع الوارث او الأصل الوارث من الذكور أو في حالة البنت والأخت الشقيقة مجتميعن"
+      );
+    }
+
+    final calculator = PaternalSisterInheritanceCalculator(_createContext());
+    final result = calculator.calculate();
+
+
+    return InheritingApplication(
+      description: result.description,
+      heirName: heirName,
+      share: result.share,
+      colorIndex: 3,
+    );
+  }
+
+
+  InheritanceState _createContext() {
+    return InheritanceState(
+      heirName: heirName,
+      extra: state!.extra,
+      isHeirSingle: isSingle,
+      baseValue: state!.baseValue,
+      isMotherPresent: state!.isMotherPresent,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+      if(state.hasHeir(HeirType.daughter) && state.hasHeir(HeirType.fullSister)) return true;
+    }
+    return false;
+  }
+}
+
+
+class MaternalSiblingsProcessor extends HeirProcessor {
+  MaternalSiblingsProcessor({super.state, super.count});
+
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.daughter, HeirType.father,
+    HeirType.grandfather, HeirType.sonsSon,
+    HeirType.sonsDaughter
+  ];
+
+  @override
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب $heirName في حضور الابن أو ابن الابن أو البنت أو بنت الابن أو الأب أو الجد"
+      );
+    }
+
+    final share = isSingle ? 0.16 : 0.33;
+    final description = isSingle
+        ? "يرث $heirName السدس في حالة عدم أصل أو فرع وارث"
+        : "يرث $heirName الثلث في حالة عدم أصل أو فرع وارث";
+
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: share,
+      count: count,
+      description: description,
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
+  }
+}
+
+
+class SonProcessor extends HeirProcessor {
   SonProcessor({super.state, super.count});
 
   @override
-  void process() {
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الابن" : "$count من الأبناء";
-    const text = "يرث الأبناء بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+  RuleApplication getResult() {
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName بالتعصيب باقي التركة",
+    );
   }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
 }
+
 
 class SonsSonProcessor extends HeirProcessor{
   SonsSonProcessor({super.state, super.count});
 
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الابن")) {
-      const text = "يحجب ابن الابن بحضور الابن";
-      state!.heirsDetails["ابن الابن"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب $heirName بحضور الابن"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "ابن الابن" : "$count من أبناء الابن";
-    const text = "يرث أبناء الابن بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName بالتعصيب باقي التركة",
+    );
   }
-}
-
-class FullSisterProcessor extends HeirProcessor{
-  FullSisterProcessor({super.state, super.count});
 
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الابن") ||
-        state!.heirsItems.containsKey("ابن الابن") ||
-        state!.heirsItems.containsKey("الأب") ||
-        state!.heirsItems.containsKey("الجد")) {
-      const text = "تحجب الأخت الشقيقة في حضور الابن أو ابن الابن أو الأب أو الجد";
-      state!.heirsDetails["الأخت الشقيقة"] = text;
-      return;
-    }
-
-    final brothersCount = state!.heirsItems["الأخ الشقيق"]!.count;
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الأخت الشقيقة" : "$count من الأخوات الشقيقات";
-
-    if (brothersCount > 0) {
-      print('Hello');
-      final share = state!.extra / (brothersCount * 2 + count);
-      final text = isSingle
-          ? "ترث الأخت الشقيقة بالتعصيب مع أخيها الشقيق"
-          : "ترث الأخوات الشقيقات بالتعصيب مع إخوتهم الأشقاء";
-
-      state!.addHeir(heirName, text, share * count, 3);
-    }
-    else if (state!.heirsItems.containsKey("البنت")) {
-      const share = 0.16;
-      final text = isSingle
-          ? "ترث الأخت الشقيقة السدس في وجود البنت"
-          : "ترث الأخوات الشقيقات السدس في وجود البنت";
-
-      state!.addHeir(heirName, text, share, 3);
-    }
-    else {
-      final share = isSingle ? 0.5 : 0.66;
-      final text = isSingle
-          ? "ترث الأخت الشقيقة النصف في غياب الأخ الشقيق والبنت"
-          : "ترث الأخوات الشقيقات الثلثين في غياب الأخ الشقيق والبنت";
-
-      state!.addHeir(heirName, text, share, 3);
-    }
-  }
-}
-
-class PaternalSisterProcessor extends HeirProcessor{
-  PaternalSisterProcessor({super.state, super.count});
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
 
   @override
-  void process() {
-    if (state!.heirsItems.containsKey("الابن") ||
-        state!.heirsItems.containsKey("ابن الابن") ||
-        state!.heirsItems.containsKey("الأب") ||
-        state!.heirsItems.containsKey("الجد")) {
-      const text = "تحجب الأخت لأب في حضور الابن أو ابن الابن أو الأب أو الجد";
-      state!.heirsDetails["الأخت لأب"] = text;
-      return;
-    }
-
-    final brothersCount = state!.heirsItems["الأخ لأب"]!.count;
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الأخت لأب" : "$count من الأخوات لأب";
-
-    if (brothersCount > 0) {
-      final share = state!.extra / (brothersCount * 2 + count);
-      final text = isSingle
-          ? "ترث الأخت لأب بالتعصيب مع أخيها لأب"
-          : "ترث الأخوات لأب بالتعصيب مع إخوتهم لأب";
-
-      state!.addHeir(heirName, text, share * count, 3);
-    }
-    else if (state!.heirsItems.containsKey("البنت") && state!.heirsItems.containsKey("الأخت الشقيقة")) {
-      const text = "تحجب الأخت لأب في حضور البنت أو الاخت الشقيقة";
-      state!.heirsDetails["الأخت لأب"] = text;
-    }
-    else if (state!.heirsItems.containsKey("البنت")) {
-      const share = 0.16;
-      final text = isSingle
-          ? "ترث الاخت لأب السدس في وجود البنت"
-          : "ترث الأخوات لأب السدس في وجود البنت";
-
-      state!.addHeir(heirName, text, share, 3);
-    }
-    else if (state!.heirsItems.containsKey("الأخت الشقيقة")) {
-      const share = 0.16;
-      final text = isSingle
-          ? "ترث الاخت لأب السدس في وجود الأخت الشقيقة"
-          : "ترث الأخوات لأب السدس في وجود الأخت الشقيقة";
-
-      state!.addHeir(heirName, text, share, 3);
-    }
-    else {
-      final share = isSingle ? 0.5 : 0.66;
-      final text = isSingle
-          ? "ترث الأخت لأب النصف في غياب البنت والأخت الشقيقة"
-          : "ترث الأخوات لأب الثلثين في غياب البنت والأخت الشقيقة";
-
-      state!.addHeir(heirName, text, share, 3);
-    }
+  bool shouldBlock(InheritanceState state) {
+    if (state.hasHeir(HeirType.son)) return true;
+    return false;
   }
 }
 
-class MaternalSiblingsProcessor extends HeirProcessor{
-  MaternalSiblingsProcessor({super.state, super.count});
 
-  @override
-  void process() {
-    if (state!.heirsItems.containsKey("الابن") ||
-        state!.heirsItems.containsKey("البنت") ||
-        state!.heirsItems.containsKey("الأب") ||
-        state!.heirsItems.containsKey("الجد") ||
-        state!.heirsItems.containsKey("ابن الابن") ||
-        state!.heirsItems.containsKey("بنت الابن")) {
-      const text = "يحجب الأخوة لأم في حضور الابن أو ابن الابن أو البنت أو بنت الابن أو الأب أو الجد";
-      state!.heirsDetails["الأخ لأم"] = text;
-      return;
-    }
-
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الأخ لأم" : "$count من الأخوة لأم";
-    final share = isSingle ? 0.16 : 0.33;
-    final text = isSingle
-        ? "يرث الأخ لأم السدس في حالة عدم أصل أو فرع وارث"
-        : "يرث الأخوة لأم الثلث في حالة عدم أصل أو فرع وارث";
-
-    state!.addHeir(heirName, text, share, 0);
-  }
-}
-
-class  FullBrotherProcessor extends HeirProcessor{
+class  FullBrotherProcessor extends HeirProcessor {
   FullBrotherProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب')) {
-      const text = "يحجب الأخ الشقيق بحضور الابن أو ابن الابن أو الأب";
-      state!.heirsDetails["الأخ الشقيق"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب $heirName بحضور الابن أو ابن الابن أو الأب"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الأخ الشقيق" : "$count من الأخوة الأشقاء";
-    const text = "يرث الأخوة الأشقاء بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName بالتعصيب باقي التركة",
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
+
 
 class PaternalBrotherProcessor extends HeirProcessor{
   PaternalBrotherProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrother
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق')) {
-      const text = "يحجب الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق";
-      state!.heirsDetails["الأخ لأب"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "الأخ لأب" : "$count من الأخوة لأب";
-    const text = "يرث الأخوة لأب بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName لأب بالتعصيب باقي التركة",
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
+
 
 class  FullBrothersSonProcessor extends HeirProcessor{
   FullBrothersSonProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق')) {
-      const text = "يحجب الأخ الشقيق بحضور الابن أو ابن الابن أو الأب";
-      state!.heirsDetails["ابن الأخ الشقيق"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب ابن الأخ الشقيق بحضور الأخ الشقيق الابن أو ابن الابن أو الأب"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "ابن الأخ الشقيق" : "$count من ابناء الأخوة الأشقاء";
-    const text = "يرث الأخوة الأشقاء بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName بالتعصيب باقي التركة",
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
 
-class PaternalBrothersSonProcessor extends HeirProcessor{
+class PaternalBrothersSonProcessor extends HeirProcessor {
   PaternalBrothersSonProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrothersSon
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق') ||
-        state!.heirsItems.containsKey('الأخ لأب')) {
-      const text = "يحجب الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق";
-      state!.heirsDetails["ابن الأخ لأب"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب ابن الأخ لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "ابن الأخ لأب" : "$count من ابناء الأخوة لأب";
-    const text = "يرث الأخوة لأب بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName الأخوة لأب بالتعصيب باقي التركة",
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
 
-class FullUncleProcessor extends HeirProcessor{
+
+class FullUncleProcessor extends HeirProcessor {
   FullUncleProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrothersSon, HeirType.paternalBrothersSon,
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق') ||
-        state!.heirsItems.containsKey('الأخ لأب')) {
-      const text = "يحجب العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب";
-      state!.heirsDetails["العم الشقيق"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "العم الشقيق" : "$count من الأعمام الأشقاء";
-    const text = "يرث الأعمام الأشقاء بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      count: count,
+      description: "يرث $heirName الأشقاء بالتعصيب باقي التركة",
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
 
-class PaternalUncleProcessor extends HeirProcessor{
+
+class PaternalUncleProcessor extends HeirProcessor {
   PaternalUncleProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrothersSon, HeirType.paternalBrothersSon,
+    HeirType.fullUncle
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق') ||
-        state!.heirsItems.containsKey('الأخ لأب') ||
-        state!.heirsItems.containsKey('العم الشقيق')) {
-      const text = "يحجب العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق";
-      state!.heirsDetails["العم لأب"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "العم لأب" : "$count من الأعمام لأب";
-    const text = "يرث الأعمام لأب بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      description: "يرث $heirName لأب بالتعصيب باقي التركة",
+      count: count
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
+
 
 class FullCousinProcessor extends HeirProcessor{
   FullCousinProcessor({super.state, super.count});
 
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrothersSon, HeirType.paternalBrothersSon,
+    HeirType.fullUncle, HeirType.paternalUncle,
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق') ||
-        state!.heirsItems.containsKey('الأخ لأب') ||
-        state!.heirsItems.containsKey('العم الشقيق') ||
-        state!.heirsItems.containsKey('العم لأب')) {
-      const text = "يحجب ابن العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب";
-      state!.heirsDetails["ابن العم الشقيق"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: heirName,
+          description: "يحجب ابن العم الشقيق بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "ابن العم الشقيق" : "$count من أبناء العم الشقيق";
-    const text = "يرث أبناء العم الشقيق بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+      colorIndex: 5,
+      heirName: heirName,
+      share: state!.extra,
+      description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",
+      count: count
+    );
+  }
+
+  @override
+  // TODO: implement heirName
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
 
-class PaternalCousinProcessor extends HeirProcessor{
+
+class PaternalCousinProcessor extends HeirProcessor {
   PaternalCousinProcessor({super.state, super.count});
+
+  static const _blockingHeirs = [
+    HeirType.son, HeirType.sonsSon, HeirType.father,
+    HeirType.fullBrothersSon, HeirType.paternalBrothersSon,
+    HeirType.fullUncle, HeirType.paternalUncle,
+    HeirType.fullCousin
+  ];
+
   @override
-  void process() {
-    if (state!.heirsItems.containsKey('الابن') ||
-        state!.heirsItems.containsKey('ابن الابن') ||
-        state!.heirsItems.containsKey('الأب') ||
-        state!.heirsItems.containsKey('الأخ الشقيق') ||
-        state!.heirsItems.containsKey('الأخ لأب') ||
-        state!.heirsItems.containsKey('العم الشقيق') ||
-        state!.heirsItems.containsKey('العم لأب') ||
-        state!.heirsItems.containsKey('ابن العم الشقيق')) {
-      const text = "يحجب ابن العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب أو ابن العم الشقيق";
-      state!.heirsDetails["ابن العم لأب"] = text;
-      return;
+  RuleApplication getResult() {
+    if (shouldBlock(state!)) {
+      return BlockedApplication(
+          heirName: HeirType.paternalCousin.heirName,
+          description: "يحجب ابن العم لأب بحضور الابن أو ابن الابن أو الأب أو الأخ الشقيق أو الأخ لأب أو العم الشقيق أو العم لأب أو ابن العم الشقيق"
+      );
     }
 
-    final isSingle = count == 1;
-    final heirName = isSingle ? "ابن العم لأب" : "$count من أبناء العم لأب";
-    const text = "يرث أبناء العم لأب بالتعصيب باقي التركة";
-    state!.addHeir(heirName, text, state!.extra, 5);
+    return InheritingApplication(
+        description: "يرث $heirName العم لأب بالتعصيب باقي التركة",
+        heirName: heirName,
+        colorIndex: 5,
+        share: state!.extra,
+        count: count
+    );
+  }
+
+  @override
+  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+
+  @override
+  bool shouldBlock(InheritanceState state) {
+    for (final heir in _blockingHeirs) {
+      if (state.hasHeir(heir)) return true;
+    }
+    return false;
   }
 }
 
-bool _checkBranches(InheritanceState state) {
-  return state.heirsItems.containsKey("البنت") ||
-      state.heirsItems.containsKey("الابن");
-}
+

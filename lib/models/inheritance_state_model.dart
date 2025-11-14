@@ -3,11 +3,81 @@ import 'data_model.dart';
 import 'package:men/models/heir_processor_model.dart';
 
 
+enum HeirType {
+  husband('الزوج'),
+  wife('الزوجة'),
+  father('الأب'),
+  mother('الأم'),
+  son('الابن'),
+  daughter('البنت'),
+  sonsSon('ابن الابن'),
+  sonsDaughter('بنت الابن'),
+  grandfather('الجد'),
+  paternalGrandMother('الجدة لأب'),
+  maternalGrandmother('الجدة لأم'),
+  fullSister('الأخت الشقيقة'),
+  paternalSister('الأخت لأب'),
+  fullBrother('الأخ الشقيق'),
+  paternalBrother('الأخ لأب'),
+  maternalSiblings('الأخ لأم'),
+  fullUncle('العم الشقيق'),
+  paternalUncle('العم لأب'),
+  fullBrothersSon('ابن الأخ الشقيق'),
+  paternalBrothersSon('ابن الأخ لأب'),
+  fullCousin('ابن العم الشقيق'),
+  paternalCousin('ابن العم لأب'),
+  ;
+
+  const HeirType(this.heirName);
+
+  final String heirName;
+
+  String getPluralName(int count) {
+    if (count == 1) return heirName;
+
+    final pluralMap = {
+      HeirType.wife: 'الزوجات',
+      HeirType.daughter: 'البنات',
+      HeirType.son: 'الابناء',
+      HeirType.sonsSon: 'ابناء الابن',
+      HeirType.sonsDaughter: 'بنات الابن',
+      HeirType.fullSister: 'الأخوات الشقيقات',
+      HeirType.paternalSister: 'الأخوات لأب',
+      HeirType.maternalSiblings: 'الأخوة لأم',
+      HeirType.fullBrother: 'الأخوة الأشقاء',
+      HeirType.paternalBrother:'الأخوة لأب',
+      HeirType.fullBrothersSon:'ابناء الأخوة الأشقاء',
+      HeirType.paternalBrothersSon:'ابناء الأخوة لأب',
+      HeirType.fullUncle:'الأعمام الأشقاء',
+      HeirType.paternalUncle:'الأعمام لأب',
+      HeirType.fullCousin:'أبناء العم الشقيق',
+      HeirType.paternalCousin:'أبناء العم لأب',
+    };
+
+    return pluralMap[this] ?? '$heirName (متعدد)';
+  }
+}
+
+
 class InheritanceState {
-  bool done = false;
-  bool isHere = false;
-  double extra = 1.0;
-  double value = 0.0;
+  int? count;
+  double? extra;
+  String? heirName;
+  HeirType? heirType;
+  double? baseValue;
+  bool? isHeirSingle;
+  bool? isMotherPresent;
+
+  InheritanceState({
+    this.count,
+    this.heirName,
+    this.heirType,
+    this.extra = 1.0,
+    this.baseValue = 0.0,
+    this.isHeirSingle,
+    this.isMotherPresent = false,
+  });
+
 
   final Map<String, HeirProcessor> heirsItems = {};
   final Map<String, String> heirsDetails = {};
@@ -20,26 +90,50 @@ class InheritanceState {
     0xFF04D9C4, // Teal
     0xFFF2B705, // Yellow
     0xFFF26241, // Dark Red
-    0xFFF25241  // Red
+    0xFFF25241 // Red
   ];
 
   void reset() {
-    done = false;
-    isHere = false;
+    isMotherPresent = false;
     extra = 1.0;
-    value = 0.0;
+    baseValue = 0.0;
     dataset.clear();
     heirsDone.clear();
     heirsItems.clear();
     heirsDetails.clear();
   }
 
-  void addHeir(String heir, String detailsText, double share, int colorIndex) {
-    if (!heirsDone.containsKey(heir)) {
-      heirsDetails[heir] = detailsText;
-      extra -= share;
-      dataset.add(DataItems(share, heir, Color(_pal[colorIndex])));
-      heirsDone[heir] = true;
+
+  bool hasHeir(HeirType type) => heirsItems.containsKey(type.heirName);
+
+  bool hasBranch() {
+    return hasHeir(HeirType.daughter) || hasHeir(HeirType.son);
+  }
+
+  void addHeir(String heirName, String discription, double share, int colorIndex, int count) {
+    if (!heirsDone.containsKey(heirName)) {
+      addDetails(heirName, discription);
+      extra = extra! - share;
+      dataset.add(DataItems(share, '${count.toString()} من $heirName', Color(_pal[colorIndex])));
+      heirsDone[heirName] = true;
     }
+  }
+
+  void addDetails(String heirName, String discription) {
+    heirsDetails[heirName] = discription;
+  }
+
+  int isCount(HeirType heirType) {
+    final heirCount = heirsItems[heirType.heirName]!.count;
+    return heirCount;
+  }
+
+  void markMotherPresent() =>
+    isMotherPresent = true;
+
+
+  void updateExtra() {
+    baseValue = 0.16;
+    extra = extra! - baseValue!;
   }
 }
