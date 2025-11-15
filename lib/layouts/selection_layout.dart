@@ -1,4 +1,3 @@
-import 'package:men/models/inheritance_state_model.dart';
 import 'package:men/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 import '../shared/cubit/states.dart';
@@ -57,26 +56,26 @@ Widget itemsMenu(DataCubit dataCubit) {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(5),
     ),
-    child: DropdownButton<HeirType>(
+    child: DropdownButton<String>(
       menuMaxHeight: 200,
       hint: const Text(
         'أختر',
         style: TextStyle(color: Colors.white),
       ),
-      value: dataCubit.selectedItem!,
+      value: dataCubit.selectedItem!.heirName,
       dropdownColor: Colors.grey[800],
       borderRadius: BorderRadius.circular(10),
-      items: dataCubit.heirsList.map((HeirType key) {
-        return DropdownMenuItem<HeirType>(
+      items: dataCubit.heirsList.keys.map((String key) {
+        return DropdownMenuItem<String>(
           value: key,
           child: Text(
-            key.heirName,
+            key,
             style: const TextStyle(color: Colors.white),
           ),
         );
       }).toList(),
-      onChanged: (HeirType? key) {
-        if (key!.heirName.isNotEmpty) {
+      onChanged: (String? key) {
+        if (key!.isNotEmpty) {
           dataCubit.checkKey(key);
         }
       },

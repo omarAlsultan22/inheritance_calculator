@@ -22,30 +22,30 @@ class DataCubit extends Cubit<DataStates> {
   Map<String, String> detailsItems = {};
   static InheritanceState _inheritanceState = InheritanceState();
 
-  List<HeirType> heirsList = [
-    HeirType.husband,
-    HeirType.wife,
-    HeirType.father,
-    HeirType.mother,
-    HeirType.son,
-    HeirType.daughter,
-    HeirType.sonsSon,
-    HeirType.sonsDaughter,
-    HeirType.grandfather,
-    HeirType.paternalGrandMother,
-    HeirType.maternalGrandmother,
-    HeirType.fullSister,
-    HeirType.paternalSister,
-    HeirType.fullBrother,
-    HeirType.paternalBrother,
-    HeirType.maternalSiblings,
-    HeirType.fullUncle,
-    HeirType.paternalUncle,
-    HeirType.fullBrothersSon,
-    HeirType.paternalBrothersSon,
-    HeirType.fullCousin,
-    HeirType.paternalCousin,
-  ];
+  Map<String, HeirType> heirsList = {
+    'الزوج': HeirType.husband,
+    'الزوجة': HeirType.wife,
+    'الأب': HeirType.father,
+    'الأم': HeirType.mother,
+    'الابن': HeirType.son,
+    'البنت': HeirType.daughter,
+    'ابن الابن': HeirType.sonsSon,
+    'بنت الابن': HeirType.sonsDaughter,
+    'الجد': HeirType.grandfather,
+    'الجدة لأب': HeirType.paternalGrandMother,
+    'الجدة لأم': HeirType.maternalGrandmother,
+    'الأخت الشقيقة': HeirType.fullSister,
+    'الأخت لأب': HeirType.paternalSister,
+    'الأخ الشقيق': HeirType.fullBrother,
+    'الأخ لأب': HeirType.paternalBrother,
+    'الأخوة لأم': HeirType.maternalSiblings,
+    'العم الشقيق': HeirType.fullUncle,
+    'العم لأب': HeirType.paternalUncle,
+    'ابن الأخ الشقيق': HeirType.fullBrothersSon,
+    'ابن الأخ لأب': HeirType.paternalBrothersSon,
+    'ابن العم الشقيق': HeirType.fullCousin,
+    'ابن العم لأب': HeirType.paternalCousin,
+  };
 
   Map<String, HeirProcessor> heirsMap = {
     'الزوج': HusbandProcessor(state: _inheritanceState),
@@ -144,10 +144,10 @@ class DataCubit extends Cubit<DataStates> {
   }
 
 
-  void checkKey(HeirType? key) {
-    if (keyNotEmpty(key!.heirName)) {
-      if (!checkCouple(key.heirName)) {
-        selectedItem = key;
+  void checkKey(String? key) {
+    if (keyNotEmpty(key)) {
+      if (!checkCouple(key!)) {
+        selectedItem = heirsList[key]!;
         addTextValue(key);
         buttonLuck;
         emit(DataSuccessState());
@@ -174,23 +174,22 @@ class DataCubit extends Cubit<DataStates> {
   }
 
 
-  void addTextValue(HeirType value) {
-    if (value.heirName.isEmpty) {
+  void addTextValue(String value) {
+    if (value.isEmpty) {
       return;
     }
 
+    final textValue = TextValue(value, true, true, true);
+    final List<TextValue> targetList = _getTargetList(value);
 
-    final textValue = TextValue(value.heirName, true, true, true);
-    final List<TextValue> targetList = _getTargetList(value.heirName);
-
-    if (!_containsValue(targetList, value.heirName)) {
+    if (!_containsValue(targetList, value)) {
       targetList.add(textValue);
       var process = heirsMap[value];
       if (process != null) {
         process.count = 1;
-        _inheritanceState.heirType = value;
         process.state = _inheritanceState;
-        _inheritanceState.heirsItems[value.heirName] = process;
+        process.state!.heirType = selectedItem;
+        _inheritanceState.heirsItems[value] = process;
       }
       emit(DataSuccessState());
     }
