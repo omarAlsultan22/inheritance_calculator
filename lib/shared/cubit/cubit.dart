@@ -16,7 +16,7 @@ class DataCubit extends Cubit<DataStates> {
   static DataCubit get(context) => BlocProvider.of(context);
 
   bool color = false;
-  HeirType? selectedItem;
+  String? selectedItem;
   late BuildContext context;
   List<DataItems> dataItems = [];
   Map<String, String> detailsItems = {};
@@ -64,10 +64,8 @@ class DataCubit extends Cubit<DataStates> {
     'الأخوة لأم': MaternalSiblingsProcessor(state: _inheritanceState, count: 1),
     'الأخ الشقيق': FullBrotherProcessor(state: _inheritanceState, count: 1),
     'الأخ لأب': PaternalBrotherProcessor(state: _inheritanceState, count: 1),
-    'ابن الأخ الشقيق': FullBrothersSonProcessor(
-        state: _inheritanceState, count: 1),
-    'ابن الأخ لأب': PaternalBrothersSonProcessor(
-        state: _inheritanceState, count: 1),
+    'ابن الأخ الشقيق': FullBrothersSonProcessor(state: _inheritanceState, count: 1),
+    'ابن الأخ لأب': PaternalBrothersSonProcessor(state: _inheritanceState, count: 1),
     'العم الشقيق': FullUncleProcessor(state: _inheritanceState, count: 1),
     'العم لأب': PaternalUncleProcessor(state: _inheritanceState, count: 1),
     'ابن العم الشقيق': FullCousinProcessor(state: _inheritanceState, count: 1),
@@ -147,7 +145,7 @@ class DataCubit extends Cubit<DataStates> {
   void checkKey(String? key) {
     if (keyNotEmpty(key)) {
       if (!checkCouple(key!)) {
-        selectedItem = heirsList[key]!;
+        selectedItem = key;
         addTextValue(key);
         buttonLuck;
         emit(DataSuccessState());
@@ -186,9 +184,7 @@ class DataCubit extends Cubit<DataStates> {
       targetList.add(textValue);
       var process = heirsMap[value];
       if (process != null) {
-        process.count = 1;
-        process.state = _inheritanceState;
-        process.state!.heirType = selectedItem;
+        process.state!.heirType = heirsList[selectedItem];
         _inheritanceState.heirsItems[value] = process;
       }
       emit(DataSuccessState());
@@ -292,7 +288,7 @@ class DataCubit extends Cubit<DataStates> {
     insertData(
         dataSet: _inheritanceState.dataset,
         details: _inheritanceState.heirsDetails,
-        extra: _inheritanceState.extra!
+        extra: _inheritanceState.totalExtra
     ).whenComplete(() =>
         Navigator.push(
           context,

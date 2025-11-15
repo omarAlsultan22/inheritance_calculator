@@ -62,7 +62,7 @@ Widget itemsMenu(DataCubit dataCubit) {
         'أختر',
         style: TextStyle(color: Colors.white),
       ),
-      value: dataCubit.selectedItem!.heirName,
+      value: dataCubit.selectedItem,
       dropdownColor: Colors.grey[800],
       borderRadius: BorderRadius.circular(10),
       items: dataCubit.heirsList.keys.map((String key) {

@@ -92,7 +92,7 @@ class FatherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.extra,
+      extra: state!.totalExtra,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
     );
@@ -110,7 +110,7 @@ class FatherProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => HeirType.father.heirName;
+  String get heirName => heirType!.heirName;
 }
 
 
@@ -152,7 +152,7 @@ class MotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.extra,
+      extra: state!.totalExtra,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
     );
@@ -199,7 +199,7 @@ class GrandfatherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.extra,
+      extra: state!.totalExtra,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
     );
@@ -257,7 +257,7 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.extra,
+      extra: state!.totalExtra,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
     );
@@ -309,7 +309,7 @@ class MaternalGrandmotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.extra,
+      extra: state!.totalExtra,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
     );
@@ -356,7 +356,7 @@ class DaughterProcessor extends HeirProcessor {
     return InheritanceState(
       count: count,
       heirName: heirName,
-      extra: state!.extra,
+      extra: state!.totalExtra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
@@ -392,13 +392,14 @@ class SonsDaughterProcessor extends HeirProcessor {
       heirName: heirName,
       share: result.share,
       colorIndex: 5,
+      count: count
     );
   }
 
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.extra,
+      extra: state!.totalExtra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
@@ -441,17 +442,18 @@ class FullSisterProcessor extends HeirProcessor{
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 5,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: 5,
+        count: count
     );
   }
 
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.extra,
+      extra: state!.totalExtra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
@@ -495,10 +497,11 @@ class PaternalSisterProcessor extends HeirProcessor{
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 3,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: 3,
+        count: count
     );
   }
 
@@ -506,7 +509,7 @@ class PaternalSisterProcessor extends HeirProcessor{
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.extra,
+      extra: state!.totalExtra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
       isMotherPresent: state!.isMotherPresent,
@@ -583,7 +586,7 @@ class SonProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -610,7 +613,7 @@ class SonsSonProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -647,7 +650,7 @@ class  FullBrotherProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -687,7 +690,7 @@ class PaternalBrotherProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName لأب بالتعصيب باقي التركة",
     );
@@ -726,7 +729,7 @@ class  FullBrothersSonProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -765,7 +768,7 @@ class PaternalBrothersSonProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName الأخوة لأب بالتعصيب باقي التركة",
     );
@@ -805,7 +808,7 @@ class FullUncleProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       count: count,
       description: "يرث $heirName الأشقاء بالتعصيب باقي التركة",
     );
@@ -846,7 +849,7 @@ class PaternalUncleProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       description: "يرث $heirName لأب بالتعصيب باقي التركة",
       count: count
     );
@@ -887,7 +890,7 @@ class FullCousinProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.extra,
+      share: state!.totalExtra,
       description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",
       count: count
     );
@@ -930,7 +933,7 @@ class PaternalCousinProcessor extends HeirProcessor {
         description: "يرث $heirName العم لأب بالتعصيب باقي التركة",
         heirName: heirName,
         colorIndex: 5,
-        share: state!.extra,
+        share: state!.totalExtra,
         count: count
     );
   }

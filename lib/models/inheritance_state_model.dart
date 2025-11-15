@@ -83,6 +83,8 @@ class InheritanceState {
   final Map<String, String> heirsDetails = {};
   final Map<String, bool> heirsDone = {};
   final List<DataItems> dataset = [];
+  double totalExtra = 1.0;
+
 
   static const List<int> _pal = [
     0xFFF2387C, // Light Pink
@@ -95,7 +97,7 @@ class InheritanceState {
 
   void reset() {
     isMotherPresent = false;
-    extra = 1.0;
+    totalExtra = 1.0;
     baseValue = 0.0;
     dataset.clear();
     heirsDone.clear();
@@ -110,11 +112,16 @@ class InheritanceState {
     return hasHeir(HeirType.daughter) || hasHeir(HeirType.son);
   }
 
-  void addHeir(String heirName, String discription, double share, int colorIndex, int count) {
+  void addHeir(String heirName, String discription, double share, int colorIndex, int? heirsCount) {
     if (!heirsDone.containsKey(heirName)) {
       addDetails(heirName, discription);
-      extra = extra! - share;
-      dataset.add(DataItems(share, '${count.toString()} من $heirName', Color(_pal[colorIndex])));
+      totalExtra -= share;
+      if(heirsCount != null && heirsCount > 1){
+        dataset.add(DataItems(share, '${heirsCount.toString()} من $heirName', Color(_pal[colorIndex])));
+      }
+      else{
+        dataset.add(DataItems(share, heirName, Color(_pal[colorIndex])));
+      }
       heirsDone[heirName] = true;
     }
   }

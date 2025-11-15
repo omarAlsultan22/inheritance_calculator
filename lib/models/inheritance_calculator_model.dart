@@ -25,10 +25,9 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
   InheritanceResult calculate() {
     if (_hasMaleDescendant()) {
       return _calculateOneSixthShare();
-    } else {
+    }
       return _calculateResidualShare();
     }
-  }
 
   bool _hasMaleDescendant() {
     return _context.hasHeir(HeirType.son) ||
@@ -39,7 +38,6 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
     return InheritanceResult(
         share: 0.16,
         description: "يرث الأب السدس في وجود فرع وارث ذكر",
-        explanation: _buildExplanation(HeirType.son, HeirType.sonsSon)
     );
   }
 
@@ -53,7 +51,6 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
     return InheritanceResult(
         share: 0.16 + _context.extra!,
         description: _getResidualDescription(),
-        explanation: _getResidualDescription()
     );
   }
 
@@ -111,15 +108,6 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
     }
   }
 
-  String _buildExplanation(HeirType firstType, HeirType secondType) {
-    final heirs = [firstType, secondType]
-        .where((type) => _context.hasHeir(type))
-        .map((type) => type.heirName)
-        .join(' أو ');
-
-    return "يرث ${_context.heirName} السدس في وجود $heirs";
-  }
-
   @override
   RuleApplication getResult() {
     // TODO: implement getResult
@@ -153,7 +141,6 @@ class MotherInheritanceCalculator {
     return InheritanceResult(
         share: _context.extra! / 3,
         description: "ترث الأم ثلث الباقي في أحد العمرتين مع الأب وأحد الزوجين",
-        explanation: "ترث الأم ثلث الباقي في أحد العمرتين مع الأب وأحد الزوجين"
     );
   }
 
@@ -161,7 +148,6 @@ class MotherInheritanceCalculator {
     return InheritanceResult(
         share: 0.3,
         description: "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب",
-        explanation: "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب"
     );
   }
 }
@@ -186,7 +172,6 @@ class PaternalGrandmotherInheritanceCalculator {
     return InheritanceResult(
         share: 0.08,
         description: "ترث الجدة لأب مع الجدة لأم السدس في حالة غياب الأم والأب",
-        explanation: "ترث الجدة لأب مع الجدة لأم السدس في حالة غياب الأم والأب"
     );
   }
 
@@ -194,7 +179,6 @@ class PaternalGrandmotherInheritanceCalculator {
     return InheritanceResult(
         share: 0.16,
         description: "ترث الجدة لأب السدس منفردة في حالة غياب الأب و الأم و الجدة لأم",
-        explanation: "ترث الجدة لأب السدس منفردة في حالة غياب الأب و الأم و الجدة لأم"
     );
   }
 }
@@ -220,7 +204,6 @@ class MaternalGrandmotherInheritanceCalculator{
     return InheritanceResult(
         share: 0.08,
         description: "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب",
-        explanation: "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب"
     );
   }
 
@@ -228,7 +211,6 @@ class MaternalGrandmotherInheritanceCalculator{
     return InheritanceResult(
         share: 0.16,
         description: "ترث الجدة لأم السدس منفردة في حالة غياب الأب و الأم و الجدة لأم",
-        explanation: "ترث الجدة لأم السدس منفردة في حالة غياب الأب و الأم و الجدة لأم"
     );
   }
 }
@@ -260,7 +242,6 @@ class DaughterInheritanceCalculator{
     return InheritanceResult(
         share: totalShare,
         description: "ترث $heirName بالتعصيب في وجود المعصب لهم وهو الابن",
-        explanation: "ترث $heirName بالتعصيب في وجود المعصب لهم وهو الابن"
     );
   }
 
@@ -268,7 +249,6 @@ class DaughterInheritanceCalculator{
     return InheritanceResult(
         share: getShare(),
         description: gerDescription(),
-        explanation: gerDescription(),
     );
   }
 
@@ -317,7 +297,6 @@ class SonsDaughterInheritanceCalculator {
     return InheritanceResult(
         share: totalShare,
         description: "ترث $heirName بالتعصيب في وجود المعصب لها ابن الابن",
-        explanation: "ترث $heirName بالتعصيب في وجود المعصب لها ابن الابن"
     );
   }
 
@@ -327,7 +306,6 @@ class SonsDaughterInheritanceCalculator {
     return InheritanceResult(
       share: 0.16,
       description: "ترث $heirName السدس في وجود البنت",
-      explanation: "ترث $heirName السدس في وجود البنت",
     );
   }
 
@@ -335,7 +313,6 @@ class SonsDaughterInheritanceCalculator {
     return InheritanceResult(
       share: getShare(),
       description: gerDescription(),
-      explanation: gerDescription(),
     );
   }
 
@@ -385,7 +362,6 @@ bool _hasFullBrother() {
     return InheritanceResult(
         share: totalShare,
         description: "ترث $heirName بالتعصيب مع وجود المعصب لها الأخ الشقيق",
-        explanation: "ترث $heirName بالتعصيب مع وجود المعصب لها الأخ الشقيق"
     );
   }
 
@@ -395,7 +371,6 @@ bool _hasFullBrother() {
     return InheritanceResult(
         share: 0.16,
         description: "ترث $heirName السدس في وجود فرع وارث انثي",
-        explanation: "ترث $heirName السدس في وجود فرع وارث انثي"
     );
   }
 
@@ -403,7 +378,6 @@ bool _hasFullBrother() {
     return InheritanceResult(
       share: getShare(),
       description: gerDescription(),
-      explanation: gerDescription(),
     );
   }
 
@@ -456,7 +430,6 @@ bool _hasPaternalBrother() {
     return InheritanceResult(
         share: totalShare,
         description: "ترث $heirName بالتعصيب في وجود الأخ لأب",
-        explanation: "ترث $heirName بالتعصيب في وجود الأخ لأب"
     );
   }
 
@@ -464,7 +437,6 @@ bool _hasPaternalBrother() {
     return InheritanceResult(
         share: 0.16,
         description: description,
-        explanation: description
     );
   }
 
@@ -473,7 +445,6 @@ bool _hasPaternalBrother() {
     return InheritanceResult(
       share: getShare(),
       description: gerDescription(),
-      explanation: gerDescription(),
     );
   }
 

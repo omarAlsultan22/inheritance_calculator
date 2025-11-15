@@ -13,6 +13,6 @@ class InheritingApplication extends RuleApplication {
 
   @override
   void execute(InheritanceState state) {
-    state.addHeir(heirName, description, share!, colorIndex!, count!);
+    state.addHeir(heirName, description, share!, colorIndex!, count);
   }
 }
