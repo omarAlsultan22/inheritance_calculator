@@ -1,3 +1,4 @@
+import 'package:men/models/shares_model.dart';
 import '../../../models/heir_type_model.dart';
 import '../../../models/inheritance_result.dart';
 import '../../../models/inheritance_state_model.dart';
@@ -35,7 +36,7 @@ class FatherAndGrandfatherInheritanceCalculator{
 
   InheritanceResult _calculateOneSixthShare() {
     return InheritanceResult(
-        share: 0.16,
+        share: Shares.sixth,
         description: "يرث الأب السدس في وجود فرع وارث ذكر",
     );
   }
@@ -48,7 +49,7 @@ class FatherAndGrandfatherInheritanceCalculator{
     _handleMotherPresence();
 
     return InheritanceResult(
-        share: 0.16 + _context.extra!,
+        share: Shares.sixth + _context.extra!,
         description: _getResidualDescription(),
     );
   }
@@ -73,7 +74,7 @@ class FatherAndGrandfatherInheritanceCalculator{
 
       final isSingle = daughterCount < 2;
 
-      final share = isSingle ? 0.5 : 0.66;
+      final share = isSingle ? Shares.hafe : Shares.twoThirds;
       final finalShare = totalShare - share;
 
       _context.extra = finalShare;
@@ -83,7 +84,7 @@ class FatherAndGrandfatherInheritanceCalculator{
   void _getSonsDaughtersShare() {
     if (_hasDaughter()) {
       double totalShare = _context.extra!;
-      final finalShare = totalShare - 0.16;
+      final finalShare = totalShare - Shares.sixth;
       _context.extra = finalShare;
       return;
     }
@@ -94,7 +95,7 @@ class FatherAndGrandfatherInheritanceCalculator{
 
       final isSingle = sonsDaughterCount < 2;
 
-      final share = isSingle ? 0.5 : 0.66;
+      final share = isSingle ? Shares.hafe : Shares.twoThirds;
       final finalShare = totalShare - share;
 
       _context.extra = finalShare;
@@ -135,7 +136,7 @@ class MotherInheritanceCalculator {
 
   InheritanceResult CalculateOneThirdShare() {
     return InheritanceResult(
-        share: 0.3,
+        share: Shares.third,
         description: "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب",
     );
   }
@@ -159,14 +160,14 @@ class PaternalGrandmotherInheritanceCalculator {
 
   InheritanceResult CalculateOneHalfSixthShare() {
     return InheritanceResult(
-        share: 0.08,
+        share: Shares.thirtySecond,
         description: "ترث الجدة لأب مع الجدة لأم السدس في حالة غياب الأم والأب",
     );
   }
 
   InheritanceResult _calculateOneSixthShare() {
     return InheritanceResult(
-        share: 0.16,
+        share: Shares.sixth,
         description: "ترث الجدة لأب السدس منفردة في حالة غياب الأب و الأم و الجدة لأم",
     );
   }
@@ -191,14 +192,14 @@ class MaternalGrandmotherInheritanceCalculator{
 
   InheritanceResult CalculateOneHalfSixthShare() {
     return InheritanceResult(
-        share: 0.08,
+        share: Shares.thirtySecond,
         description: "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب",
     );
   }
 
   InheritanceResult _calculateOneSixthShare() {
     return InheritanceResult(
-        share: 0.16,
+        share: Shares.sixth,
         description: "ترث الجدة لأم السدس منفردة في حالة غياب الأب و الأم و الجدة لأم",
     );
   }
@@ -248,7 +249,7 @@ class DaughterInheritanceCalculator{
   }
 
   double getShare() {
-    return _context.isHeirSingle! ? 0.5 : 0.66;
+    return _context.isHeirSingle! ? Shares.hafe : Shares.twoThirds;
   }
 }
 
@@ -293,7 +294,7 @@ class SonsDaughterInheritanceCalculator {
     final heirName = _context.heirName;
 
     return InheritanceResult(
-      share: 0.16,
+      share: Shares.sixth,
       description: "ترث $heirName السدس في وجود البنت",
     );
   }
@@ -312,7 +313,7 @@ class SonsDaughterInheritanceCalculator {
   }
 
   double getShare() {
-    return _context.isHeirSingle! ? 0.5 : 0.66;
+    return _context.isHeirSingle! ? Shares.hafe : Shares.twoThirds;
   }
 }
 
@@ -358,7 +359,7 @@ bool _hasFullBrother() {
     final heirName = _context.heirName;
 
     return InheritanceResult(
-        share: 0.16,
+        share: Shares.sixth,
         description: "ترث $heirName السدس في وجود فرع وارث انثي",
     );
   }
@@ -377,7 +378,7 @@ bool _hasFullBrother() {
   }
 
   double getShare() {
-    return _context.isHeirSingle! ? 0.5 : 0.66;
+    return _context.isHeirSingle! ? Shares.hafe : Shares.twoThirds;
   }
 }
 
@@ -424,7 +425,7 @@ bool _hasPaternalBrother() {
 
   InheritanceResult _calculateOneSixthShare(String description) {
     return InheritanceResult(
-        share: 0.16,
+        share: Shares.sixth,
         description: description,
     );
   }
@@ -444,6 +445,6 @@ bool _hasPaternalBrother() {
   }
 
   double getShare() {
-    return _context.isHeirSingle! ? 0.5 : 0.66;
+    return _context.isHeirSingle! ? Shares.hafe : Shares.twoThirds;
   }
 }

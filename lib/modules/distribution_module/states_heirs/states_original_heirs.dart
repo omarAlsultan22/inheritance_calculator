@@ -1,11 +1,20 @@
-import 'inheritance_calculator_model.dart';
+import 'states_subsidiary_heirs.dart';
 import '../../../models/heir_type_model.dart';
+import 'package:men/models/shares_model.dart';
 import '../../../models/heir_processor_model.dart';
 import '../../../models/rule_application_model.dart';
 import '../../../models/inheritance_state_model.dart';
-import '../rule_application_module/blocked_application_model.dart';
-import '../rule_application_module/inheriting_application_model.dart';
+import '../rule_application_module/blocked_application.dart';
+import '../rule_application_module/inheriting_application.dart';
 
+class ColorsNumbers{
+  static const int zero = 0;
+  static const int one = 1;
+  static const int tow = 2;
+  static const int there = 3;
+  static const int four = 4;
+  static const int five = 5;
+}
 
 class HusbandProcessor extends HeirProcessor {
   HusbandProcessor({super.state, required super.heirType});
@@ -16,15 +25,15 @@ class HusbandProcessor extends HeirProcessor {
       return InheritingApplication(
           description: "يرث الزوج الربع في حالة وجود فرع وارث ذكر أو أنثي",
           heirName: heirName,
-          share: 0.25,
-          colorIndex: 0
+          share: Shares.quarter,
+          colorIndex: ColorsNumbers.zero
       );
     }
     return InheritingApplication(
         description: "يرث الزوج النصف في حالة عدم وجود فرع وارث ذكر أو أنثي",
         heirName: heirName,
-        share: 0.5,
-        colorIndex: 0
+        share: Shares.hafe,
+        colorIndex: ColorsNumbers.zero
     );
   }
 
@@ -45,19 +54,19 @@ class WifeProcessor extends HeirProcessor {
   RuleApplication getResult() {
     if (shouldBlock(state!)) {
       return InheritingApplication(
+          count: count,
           description: "ترث $heirName الثمن في حالة وجود فرع وارث ذكر أو أنثي",
           heirName: heirName,
-          share: 0.125,
-          colorIndex: 0,
-          count: count
+          share: Shares.eighth,
+          colorIndex: ColorsNumbers.zero
       );
     }
     return InheritingApplication(
+        count: count,
         description: "ترث $heirName الربع في حالة عدم وجود فرع وارث ذكر أو أنثي",
         heirName: heirName,
-        share: 0.25,
-        colorIndex: 0,
-        count: count
+        share: Shares.quarter,
+        colorIndex: ColorsNumbers.zero
     );
   }
 
@@ -77,16 +86,17 @@ class FatherProcessor extends HeirProcessor {
 
   @override
   RuleApplication getResult() {
-    final calculator = FatherAndGrandfatherInheritanceCalculator(_createContext());
+    final calculator = FatherAndGrandfatherInheritanceCalculator(
+        _createContext());
     final result = calculator.calculate();
 
     _applyUpdates(calculator.update);
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 1,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.one
     );
   }
 
@@ -135,8 +145,8 @@ class MotherProcessor extends HeirProcessor {
       return InheritingApplication(
           description: "ترث $heirName السدس في وجود فرع وارث الابن أو ابن الابن أو البنت أو بنت الابن أو أخوة",
           heirName: heirName,
-          share: 0.16,
-          colorIndex: 2
+          share: Shares.sixth,
+          colorIndex: ColorsNumbers.tow
       );
     }
     final calculator = MotherInheritanceCalculator(
@@ -145,10 +155,10 @@ class MotherProcessor extends HeirProcessor {
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 2,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.tow
     );
   }
 
@@ -187,16 +197,17 @@ class GrandfatherProcessor extends HeirProcessor {
       );
     }
 
-    final calculator = FatherAndGrandfatherInheritanceCalculator(_createContext());
+    final calculator = FatherAndGrandfatherInheritanceCalculator(
+        _createContext());
     final result = calculator.calculate();
 
     _applyUpdates(calculator.update);
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 2,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.one
     );
   }
 
@@ -247,15 +258,16 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
       );
     }
 
-    final calculator = PaternalGrandmotherInheritanceCalculator(_createContext());
+    final calculator = PaternalGrandmotherInheritanceCalculator(
+        _createContext());
     final result = calculator.calculate();
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 1,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.one
     );
   }
 
@@ -305,10 +317,10 @@ class MaternalGrandmotherProcessor extends HeirProcessor {
 
 
     return InheritingApplication(
-      description: result.description,
-      share: result.share,
-      heirName: heirName,
-      colorIndex: 2,
+        description: result.description,
+        share: result.share,
+        heirName: heirName,
+        colorIndex: ColorsNumbers.tow
     );
   }
 
@@ -340,20 +352,18 @@ class DaughterProcessor extends HeirProcessor {
 
   @override
   RuleApplication getResult() {
-
     final calculator = DaughterInheritanceCalculator(
         _createContext());
     final result = calculator.calculate();
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 4,
-      count: count
+        count: count,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.four
     );
-
   }
 
   InheritanceState _createContext() {
@@ -393,11 +403,11 @@ class SonsDaughterProcessor extends HeirProcessor {
 
 
     return InheritingApplication(
-      description: result.description,
-      heirName: heirName,
-      share: result.share,
-      colorIndex: 5,
-      count: count
+        count: count,
+        description: result.description,
+        heirName: heirName,
+        share: result.share,
+        colorIndex: ColorsNumbers.four
     );
   }
 
@@ -448,11 +458,11 @@ class FullSisterProcessor extends HeirProcessor{
 
 
     return InheritingApplication(
+        count: count,
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: 5,
-        count: count
+        colorIndex: ColorsNumbers.four
     );
   }
 
@@ -504,11 +514,11 @@ class PaternalSisterProcessor extends HeirProcessor{
 
 
     return InheritingApplication(
+        count: count,
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: 3,
-        count: count
+        colorIndex: ColorsNumbers.four
     );
   }
 
@@ -558,13 +568,13 @@ class MaternalSiblingsProcessor extends HeirProcessor {
       );
     }
 
-    final share = isSingle ? 0.16 : 0.33;
+    final share = isSingle ? Shares.sixth : Shares.third;
     final description = isSingle
         ? "يرث $heirName السدس في حالة عدم أصل أو فرع وارث"
         : "يرث $heirName الثلث في حالة عدم أصل أو فرع وارث";
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.four,
       heirName: heirName,
       share: share,
       count: count,
@@ -592,7 +602,7 @@ class SonProcessor extends HeirProcessor {
   @override
   RuleApplication getResult() {
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -619,7 +629,7 @@ class SonsSonProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -656,7 +666,7 @@ class  FullBrotherProcessor extends HeirProcessor {
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -696,7 +706,7 @@ class PaternalBrotherProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -735,7 +745,7 @@ class  FullBrothersSonProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -774,7 +784,7 @@ class PaternalBrothersSonProcessor extends HeirProcessor {
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -814,7 +824,7 @@ class FullUncleProcessor extends HeirProcessor {
     }
 
     return InheritingApplication(
-      colorIndex: 5,
+      colorIndex: ColorsNumbers.five,
       heirName: heirName,
       share: state!.extra,
       count: count,
@@ -855,11 +865,11 @@ class PaternalUncleProcessor extends HeirProcessor {
     }
 
     return InheritingApplication(
-      colorIndex: 5,
-      heirName: heirName,
-      share: state!.extra,
-      description: "يرث $heirName لأب بالتعصيب باقي التركة",
-      count: count
+        colorIndex: ColorsNumbers.five,
+        heirName: heirName,
+        share: state!.extra,
+        description: "يرث $heirName لأب بالتعصيب باقي التركة",
+        count: count
     );
   }
 
@@ -896,11 +906,11 @@ class FullCousinProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-      colorIndex: 5,
-      heirName: heirName,
-      share: state!.extra,
-      description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",
-      count: count
+        colorIndex: ColorsNumbers.five,
+        heirName: heirName,
+        share: state!.extra,
+        description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",
+        count: count
     );
   }
 
@@ -939,9 +949,9 @@ class PaternalCousinProcessor extends HeirProcessor {
 
     return InheritingApplication(
         description: "يرث $heirName العم لأب بالتعصيب باقي التركة",
-        heirName: heirName,
-        colorIndex: 5,
+        colorIndex: ColorsNumbers.five,
         share: state!.extra,
+        heirName: heirName,
         count: count
     );
   }

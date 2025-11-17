@@ -7,8 +7,8 @@ import '../../models/heir_processor_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/inheritance_state_model.dart';
 import '../../modules/display_screen/display_screen.dart';
-import '../../modules/distribution_module/inheritance_manager_model.dart';
-import '../../modules/distribution_module/states_heirs/states_heirs.dart';
+import '../../modules/distribution_module/inheritance_manager.dart';
+import '../../modules/distribution_module/states_heirs/states_original_heirs.dart';
 
 
 class DataCubit extends Cubit<DataStates> {
