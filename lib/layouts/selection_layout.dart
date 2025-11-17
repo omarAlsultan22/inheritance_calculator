@@ -65,7 +65,7 @@ Widget itemsMenu(DataCubit dataCubit) {
       value: dataCubit.selectedItem,
       dropdownColor: Colors.grey[800],
       borderRadius: BorderRadius.circular(10),
-      items: dataCubit.heirsList.keys.map((String key) {
+      items: dataCubit.heirsMap.keys.map((String key) {
         return DropdownMenuItem<String>(
           value: key,
           child: Text(

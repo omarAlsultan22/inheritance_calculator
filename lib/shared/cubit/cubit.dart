@@ -1,13 +1,14 @@
 import '../../models/item_model.dart';
 import 'package:flutter/material.dart';
-import '../../models/states_models.dart';
+import '../../models/heir_type_model.dart';
 import 'package:men/models/data_model.dart';
 import 'package:men/shared/cubit/states.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/heir_processor_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/inheritance_state_model.dart';
-import '../../models/inheritance_manager_model.dart';
 import '../../modules/display_screen/display_screen.dart';
+import '../../modules/distribution_module/inheritance_manager_model.dart';
+import '../../modules/distribution_module/states_heirs/states_heirs.dart';
 
 
 class DataCubit extends Cubit<DataStates> {
@@ -20,58 +21,33 @@ class DataCubit extends Cubit<DataStates> {
   late BuildContext context;
   List<DataItems> dataItems = [];
   Map<String, String> detailsItems = {};
-  static InheritanceState _inheritanceState = InheritanceState();
+  static InheritanceState _inheritanceState = InheritanceState(heirsItems: {});
 
-  Map<String, HeirType> heirsList = {
-    'الزوج': HeirType.husband,
-    'الزوجة': HeirType.wife,
-    'الأب': HeirType.father,
-    'الأم': HeirType.mother,
-    'الابن': HeirType.son,
-    'البنت': HeirType.daughter,
-    'ابن الابن': HeirType.sonsSon,
-    'بنت الابن': HeirType.sonsDaughter,
-    'الجد': HeirType.grandfather,
-    'الجدة لأب': HeirType.paternalGrandMother,
-    'الجدة لأم': HeirType.maternalGrandmother,
-    'الأخت الشقيقة': HeirType.fullSister,
-    'الأخت لأب': HeirType.paternalSister,
-    'الأخ الشقيق': HeirType.fullBrother,
-    'الأخ لأب': HeirType.paternalBrother,
-    'الأخوة لأم': HeirType.maternalSiblings,
-    'العم الشقيق': HeirType.fullUncle,
-    'العم لأب': HeirType.paternalUncle,
-    'ابن الأخ الشقيق': HeirType.fullBrothersSon,
-    'ابن الأخ لأب': HeirType.paternalBrothersSon,
-    'ابن العم الشقيق': HeirType.fullCousin,
-    'ابن العم لأب': HeirType.paternalCousin,
-  };
 
   Map<String, HeirProcessor> heirsMap = {
-    'الزوج': HusbandProcessor(state: _inheritanceState),
-    'الزوجة': WifeProcessor(state: _inheritanceState, count: 1),
-    'الأب': FatherProcessor(state: _inheritanceState),
-    'الأم': MotherProcessor(state: _inheritanceState),
-    'الجد': GrandfatherProcessor(state: _inheritanceState),
-    'الجدة لأب': PaternalGrandmotherProcessor(state: _inheritanceState),
-    'الجدة لأم': MaternalGrandmotherProcessor(state: _inheritanceState),
-    'البنت': DaughterProcessor(state: _inheritanceState, count: 1),
-    'بنت الابن': SonsDaughterProcessor(state: _inheritanceState, count: 1),
-    'الابن': SonProcessor(state: _inheritanceState, count: 1),
-    'ابن الابن': SonsSonProcessor(state: _inheritanceState, count: 1),
-    'الأخت الشقيقة': FullSisterProcessor(state: _inheritanceState, count: 1),
-    'الأخت لأب': PaternalSisterProcessor(state: _inheritanceState, count: 1),
-    'الأخوة لأم': MaternalSiblingsProcessor(state: _inheritanceState, count: 1),
-    'الأخ الشقيق': FullBrotherProcessor(state: _inheritanceState, count: 1),
-    'الأخ لأب': PaternalBrotherProcessor(state: _inheritanceState, count: 1),
-    'ابن الأخ الشقيق': FullBrothersSonProcessor(state: _inheritanceState, count: 1),
-    'ابن الأخ لأب': PaternalBrothersSonProcessor(state: _inheritanceState, count: 1),
-    'العم الشقيق': FullUncleProcessor(state: _inheritanceState, count: 1),
-    'العم لأب': PaternalUncleProcessor(state: _inheritanceState, count: 1),
-    'ابن العم الشقيق': FullCousinProcessor(state: _inheritanceState, count: 1),
-    'ابن العم لأب': PaternalCousinProcessor(state: _inheritanceState, count: 1),
+    'الزوج': HusbandProcessor(state: _inheritanceState, heirType: HeirType.husband),
+    'الزوجة': WifeProcessor(state: _inheritanceState, heirType: HeirType.wife, count: 1),
+    'الأب': FatherProcessor(state: _inheritanceState, heirType: HeirType.father),
+    'الأم': MotherProcessor(state: _inheritanceState, heirType: HeirType.mother),
+    'الجد': GrandfatherProcessor(state: _inheritanceState, heirType: HeirType.grandfather),
+    'الجدة لأب': PaternalGrandmotherProcessor(state: _inheritanceState, heirType: HeirType.paternalGrandMother),
+    'الجدة لأم': MaternalGrandmotherProcessor(state: _inheritanceState, heirType: HeirType.maternalGrandmother),
+    'البنت': DaughterProcessor(state: _inheritanceState, count: 1, heirType: HeirType.daughter),
+    'بنت الابن': SonsDaughterProcessor(state: _inheritanceState, count: 1, heirType: HeirType.sonsDaughter),
+    'الابن': SonProcessor(state: _inheritanceState, count: 1, heirType: HeirType.son),
+    'ابن الابن': SonsSonProcessor(state: _inheritanceState, count: 1, heirType: HeirType.sonsSon),
+    'الأخت الشقيقة': FullSisterProcessor(state: _inheritanceState, count: 1, heirType: HeirType.fullSister),
+    'الأخت لأب': PaternalSisterProcessor(state: _inheritanceState, count: 1, heirType: HeirType.paternalSister),
+    'الأخوة لأم': MaternalSiblingsProcessor(state: _inheritanceState, count: 1, heirType: HeirType.maternalSiblings),
+    'الأخ الشقيق': FullBrotherProcessor(state: _inheritanceState, count: 1, heirType: HeirType.fullBrother),
+    'الأخ لأب': PaternalBrotherProcessor(state: _inheritanceState, count: 1, heirType: HeirType.paternalBrother),
+    'ابن الأخ الشقيق': FullBrothersSonProcessor(state: _inheritanceState, count: 1, heirType: HeirType.fullBrothersSon),
+    'ابن الأخ لأب': PaternalBrothersSonProcessor(state: _inheritanceState, count: 1, heirType: HeirType.paternalBrothersSon),
+    'العم الشقيق': FullUncleProcessor(state: _inheritanceState, count: 1, heirType: HeirType.fullUncle),
+    'العم لأب': PaternalUncleProcessor(state: _inheritanceState, count: 1, heirType: HeirType.paternalUncle),
+    'ابن العم الشقيق': FullCousinProcessor(state: _inheritanceState, count: 1, heirType: HeirType.fullCousin),
+    'ابن العم لأب': PaternalCousinProcessor(state: _inheritanceState, count: 1, heirType: HeirType.paternalCousin),
   };
-
 
   static const List<String> _category1 = ["الزوج", "الزوجة"];
   static const List<String> _category2 = ["الأب", "الجد"];
@@ -123,7 +99,7 @@ class DataCubit extends Cubit<DataStates> {
       emit(DataSuccessState());
     }
     catch (error) {
-      emit(DataErrorState(error: error.toString()));
+      emit(DataErrorState(error.toString()));
     }
   }
 
@@ -184,8 +160,7 @@ class DataCubit extends Cubit<DataStates> {
       targetList.add(textValue);
       var process = heirsMap[value];
       if (process != null) {
-        process.state!.heirType = heirsList[selectedItem];
-        _inheritanceState.heirsItems[value] = process;
+        _inheritanceState.heirsItems![value] = process;
       }
       emit(DataSuccessState());
     }
@@ -222,7 +197,7 @@ class DataCubit extends Cubit<DataStates> {
         _fifthList.remove(e);
       }
 
-      _inheritanceState.heirsItems.remove(e.textValue);
+      _inheritanceState.heirsItems!.remove(e.textValue);
     });
     buttonLuck;
     emit(DataSuccessState());
@@ -272,7 +247,7 @@ class DataCubit extends Cubit<DataStates> {
       for (final _item in _list) {
         final process = heirsMap[_item.textValue];
         process!.count = _item.sum;
-        _inheritanceState.heirsItems[_item.textValue] = process;
+        _inheritanceState.heirsItems![_item.textValue] = process;
       }
     }
 
@@ -288,7 +263,7 @@ class DataCubit extends Cubit<DataStates> {
     insertData(
         dataSet: _inheritanceState.dataset,
         details: _inheritanceState.heirsDetails,
-        extra: _inheritanceState.totalExtra
+        extra: _inheritanceState.extra!
     ).whenComplete(() =>
         Navigator.push(
           context,

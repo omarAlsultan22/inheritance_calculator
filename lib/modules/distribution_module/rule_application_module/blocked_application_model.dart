@@ -1,5 +1,5 @@
 import 'package:men/models/rule_application_model.dart';
-import 'inheritance_state_model.dart';
+import '../../../models/inheritance_state_model.dart';
 
 
 class BlockedApplication extends RuleApplication {

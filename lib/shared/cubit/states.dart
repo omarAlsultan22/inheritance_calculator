@@ -1,10 +1,8 @@
-abstract class DataStates{
-  final String? error;
-  DataStates({this.error});
-}
+abstract class DataStates{}
 class DataInitialState extends DataStates{}
 class DataLoadingState extends DataStates{}
 class DataSuccessState extends DataStates{}
 class DataErrorState extends DataStates{
-  DataErrorState({super.error});
+  final String? error;
+  DataErrorState(this.error);
 }

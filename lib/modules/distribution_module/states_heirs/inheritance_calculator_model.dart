@@ -1,7 +1,6 @@
-import 'package:men/models/inheritance_state_model.dart';
-import 'package:men/models/rule_application_model.dart';
-import 'heir_processor_model.dart';
-import 'inheritance_result.dart';
+import '../../../models/heir_type_model.dart';
+import '../../../models/inheritance_result.dart';
+import '../../../models/inheritance_state_model.dart';
 
 
 class InheritanceUpdate {
@@ -15,7 +14,7 @@ class InheritanceUpdate {
 }
 
 
-class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
+class FatherAndGrandfatherInheritanceCalculator{
   final InheritanceState _context;
 
   FatherAndGrandfatherInheritanceCalculator(this._context);
@@ -30,8 +29,8 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
     }
 
   bool _hasMaleDescendant() {
-    return _context.hasHeir(HeirType.son) ||
-        _context.hasHeir(HeirType.sonsSon);
+    return _context.heirsItems!.containsKey(HeirType.son.heirName) ||
+        _context.heirsItems!.containsKey(HeirType.sonsSon.heirName);
   }
 
   InheritanceResult _calculateOneSixthShare() {
@@ -61,16 +60,16 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
   }
 
   bool _hasDaughter(){
-    return _context.hasHeir(HeirType.daughter);
+    return _context.heirsItems!.containsKey(HeirType.daughter.heirName);
   }
   bool _hasSonsDaughter(){
-    return _context.hasHeir(HeirType.sonsDaughter);
+    return _context.heirsItems!.containsKey(HeirType.sonsDaughter.heirName);
   }
 
   void _getDaughtersShare(){
     if(_hasDaughter()) {
       double totalShare = _context.extra!;
-      final daughterCount = _context.isCount(HeirType.daughter);
+      final daughterCount = _context.heirsItems![HeirType.daughter.heirName]!.count;
 
       final isSingle = daughterCount < 2;
 
@@ -91,7 +90,7 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
 
     if (_hasSonsDaughter()) {
       double totalShare = _context.extra!;
-      final sonsDaughterCount = _context.isCount(HeirType.daughter);
+      final sonsDaughterCount = _context.heirsItems![HeirType.daughter.heirName]!.count;
 
       final isSingle = sonsDaughterCount < 2;
 
@@ -103,20 +102,10 @@ class FatherAndGrandfatherInheritanceCalculator extends HeirProcessor {
   }
 
   void _handleMotherPresence() {
-    if (_context.hasHeir(HeirType.mother) && !_context.isMotherPresent!) {
+    if (_context.heirsItems!.containsKey(HeirType.mother) && !_context.isMotherPresent!) {
       update.markMotherPresent = true;
     }
   }
-
-  @override
-  RuleApplication getResult() {
-    // TODO: implement getResult
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement heirName
-  String get heirName => throw UnimplementedError();
 }
 
 
@@ -133,8 +122,8 @@ class MotherInheritanceCalculator {
   }
 
   bool _hasSpouses() {
-    return _context.hasHeir(HeirType.husband) ||
-        _context.hasHeir(HeirType.wife);
+    return _context.heirsItems!.containsKey(HeirType.husband.heirName) ||
+        _context.heirsItems!.containsKey(HeirType.wife.heirName);
   }
 
   InheritanceResult CalculateShareRemainingThird() {
@@ -165,7 +154,7 @@ class PaternalGrandmotherInheritanceCalculator {
   }
 
   bool _hasMaternalGrandmother() {
-    return _context.hasHeir(HeirType.maternalGrandmother);
+    return _context.heirsItems!.containsKey(HeirType.maternalGrandmother.heirName);
   }
 
   InheritanceResult CalculateOneHalfSixthShare() {
@@ -197,7 +186,7 @@ class MaternalGrandmotherInheritanceCalculator{
   }
 
   bool _hasPaternalGrandmother() {
-    return _context.hasHeir(HeirType.paternalGrandMother);
+    return _context.heirsItems!.containsKey(HeirType.paternalGrandMother.heirName);
   }
 
   InheritanceResult CalculateOneHalfSixthShare() {
@@ -229,12 +218,12 @@ class DaughterInheritanceCalculator{
   }
 
   bool _hasSon() {
-    return _context.hasHeir(HeirType.son);
+    return _context.heirsItems!.containsKey(HeirType.son.heirName);
   }
 
   InheritanceResult _calculateOneShareInnervation() {
 
-    final sonsCount = _context.isCount(HeirType.son);
+    final sonsCount = _context.heirsItems![HeirType.son.heirName]!.count;
     final share = _context.extra! / (sonsCount * 2 + _context.count!);
     final totalShare = share * _context.count!;
     final heirName = _context.heirName;
@@ -281,15 +270,15 @@ class SonsDaughterInheritanceCalculator {
 
 
   bool _hasSonSon() {
-    return _context.hasHeir(HeirType.sonsSon);
+    return _context.heirsItems!.containsKey(HeirType.sonsSon.heirName);
   }
 
   bool _hasDaughter() {
-    return _context.hasHeir(HeirType.daughter);
+    return _context.heirsItems!.containsKey(HeirType.daughter.heirName);
   }
 
   InheritanceResult _calculateOneShareInnervation() {
-    final sonsCount = _context.isCount(HeirType.sonsSon);
+    final sonsCount = _context.heirsItems![HeirType.sonsSon.heirName]!.count;
     final share = _context.extra! / (sonsCount * 2 + _context.count!);
     final totalShare = share * _context.count!;
     final heirName = _context.heirName;
@@ -345,16 +334,16 @@ class FullSisterInheritanceCalculator {
 
 
 bool _hasFullBrother() {
-    return _context.hasHeir(HeirType.fullBrother);
+    return _context.heirsItems!.containsKey(HeirType.fullBrother.heirName);
   }
 
   bool _hasDaughter() {
-    return _context.hasHeir(HeirType.daughter) ||
-        _context.hasHeir(HeirType.sonsDaughter);
+    return _context.heirsItems!.containsKey(HeirType.daughter.heirName) ||
+        _context.heirsItems!.containsKey(HeirType.sonsDaughter.heirName);
   }
 
   InheritanceResult _calculateOneShareInnervation() {
-    final sonsCount = _context.isCount(HeirType.fullBrother);
+    final sonsCount = _context.heirsItems![HeirType.fullBrother.heirName]!.count;
     final share = _context.extra! / (sonsCount * 2 + _context.count!);
     final totalShare = share * _context.count!;
     final heirName = _context.heirName;
@@ -418,11 +407,11 @@ bool _hasPaternalBrother() {
   }
 
   bool _hasFemale(HeirType heirType) {
-    return _context.hasHeir(heirType);
+    return _context.heirsItems!.containsKey(heirType.heirName);
   }
 
   InheritanceResult _calculateOneShareInnervation() {
-    final sonsCount = _context.isCount(HeirType.paternalBrother);
+    final sonsCount = _context.heirsItems![HeirType.paternalBrother.heirName]!.count;
     final share = _context.extra! / (sonsCount * 2 + _context.count!);
     final totalShare = share * _context.count!;
     final heirName = _context.heirName;

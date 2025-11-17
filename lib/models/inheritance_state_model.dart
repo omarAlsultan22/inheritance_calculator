@@ -1,62 +1,7 @@
 import 'dart:ui';
 import 'data_model.dart';
+import 'heir_type_model.dart';
 import 'package:men/models/heir_processor_model.dart';
-
-
-enum HeirType {
-  husband('الزوج'),
-  wife('الزوجة'),
-  father('الأب'),
-  mother('الأم'),
-  son('الابن'),
-  daughter('البنت'),
-  sonsSon('ابن الابن'),
-  sonsDaughter('بنت الابن'),
-  grandfather('الجد'),
-  paternalGrandMother('الجدة لأب'),
-  maternalGrandmother('الجدة لأم'),
-  fullSister('الأخت الشقيقة'),
-  paternalSister('الأخت لأب'),
-  fullBrother('الأخ الشقيق'),
-  paternalBrother('الأخ لأب'),
-  maternalSiblings('الأخ لأم'),
-  fullUncle('العم الشقيق'),
-  paternalUncle('العم لأب'),
-  fullBrothersSon('ابن الأخ الشقيق'),
-  paternalBrothersSon('ابن الأخ لأب'),
-  fullCousin('ابن العم الشقيق'),
-  paternalCousin('ابن العم لأب'),
-  ;
-
-  const HeirType(this.heirName);
-
-  final String heirName;
-
-  String getPluralName(int count) {
-    if (count == 1) return heirName;
-
-    final pluralMap = {
-      HeirType.wife: 'الزوجات',
-      HeirType.daughter: 'البنات',
-      HeirType.son: 'الابناء',
-      HeirType.sonsSon: 'ابناء الابن',
-      HeirType.sonsDaughter: 'بنات الابن',
-      HeirType.fullSister: 'الأخوات الشقيقات',
-      HeirType.paternalSister: 'الأخوات لأب',
-      HeirType.maternalSiblings: 'الأخوة لأم',
-      HeirType.fullBrother: 'الأخوة الأشقاء',
-      HeirType.paternalBrother:'الأخوة لأب',
-      HeirType.fullBrothersSon:'ابناء الأخوة الأشقاء',
-      HeirType.paternalBrothersSon:'ابناء الأخوة لأب',
-      HeirType.fullUncle:'الأعمام الأشقاء',
-      HeirType.paternalUncle:'الأعمام لأب',
-      HeirType.fullCousin:'أبناء العم الشقيق',
-      HeirType.paternalCousin:'أبناء العم لأب',
-    };
-
-    return pluralMap[this] ?? '$heirName (متعدد)';
-  }
-}
 
 
 class InheritanceState {
@@ -67,11 +12,13 @@ class InheritanceState {
   double? baseValue;
   bool? isHeirSingle;
   bool? isMotherPresent;
+  Map<String, HeirProcessor>? heirsItems;
 
   InheritanceState({
     this.count,
     this.heirName,
     this.heirType,
+    this.heirsItems,
     this.extra = 1.0,
     this.baseValue = 0.0,
     this.isHeirSingle,
@@ -79,11 +26,9 @@ class InheritanceState {
   });
 
 
-  final Map<String, HeirProcessor> heirsItems = {};
   final Map<String, String> heirsDetails = {};
   final Map<String, bool> heirsDone = {};
   final List<DataItems> dataset = [];
-  double totalExtra = 1.0;
 
 
   static const List<int> _pal = [
@@ -97,16 +42,16 @@ class InheritanceState {
 
   void reset() {
     isMotherPresent = false;
-    totalExtra = 1.0;
+    extra = 1.0;
     baseValue = 0.0;
     dataset.clear();
     heirsDone.clear();
-    heirsItems.clear();
+    heirsItems!.clear();
     heirsDetails.clear();
   }
 
 
-  bool hasHeir(HeirType type) => heirsItems.containsKey(type.heirName);
+  bool hasHeir(HeirType type) => heirsItems!.containsKey(type.heirName);
 
   bool hasBranch() {
     return hasHeir(HeirType.daughter) || hasHeir(HeirType.son);
@@ -115,7 +60,11 @@ class InheritanceState {
   void addHeir(String heirName, String discription, double share, int colorIndex, int? heirsCount) {
     if (!heirsDone.containsKey(heirName)) {
       addDetails(heirName, discription);
-      totalExtra -= share;
+
+      var totalShare = extra;
+      totalShare = totalShare! - share;
+      extra = totalShare;
+
       if(heirsCount != null && heirsCount > 1){
         dataset.add(DataItems(share, '${heirsCount.toString()} من $heirName', Color(_pal[colorIndex])));
       }
@@ -131,7 +80,7 @@ class InheritanceState {
   }
 
   int isCount(HeirType heirType) {
-    final heirCount = heirsItems[heirType.heirName]!.count;
+    final heirCount = heirsItems![heirType.heirName]!.count;
     return heirCount;
   }
 

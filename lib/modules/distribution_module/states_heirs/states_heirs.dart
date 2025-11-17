@@ -1,13 +1,14 @@
-import 'heir_processor_model.dart';
-import 'inheritance_state_model.dart';
-import 'package:men/models/rule_application_model.dart';
-import 'package:men/models/blocked_application_model.dart';
-import 'package:men/models/inheriting_application_model.dart';
-import 'package:men/models/inheritance_calculator_model.dart';
+import 'inheritance_calculator_model.dart';
+import '../../../models/heir_type_model.dart';
+import '../../../models/heir_processor_model.dart';
+import '../../../models/rule_application_model.dart';
+import '../../../models/inheritance_state_model.dart';
+import '../rule_application_module/blocked_application_model.dart';
+import '../rule_application_module/inheriting_application_model.dart';
 
 
 class HusbandProcessor extends HeirProcessor {
-  HusbandProcessor({super.state});
+  HusbandProcessor({super.state, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -28,7 +29,7 @@ class HusbandProcessor extends HeirProcessor {
   }
 
   @override
-  String get heirName => HeirType.husband.heirName;
+  String get heirName => heirType.heirName;
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -38,7 +39,7 @@ class HusbandProcessor extends HeirProcessor {
 
 
 class WifeProcessor extends HeirProcessor {
-  WifeProcessor({super.state, super.count});
+  WifeProcessor({super.state, super.count, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -62,7 +63,7 @@ class WifeProcessor extends HeirProcessor {
 
   @override
   String get heirName =>
-      isSingle ? state!.heirType!.heirName : state!.heirType!.getPluralName(count);
+      isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -72,7 +73,7 @@ class WifeProcessor extends HeirProcessor {
 
 
 class FatherProcessor extends HeirProcessor {
-  FatherProcessor({super.state});
+  FatherProcessor({super.state, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -92,8 +93,9 @@ class FatherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.totalExtra,
+      extra: state!.extra,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
@@ -110,12 +112,12 @@ class FatherProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => heirType!.heirName;
+  String get heirName => heirType.heirName;
 }
 
 
 class MotherProcessor extends HeirProcessor {
-  MotherProcessor({super.state});
+  MotherProcessor({super.state, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son,
@@ -152,15 +154,16 @@ class MotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.totalExtra,
+      extra: state!.extra,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
 
   @override
   // TODO: implement heirName
-  String get heirName => HeirType.mother.heirName;
+  String get heirName => heirType.heirName;
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -173,7 +176,7 @@ class MotherProcessor extends HeirProcessor {
 
 
 class GrandfatherProcessor extends HeirProcessor {
-  GrandfatherProcessor({super.state});
+  GrandfatherProcessor({super.state, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -199,8 +202,9 @@ class GrandfatherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.totalExtra,
+      extra: state!.extra,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
@@ -217,7 +221,7 @@ class GrandfatherProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => HeirType.grandfather.heirName;
+  String get heirName => heirType.heirName;
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -228,7 +232,7 @@ class GrandfatherProcessor extends HeirProcessor {
 
 
 class PaternalGrandmotherProcessor extends HeirProcessor {
-  PaternalGrandmotherProcessor({super.state});
+  PaternalGrandmotherProcessor({super.state, required super.heirType});
 
   static const List<HeirType> _blockingHeirs = [
     HeirType.father, HeirType.mother
@@ -257,8 +261,9 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.totalExtra,
+      extra: state!.extra,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
@@ -266,7 +271,7 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => HeirType.paternalGrandMother.heirName;
+  String get heirName => heirType.heirName;
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -279,7 +284,7 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
 
 
 class MaternalGrandmotherProcessor extends HeirProcessor {
-  MaternalGrandmotherProcessor({super.state});
+  MaternalGrandmotherProcessor({super.state, required super.heirType});
 
   static const List<HeirType> _blockingHeirs = [
     HeirType.father, HeirType.mother
@@ -309,15 +314,16 @@ class MaternalGrandmotherProcessor extends HeirProcessor {
 
   InheritanceState _createContext() {
     return InheritanceState(
-      extra: state!.totalExtra,
+      extra: state!.extra,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
 
   @override
   // TODO: implement heirName
-  String get heirName => HeirType.mother.heirName;
+  String get heirName => heirType.heirName;
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -330,9 +336,7 @@ class MaternalGrandmotherProcessor extends HeirProcessor {
 
 
 class DaughterProcessor extends HeirProcessor {
-  DaughterProcessor({super.state, super.count});
-
-  late final heirType = state!.heirType;
+  DaughterProcessor({super.state, super.count, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -356,21 +360,22 @@ class DaughterProcessor extends HeirProcessor {
     return InheritanceState(
       count: count,
       heirName: heirName,
-      extra: state!.totalExtra,
+      extra: state!.extra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 }
 
 
 class SonsDaughterProcessor extends HeirProcessor {
-  SonsDaughterProcessor({super.state, super.count});
+  SonsDaughterProcessor({super.state, super.count, required super.heirType});
 
 
   @override
@@ -399,9 +404,10 @@ class SonsDaughterProcessor extends HeirProcessor {
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.totalExtra,
+      extra: state!.extra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
@@ -409,7 +415,7 @@ class SonsDaughterProcessor extends HeirProcessor {
   @override
   // TODO: implement heirName
   String get heirName =>
-      isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+      isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -420,7 +426,7 @@ class SonsDaughterProcessor extends HeirProcessor {
 
 
 class FullSisterProcessor extends HeirProcessor{
-  FullSisterProcessor({super.state, super.count});
+  FullSisterProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon,
@@ -453,16 +459,17 @@ class FullSisterProcessor extends HeirProcessor{
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.totalExtra,
+      extra: state!.extra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
 
   @override
@@ -476,7 +483,7 @@ class FullSisterProcessor extends HeirProcessor{
 
 
 class PaternalSisterProcessor extends HeirProcessor{
-  PaternalSisterProcessor({super.state, super.count});
+  PaternalSisterProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon,
@@ -509,16 +516,17 @@ class PaternalSisterProcessor extends HeirProcessor{
   InheritanceState _createContext() {
     return InheritanceState(
       heirName: heirName,
-      extra: state!.totalExtra,
+      extra: state!.extra,
       isHeirSingle: isSingle,
       baseValue: state!.baseValue,
+      heirsItems: state!.heirsItems,
       isMotherPresent: state!.isMotherPresent,
     );
   }
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
 
   @override
@@ -533,7 +541,7 @@ class PaternalSisterProcessor extends HeirProcessor{
 
 
 class MaternalSiblingsProcessor extends HeirProcessor {
-  MaternalSiblingsProcessor({super.state, super.count});
+  MaternalSiblingsProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.daughter, HeirType.father,
@@ -566,7 +574,7 @@ class MaternalSiblingsProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -579,14 +587,14 @@ class MaternalSiblingsProcessor extends HeirProcessor {
 
 
 class SonProcessor extends HeirProcessor {
-  SonProcessor({super.state, super.count});
+  SonProcessor({super.state, super.count, required super.heirType});
 
   @override
   RuleApplication getResult() {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -594,12 +602,12 @@ class SonProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 }
 
 
 class SonsSonProcessor extends HeirProcessor{
-  SonsSonProcessor({super.state, super.count});
+  SonsSonProcessor({super.state, super.count, required super.heirType});
 
   @override
   RuleApplication getResult() {
@@ -613,7 +621,7 @@ class SonsSonProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -621,7 +629,7 @@ class SonsSonProcessor extends HeirProcessor{
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -632,7 +640,7 @@ class SonsSonProcessor extends HeirProcessor{
 
 
 class  FullBrotherProcessor extends HeirProcessor {
-  FullBrotherProcessor({super.state, super.count});
+  FullBrotherProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -650,7 +658,7 @@ class  FullBrotherProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -658,7 +666,7 @@ class  FullBrotherProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -671,7 +679,7 @@ class  FullBrotherProcessor extends HeirProcessor {
 
 
 class PaternalBrotherProcessor extends HeirProcessor{
-  PaternalBrotherProcessor({super.state, super.count});
+  PaternalBrotherProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -690,7 +698,7 @@ class PaternalBrotherProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName لأب بالتعصيب باقي التركة",
     );
@@ -698,7 +706,7 @@ class PaternalBrotherProcessor extends HeirProcessor{
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -711,7 +719,7 @@ class PaternalBrotherProcessor extends HeirProcessor{
 
 
 class  FullBrothersSonProcessor extends HeirProcessor{
-  FullBrothersSonProcessor({super.state, super.count});
+  FullBrothersSonProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -729,7 +737,7 @@ class  FullBrothersSonProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName بالتعصيب باقي التركة",
     );
@@ -737,7 +745,7 @@ class  FullBrothersSonProcessor extends HeirProcessor{
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -749,7 +757,7 @@ class  FullBrothersSonProcessor extends HeirProcessor{
 }
 
 class PaternalBrothersSonProcessor extends HeirProcessor {
-  PaternalBrothersSonProcessor({super.state, super.count});
+  PaternalBrothersSonProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -768,7 +776,7 @@ class PaternalBrothersSonProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName الأخوة لأب بالتعصيب باقي التركة",
     );
@@ -776,7 +784,7 @@ class PaternalBrothersSonProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -789,7 +797,7 @@ class PaternalBrothersSonProcessor extends HeirProcessor {
 
 
 class FullUncleProcessor extends HeirProcessor {
-  FullUncleProcessor({super.state, super.count});
+  FullUncleProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -808,7 +816,7 @@ class FullUncleProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       count: count,
       description: "يرث $heirName الأشقاء بالتعصيب باقي التركة",
     );
@@ -816,7 +824,7 @@ class FullUncleProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -829,7 +837,7 @@ class FullUncleProcessor extends HeirProcessor {
 
 
 class PaternalUncleProcessor extends HeirProcessor {
-  PaternalUncleProcessor({super.state, super.count});
+  PaternalUncleProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -849,7 +857,7 @@ class PaternalUncleProcessor extends HeirProcessor {
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       description: "يرث $heirName لأب بالتعصيب باقي التركة",
       count: count
     );
@@ -857,7 +865,7 @@ class PaternalUncleProcessor extends HeirProcessor {
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -870,7 +878,7 @@ class PaternalUncleProcessor extends HeirProcessor {
 
 
 class FullCousinProcessor extends HeirProcessor{
-  FullCousinProcessor({super.state, super.count});
+  FullCousinProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -890,7 +898,7 @@ class FullCousinProcessor extends HeirProcessor{
     return InheritingApplication(
       colorIndex: 5,
       heirName: heirName,
-      share: state!.totalExtra,
+      share: state!.extra,
       description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",
       count: count
     );
@@ -898,7 +906,7 @@ class FullCousinProcessor extends HeirProcessor{
 
   @override
   // TODO: implement heirName
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
@@ -911,7 +919,7 @@ class FullCousinProcessor extends HeirProcessor{
 
 
 class PaternalCousinProcessor extends HeirProcessor {
-  PaternalCousinProcessor({super.state, super.count});
+  PaternalCousinProcessor({super.state, super.count, required super.heirType});
 
   static const _blockingHeirs = [
     HeirType.son, HeirType.sonsSon, HeirType.father,
@@ -933,13 +941,13 @@ class PaternalCousinProcessor extends HeirProcessor {
         description: "يرث $heirName العم لأب بالتعصيب باقي التركة",
         heirName: heirName,
         colorIndex: 5,
-        share: state!.totalExtra,
+        share: state!.extra,
         count: count
     );
   }
 
   @override
-  String get heirName => isSingle ? heirType!.heirName : heirType!.getPluralName(count);
+  String get heirName => isSingle ? heirType.heirName : heirType.getPluralName(count);
 
   @override
   bool shouldBlock(InheritanceState state) {
