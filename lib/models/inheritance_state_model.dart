@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'data_model.dart';
-import 'heir_type_model.dart';
+import '../shared/constants/heir_type.dart';
 import 'package:men/models/heir_processor_model.dart';
 
 

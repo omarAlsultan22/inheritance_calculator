@@ -1,4 +1,4 @@
-import 'heir_type_model.dart';
+import '../shared/constants/heir_type.dart';
 import 'inheritance_state_model.dart';
 import 'package:men/models/rule_application_model.dart';
 

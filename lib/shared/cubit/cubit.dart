@@ -1,6 +1,6 @@
 import '../../models/item_model.dart';
 import 'package:flutter/material.dart';
-import '../../models/heir_type_model.dart';
+import '../constants/heir_type.dart';
 import 'package:men/models/data_model.dart';
 import 'package:men/shared/cubit/states.dart';
 import '../../models/heir_processor_model.dart';

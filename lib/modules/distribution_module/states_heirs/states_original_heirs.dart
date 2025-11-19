@@ -1,6 +1,6 @@
 import 'states_subsidiary_heirs.dart';
-import '../../../models/heir_type_model.dart';
-import 'package:men/models/shares_model.dart';
+import '../../../shared/constants/heir_type.dart';
+import 'package:men/shared/constants/shares.dart';
 import '../../../models/heir_processor_model.dart';
 import '../../../models/rule_application_model.dart';
 import '../../../models/inheritance_state_model.dart';
