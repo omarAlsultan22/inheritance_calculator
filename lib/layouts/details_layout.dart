@@ -20,6 +20,7 @@ AppBar buildDetailsAppBar(BuildContext context) {
   );
 }
 
+
 Widget buildDetailsBody(Map<String, String> detailsItems) {
   return Padding(
     padding: const EdgeInsets.all(10.0),

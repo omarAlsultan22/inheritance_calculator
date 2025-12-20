@@ -1,14 +1,11 @@
-class TextValue {
-  int sum = 1;
-  bool toggle = true;
-  bool isFired = false;
-  final bool icon;
-  final bool con;
-  final String textValue;
+class HeirModel {
+  int totalHeirs = 1;
+  bool isShowing = true;
+  final bool removeIcon;
+  final String heirName;
   final bool backgroundColor;
 
-  TextValue(this.textValue,
-      this.icon,
-      this.con,
+  HeirModel(this.heirName,
+      this.removeIcon,
       this.backgroundColor);
 }

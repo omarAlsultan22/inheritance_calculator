@@ -1,3 +1,4 @@
+import 'package:men/models/item_model.dart';
 import 'package:men/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 import '../shared/cubit/states.dart';
@@ -84,15 +85,15 @@ Widget itemsMenu(DataCubit dataCubit) {
 }
 
 
-Widget _buildGridItem(DataCubit dataCubit, dynamic e) {
+Widget _buildGridItem(DataCubit dataCubit, HeirModel element) {
   return GestureDetector(
-    onTap: () => dataCubit.handleItemTap(e),
+    onTap: () => dataCubit.handleItemTap(element),
     child: Card(
       color: Colors.grey[700],
       child: Stack(
         children: [
           // Remove button
-          if (e.icon)
+          if (element.removeIcon)
             Align(
               alignment: AlignmentDirectional.topStart,
               child: IconButton(
@@ -103,7 +104,7 @@ Widget _buildGridItem(DataCubit dataCubit, dynamic e) {
                   Icons.highlight_remove_outlined,
                   color: Colors.white70,
                 ),
-                onPressed: () => dataCubit.removeItem(e),
+                onPressed: () => dataCubit.removeItem(element),
               ),
             ),
 
@@ -112,19 +113,19 @@ Widget _buildGridItem(DataCubit dataCubit, dynamic e) {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                e.textValue,
+                element.heirName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: e.backgroundColor ? Colors.white : Colors.black,
+                  color: element.backgroundColor ? Colors.white : Colors.black,
                 ),
               ),
             ),
           ),
 
           // Sum badge
-          if (!e.toggle)
+          if (!element.isShowing)
             Positioned(
               bottom: 4,
               right: 4,
@@ -136,7 +137,7 @@ Widget _buildGridItem(DataCubit dataCubit, dynamic e) {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  '${e.sum}',
+                  '${element.totalHeirs}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -164,7 +165,7 @@ Widget selectedItems(DataCubit dataCubit) {
         childAspectRatio: 0.9,
         children: dataCubit.multiList
             .expand((list) => list)
-            .map((e) => _buildGridItem(dataCubit, e))
+            .map((element) => _buildGridItem(dataCubit, element))
             .toList(),
       ),
     ),

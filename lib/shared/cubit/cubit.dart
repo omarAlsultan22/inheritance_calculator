@@ -60,7 +60,7 @@ class DataCubit extends Cubit<DataStates> {
     "الأخوة لأم"
   ];
 
-  final List<List<TextValue>> multiList = [
+  final List<List<HeirModel>> multiList = [
     _firstList,
     _secondList,
     _thirdList,
@@ -68,11 +68,11 @@ class DataCubit extends Cubit<DataStates> {
     _fifthList,
   ];
 
-  static List<TextValue> _firstList = [];
-  static List<TextValue> _secondList = [];
-  static List<TextValue> _thirdList = [];
-  static List<TextValue> _fourthList = [];
-  static List<TextValue> _fifthList = [];
+  static List<HeirModel> _firstList = [];
+  static List<HeirModel> _secondList = [];
+  static List<HeirModel> _thirdList = [];
+  static List<HeirModel> _fourthList = [];
+  static List<HeirModel> _fifthList = [];
 
 
   void sendWidgetContext(BuildContext currentContext) {
@@ -136,12 +136,12 @@ class DataCubit extends Cubit<DataStates> {
   bool checkCouple(String key) {
     if (key == 'الزوج') {
       return _firstList.any((item) =>
-      item.textValue == 'الزوجة');
+      item.heirName == 'الزوجة');
     }
 
     if (key == 'الزوجة') {
       return _firstList.any((item) =>
-      item.textValue == 'الزوج');
+      item.heirName == 'الزوج');
     }
 
     return false;
@@ -153,8 +153,8 @@ class DataCubit extends Cubit<DataStates> {
       return;
     }
 
-    final textValue = TextValue(value, true, true, true);
-    final List<TextValue> targetList = _getTargetList(value);
+    final textValue = HeirModel(value, true, true);
+    final List<HeirModel> targetList = _getTargetList(value);
 
     if (!_containsValue(targetList, value)) {
       targetList.add(textValue);
@@ -167,7 +167,7 @@ class DataCubit extends Cubit<DataStates> {
   }
 
 
-  List<TextValue> _getTargetList(String value) {
+  List<HeirModel> _getTargetList(String value) {
     if (_category1.contains(value)) return _firstList;
     if (_category2.contains(value)) return _secondList;
     if (_category3.contains(value)) return _thirdList;
@@ -175,15 +175,15 @@ class DataCubit extends Cubit<DataStates> {
     return _fifthList;
   }
 
-  bool _containsValue(List<TextValue> list, String value) {
+  bool _containsValue(List<HeirModel> list, String value) {
     for (final item in list) {
-      if (item.textValue == value) return true;
+      if (item.heirName == value) return true;
     }
     return false;
   }
 
 
-  void removeItem(TextValue e) {
+  void removeItem(HeirModel e) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_firstList.contains(e)) {
         _firstList.remove(e);
@@ -197,18 +197,18 @@ class DataCubit extends Cubit<DataStates> {
         _fifthList.remove(e);
       }
 
-      _inheritanceState.heirsItems!.remove(e.textValue);
+      _inheritanceState.heirsItems!.remove(e.heirName);
     });
     buttonLuck;
     emit(DataSuccessState());
   }
 
 
-  void handleItemTap(TextValue _e) {
+  void handleItemTap(HeirModel _e) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final process = heirsMap[_e.textValue];
+      final process = heirsMap[_e.heirName];
       if (process == null) {
-        print('Processor not found for: ${_e.textValue}');
+        print('Processor not found for: ${_e.heirName}');
         return;
       }
 
@@ -225,16 +225,16 @@ class DataCubit extends Cubit<DataStates> {
         'البنت', 'بنت الابن', 'الأخت الشقيقة', 'الأخت لأب'
       ];
 
-      if (_fixedItems.contains(_e.textValue)) {
-        _e.toggle = true;
-      } else if (_incrementableItems.contains(_e.textValue)) {
-        _e.toggle = false;
-        if (!_e.toggle) {
-          _e.sum++;
-          process.count = _e.sum;
+      if (_fixedItems.contains(_e.heirName)) {
+        _e.isShowing = true;
+      } else if (_incrementableItems.contains(_e.heirName)) {
+        _e.isShowing = false;
+        if (!_e.isShowing) {
+          _e.totalHeirs++;
+          process.count = _e.totalHeirs;
         }
       } else {
-        _e.toggle = !_e.toggle;
+        _e.isShowing = !_e.isShowing;
       }
     });
     emit(DataSuccessState());
@@ -245,9 +245,9 @@ class DataCubit extends Cubit<DataStates> {
     _inheritanceState.reset();
     for (final _list in multiList) {
       for (final _item in _list) {
-        final process = heirsMap[_item.textValue];
-        process!.count = _item.sum;
-        _inheritanceState.heirsItems![_item.textValue] = process;
+        final process = heirsMap[_item.heirName];
+        process!.count = _item.totalHeirs;
+        _inheritanceState.heirsItems![_item.heirName] = process;
       }
     }
 
