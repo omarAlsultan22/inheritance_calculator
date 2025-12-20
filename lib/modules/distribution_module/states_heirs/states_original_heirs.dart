@@ -143,7 +143,7 @@ class MotherProcessor extends HeirProcessor {
   RuleApplication getResult() {
     if (shouldBlock(state!)) {
       return InheritingApplication(
-          description: "ترث $heirName السدس في وجود فرع وارث الابن أو ابن الابن أو البنت أو بنت الابن أو أخوة",
+          description: "ترث $heirName السدس في وجود أخوة او فرع وارث ذكر او انثي",
           heirName: heirName,
           share: Shares.sixth,
           colorIndex: ColorsNumbers.tow
