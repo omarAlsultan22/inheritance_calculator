@@ -1,14 +1,14 @@
+import '../constants/heir_type.dart';
 import '../../models/item_model.dart';
 import 'package:flutter/material.dart';
-import '../constants/heir_type.dart';
 import 'package:men/models/data_model.dart';
 import 'package:men/shared/cubit/states.dart';
 import '../../models/heir_processor_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/inheritance_state_model.dart';
-import '../../modules/display_screen/display_screen.dart';
-import '../../modules/distribution_module/inheritance_manager.dart';
-import '../../modules/distribution_module/states_heirs/states_original_heirs.dart';
+import '../../screens/display_screen/display_screen.dart';
+import '../../screens/distribution_module/inheritance_manager.dart';
+import '../../screens/distribution_module/states_heirs/states_original_heirs.dart';
 
 
 class DataCubit extends Cubit<DataStates> {

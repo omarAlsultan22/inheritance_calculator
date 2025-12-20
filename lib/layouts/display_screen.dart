@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../modules/details_screen.dart';
+import '../screens/details_screen.dart';
 import 'package:men/shared/cubit/cubit.dart';
-import '../modules/display_screen/widgets/chart_widgets.dart';
-import '../modules/display_screen/painters/line_painter.dart';
-import '../modules/display_screen/widgets/animation_managers.dart';
-import '../modules/display_screen/painters/donut_chart_painter.dart';
+import '../screens/display_screen/widgets/chart_widgets.dart';
+import '../screens/display_screen/painters/line_painter.dart';
+import '../screens/display_screen/widgets/animation_managers.dart';
+import '../screens/display_screen/painters/donut_chart_painter.dart';
 
 
 AppBar buildDisplayAppBar(BuildContext context) {

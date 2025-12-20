@@ -1,6 +1,6 @@
+import 'package:men/screens/selection_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:men/shared/cubit/cubit.dart';
-import 'modules/selection_screen.dart';
 import 'package:flutter/material.dart';
 
 
