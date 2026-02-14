@@ -1,8 +1,8 @@
 import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
 import '../models/inheritance_update.dart';
-import '../../core/inheritance/inheritance_shares.dart';
 import '../../domain/entities/inheritance_state_model.dart';
+import '../../core/constants/inheritance/inheritance_shares.dart';
 
 
 class FatherOrGrandfatherInheritanceCalculator {

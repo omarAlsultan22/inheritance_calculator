@@ -1,9 +1,9 @@
 import '../../core/constants/colors_constants.dart';
-import '../../core/inheritance/inheritance_shares.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
+import '../../core/constants/inheritance/inheritance_shares.dart';
 
 
 class HusbandProcessor extends HeirProcessor {

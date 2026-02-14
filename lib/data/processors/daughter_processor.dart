@@ -1,11 +1,11 @@
 import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
-import 'package:men/core/constants/colors_constants.dart';
-import '../../core/inheritance/inheritance_shares.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
+import 'package:men/core/constants/colors_constants.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
+import '../../core/constants/inheritance/inheritance_shares.dart';
 
 
 class DaughterProcessor extends HeirProcessor {
