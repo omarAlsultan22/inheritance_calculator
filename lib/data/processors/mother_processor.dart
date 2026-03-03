@@ -1,11 +1,11 @@
 import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
-import '../../core/constants/colors_constants.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../core/constants/inheritance/inheritance_shares.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class MotherProcessor extends HeirProcessor {
@@ -28,7 +28,7 @@ class MotherProcessor extends HeirProcessor {
           description: "ترث $heirName السدس في وجود أخوة او فرع وارث ذكر او انثي",
           heirName: heirName,
           share: Shares.sixth,
-          colorIndex: ColorsConstants.tow
+          colorIndex: NaturalNumbersConstants.tow
       );
     }
     final calculator = MotherInheritanceCalculator(
@@ -40,7 +40,7 @@ class MotherProcessor extends HeirProcessor {
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: ColorsConstants.tow
+        colorIndex: NaturalNumbersConstants.tow
     );
   }
 
@@ -86,7 +86,7 @@ class MotherInheritanceCalculator {
 
   InheritanceResult CalculateShareRemainingThird() {
     return InheritanceResult(
-      share: _context.extra! / 3,
+      share: _context.extra! / NaturalNumbersConstants.there,
       description: "ترث الأم ثلث الباقي في أحد العمرتين مع الأب وأحد الزوجين",
     );
   }

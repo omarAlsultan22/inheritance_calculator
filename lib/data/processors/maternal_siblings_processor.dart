@@ -1,11 +1,11 @@
 import '../../core/enums/heir_type.dart';
-import '../../core/constants/colors_constants.dart';
 import '../../domain/rules/blocked_application.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../core/constants/inheritance/inheritance_shares.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class MaternalSiblingsProcessor extends HeirProcessor {
@@ -32,7 +32,7 @@ class MaternalSiblingsProcessor extends HeirProcessor {
         : "يرث $heirName الثلث في حالة عدم أصل أو فرع وارث";
 
     return InheritingApplication(
-      colorIndex: ColorsConstants.four,
+      colorIndex: NaturalNumbersConstants.four,
       heirName: heirName,
       share: share,
       count: count,

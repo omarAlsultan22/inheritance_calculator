@@ -1,12 +1,12 @@
 import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
-import '../../core/constants/colors_constants.dart';
 import '../../domain/rules/blocked_application.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../core/constants/inheritance/inheritance_shares.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class PaternalGrandmotherProcessor extends HeirProcessor {
@@ -34,7 +34,7 @@ class PaternalGrandmotherProcessor extends HeirProcessor {
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: ColorsConstants.one
+        colorIndex: NaturalNumbersConstants.one
     );
   }
 

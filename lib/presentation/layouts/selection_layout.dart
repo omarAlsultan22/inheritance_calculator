@@ -4,8 +4,11 @@ import '../states/management_items_state.dart';
 import '../cubits/management_items_cubit.dart';
 import '../../core/constants/heirs_constants.dart';
 import '../screens/display_screen/display_screen.dart';
+import 'package:men/core/constants/fonts_constants.dart';
 import 'package:men/presentation/utils/navigation_utils.dart';
+import 'package:men/core/constants/numbers/decimal_numbers.dart';
 import 'package:men/presentation/cubits/distribution_shares_cubit.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class SelectionLayout extends StatelessWidget {
@@ -15,12 +18,15 @@ class SelectionLayout extends StatelessWidget {
 
   SelectionLayout(this._state, this._dataCubit, {super.key});
 
+  static const zero = DecimalNumbersConstants.zero;
+  static const nineHundred = NaturalNumbersConstants.nineHundred;
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.grey[nineHundred],
         appBar: _buildSelectionAppBar(),
         body: Column(
           children: [
@@ -38,13 +44,13 @@ class SelectionLayout extends StatelessWidget {
 
   AppBar _buildSelectionAppBar() =>
       AppBar(
-        elevation: 0.0,
-        scrolledUnderElevation: 0.0,
-        backgroundColor: Colors.grey[900],
+        elevation: zero,
+        scrolledUnderElevation: zero,
+        backgroundColor: Colors.grey[nineHundred],
         title: const Text(
           "مواريث",
           style: TextStyle(
-            fontSize: 25,
+            fontSize: FontsConstants.fontSize,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),

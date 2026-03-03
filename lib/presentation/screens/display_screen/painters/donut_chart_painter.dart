@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../data/models/data_model.dart';
+import 'package:men/core/constants/numbers/decimal_numbers.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 // Donut Chart Painter
@@ -10,27 +12,33 @@ class DonutChartPainter extends CustomPainter {
 
   DonutChartPainter(this.dataset, this.fullAngle);
 
+  static const tow = 2.0;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final c = Offset(size.width / 2.0, size.height / 2.0);
+    const zero = DecimalNumbersConstants.zero;
+    const oneHundredEighty = 180.0;
+
+    final c = Offset(size.width / tow, size.height / tow);
     final radius = size.width * 0.9;
     final rect = Rect.fromCenter(center: c, width: radius, height: radius);
-    double startAngle = 0.0;
+    double startAngle = zero;
 
     // Draw background circle
-    canvas.drawArc(rect, startAngle, fullAngle * pi / 180.0, false, linePaint);
+    canvas.drawArc(
+        rect, startAngle, fullAngle * pi / oneHundredEighty, false, linePaint);
 
     // Draw sectors
     for (var di in dataset) {
-      double sweepAngle = di.amount * fullAngle * pi / 180.0;
+      double sweepAngle = di.amount * fullAngle * pi / oneHundredEighty;
       drawSectors(canvas, di, rect, startAngle, sweepAngle);
       startAngle += sweepAngle;
     }
 
     // Draw lines and labels
-    startAngle = 0.0;
+    startAngle = zero;
     for (var di in dataset) {
-      double sweepAngle = di.amount * fullAngle * pi / 180.0;
+      double sweepAngle = di.amount * fullAngle * pi / oneHundredEighty;
       drawLine(canvas, c, radius, startAngle);
       drawLabel(canvas, c, radius, startAngle, sweepAngle, di);
       startAngle += sweepAngle;
@@ -52,9 +60,12 @@ class DonutChartPainter extends CustomPainter {
 
   void drawLabel(Canvas canvas, Offset c, double radius, double startAngle,
       double sweepAngle, ItemModel di) {
+    const five = NaturalNumbersConstants.five;
+    const oneHundred = DecimalNumbersConstants.oneHundred;
+
     final r = radius * 0.4;
-    final dx = r * cos(startAngle + sweepAngle / 2.0);
-    final dy = r * sin(startAngle + sweepAngle / 2.0);
+    final dx = r * cos(startAngle + sweepAngle / tow);
+    final dy = r * sin(startAngle + sweepAngle / tow);
     final position = c + Offset(dx, dy);
 
     drawTextCentered(
@@ -62,12 +73,12 @@ class DonutChartPainter extends CustomPainter {
         position,
         di.title,
         labelStyle,
-        100.0,
+        oneHundred,
             (Size sz) {
           final rect = Rect.fromCenter(
               center: position,
-              width: sz.width + 5,
-              height: sz.height + 5
+              width: sz.width + five,
+              height: sz.height + five
           );
           final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(5));
           canvas.drawRRect(rrect, midPaint);
@@ -76,8 +87,8 @@ class DonutChartPainter extends CustomPainter {
   }
 
   void drawLine(Canvas canvas, Offset c, double radius, double startAngle) {
-    final dx = radius / 2.0 * cos(startAngle);
-    final dy = radius / 2.0 * sin(startAngle);
+    final dx = radius / tow * cos(startAngle);
+    final dy = radius / tow * sin(startAngle);
     final p2 = c + Offset(dx, dy);
     canvas.drawLine(c, p2, linePaint);
   }
@@ -105,7 +116,7 @@ class DonutChartPainter extends CustomPainter {
   Size drawTextCentered(Canvas canvas, Offset position, String text,
       TextStyle style, double maxWidth, Function(Size sz) bgCb) {
     final tp = measureText(text, style, maxWidth, TextAlign.center);
-    final pos = position + Offset(-tp.width / 2.0, -tp.height / 2.0);
+    final pos = position + Offset(-tp.width / tow, -tp.height / tow);
     //bgCb(tp.size);
     tp.paint(canvas, pos);
     return tp.size;

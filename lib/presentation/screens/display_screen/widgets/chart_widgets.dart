@@ -1,3 +1,4 @@
+import 'package:men/core/constants/numbers/decimal_numbers.dart';
 import '../../../../data/models/data_model.dart';
 import '../painters/donut_chart_painter.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +34,9 @@ class ChartLabelWidget extends StatelessWidget {
         children: <Widget>[
           Container(
             child: Transform.translate(
-              offset: Offset(anime, 0.0),
+              offset: Offset(anime, DecimalNumbersConstants.zero),
               child: Text(label,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 25,
                       fontWeight: FontWeight.bold
@@ -43,10 +44,10 @@ class ChartLabelWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 40.0),
+          const SizedBox(width: 40.0),
           Container(child: CustomPaint(painter: linePainter)),
           Transform.translate(
-              offset: Offset(-animation.value + -10.0, 5.0),
+              offset: Offset(-animation.value + -10.0, DecimalNumbersConstants.five),
               child: Text("${value.toString()}%",
                   style: TextStyle(
                       fontSize: 18.0,
@@ -73,9 +74,10 @@ class DonutChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const threeHundred = 300.0;
     return Container(
-      width: 300.0,
-      height: 300.0,
+      width: threeHundred,
+      height: threeHundred,
       child: CustomPaint(
         painter: DonutChartPainter(dataItems, fullAngle),
       ),

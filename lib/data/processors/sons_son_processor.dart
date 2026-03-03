@@ -1,10 +1,10 @@
 import '../../core/enums/heir_type.dart';
-import '../../core/constants/colors_constants.dart';
 import '../../domain/rules/blocked_application.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class SonsSonProcessor extends HeirProcessor{
@@ -20,7 +20,7 @@ class SonsSonProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-      colorIndex: ColorsConstants.five,
+      colorIndex: NaturalNumbersConstants.five,
       heirName: heirName,
       share: state!.extra,
       count: count,

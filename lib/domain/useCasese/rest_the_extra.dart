@@ -11,20 +11,20 @@ class RestTheExtra {
     final _currentHeirsDetails = _inheritanceState.heirsDetails;
 
     if (_extra != 0.0) {
-      const String value = 'الباقي';
+      const key = 'الباقي';
 
       return DistributionSharesState(
         heirsData: [
           ..._currentHeirsData,
           ItemModel(
             amount: _extra,
-            title: value,
+            title: key,
             color: const Color(0xFF388E3C),
           ),
         ],
         heirsDetails: {
           ..._currentHeirsDetails,
-          value: 'يقسم الباقي علي الورثة الموجودين بالتساوي في حالة عدم وجود معصب'
+          key: 'يقسم الباقي علي الورثة الموجودين بالتساوي في حالة عدم وجود معصب'
         },
       );
     }

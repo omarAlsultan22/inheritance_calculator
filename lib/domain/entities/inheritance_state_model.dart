@@ -90,7 +90,7 @@ class InheritanceState {
 
 
   void updateExtra() {
-    baseValue = 0.16;
-    extra = extra! - baseValue!;
+    const baseValue = 0.16;
+    extra = extra! - baseValue;
   }
 }

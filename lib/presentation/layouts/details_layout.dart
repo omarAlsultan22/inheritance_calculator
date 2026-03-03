@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:men/core/constants/numbers/decimal_numbers.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class DetailsLayout extends StatelessWidget {
@@ -12,7 +14,7 @@ class DetailsLayout extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: _buildDetailsAppBar(context),
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.grey[NaturalNumbersConstants.nineHundred],
         body: _buildDetailsBody(_heirsDetails),
       ),
     );
@@ -21,7 +23,7 @@ class DetailsLayout extends StatelessWidget {
 
   AppBar _buildDetailsAppBar(BuildContext context) {
     return AppBar(
-      scrolledUnderElevation: 0.0,
+      scrolledUnderElevation: DecimalNumbersConstants.zero,
       title: const Text(
         'الشرح',
         style: TextStyle(

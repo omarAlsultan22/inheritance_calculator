@@ -3,6 +3,7 @@ import '../models/inheritance_result.dart';
 import '../models/inheritance_update.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../core/constants/inheritance/inheritance_shares.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class FatherOrGrandfatherInheritanceCalculator {
@@ -11,6 +12,7 @@ class FatherOrGrandfatherInheritanceCalculator {
   FatherOrGrandfatherInheritanceCalculator(this._context);
 
   final update = InheritanceUpdate();
+  static const tow = NaturalNumbersConstants.tow;
 
   InheritanceResult calculate() {
     if (_hasMaleDescendant()) {
@@ -63,7 +65,7 @@ class FatherOrGrandfatherInheritanceCalculator {
       final daughterCount = _context.heirsItems![HeirType.daughter.heirName]!
           .count;
 
-      final isSingle = daughterCount < 2;
+      final isSingle = daughterCount < tow;
 
       final share = isSingle ? Shares.hafe : Shares.twoThirds;
       final finalShare = totalShare - share;
@@ -85,7 +87,7 @@ class FatherOrGrandfatherInheritanceCalculator {
       final sonsDaughterCount = _context.heirsItems![HeirType.daughter
           .heirName]!.count;
 
-      final isSingle = sonsDaughterCount < 2;
+      final isSingle = sonsDaughterCount < tow;
 
       final share = isSingle ? Shares.hafe : Shares.twoThirds;
       final finalShare = totalShare - share;

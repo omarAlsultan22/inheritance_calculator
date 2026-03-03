@@ -2,10 +2,10 @@ import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
-import 'package:men/core/constants/colors_constants.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../core/constants/inheritance/inheritance_shares.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class DaughterProcessor extends HeirProcessor {
@@ -23,7 +23,7 @@ class DaughterProcessor extends HeirProcessor {
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: ColorsConstants.four
+        colorIndex: NaturalNumbersConstants.four
     );
   }
 
@@ -64,7 +64,7 @@ class DaughterInheritanceCalculator{
   InheritanceResult _calculateOneShareInnervation() {
 
     final sonsCount = _context.heirsItems![HeirType.son.heirName]!.count;
-    final share = _context.extra! / (sonsCount * 2 + _context.count!);
+    final share = _context.extra! / (sonsCount * NaturalNumbersConstants.tow + _context.count!);
     final totalShare = share * _context.count!;
     final heirName = _context.heirName;
 

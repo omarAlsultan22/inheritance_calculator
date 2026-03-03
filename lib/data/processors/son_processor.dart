@@ -1,7 +1,7 @@
-import '../../core/constants/colors_constants.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class SonProcessor extends HeirProcessor {
@@ -10,7 +10,7 @@ class SonProcessor extends HeirProcessor {
   @override
   RuleApplication getResult() {
     return InheritingApplication(
-      colorIndex: ColorsConstants.five,
+      colorIndex: NaturalNumbersConstants.five,
       heirName: heirName,
       share: state!.extra,
       count: count,

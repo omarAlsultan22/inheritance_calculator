@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../utils/navigation_utils.dart';
 import '../screens/details_screen.dart';
 import '../../data/models/data_model.dart';
+import 'package:men/core/constants/fonts_constants.dart';
 import '../screens/display_screen/widgets/chart_widgets.dart';
 import '../screens/display_screen/painters/line_painter.dart';
 import '../screens/display_screen/widgets/animation_managers.dart';
 import '../screens/display_screen/painters/donut_chart_painter.dart';
+import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class DisplayLayout extends StatelessWidget {
@@ -21,12 +23,15 @@ class DisplayLayout extends StatelessWidget {
       : _animationManager = animationManager,
         _dataHeirs = dataHeirs;
 
+  static const fontSize = FontsConstants.fontSize;
+  static const nineHundred = NaturalNumbersConstants.nineHundred;
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.grey[nineHundred],
         appBar: _buildDisplayAppBar(context),
         body: _buildDisplayBody(_dataHeirs, context, _animationManager),
       ),
@@ -40,7 +45,7 @@ class DisplayLayout extends StatelessWidget {
       title: const Text(
         'النتيجة',
         style: TextStyle(
-          fontSize: 25,
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
@@ -51,7 +56,7 @@ class DisplayLayout extends StatelessWidget {
           Navigator.of(context).pop();
         },
       ),
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.grey[nineHundred],
     );
   }
 
@@ -59,12 +64,13 @@ class DisplayLayout extends StatelessWidget {
   Widget _buildDisplayBody(List<ItemModel> dataHeirs,
       BuildContext context,
       DisplayAnimationManager animationManager) {
+    const threeHundred = 300.0;
     return Column(
       children: [
         Center(
           child: Container(
-            width: 300.0,
-            height: 300.0,
+            width: threeHundred,
+            height: threeHundred,
             child: CustomPaint(
               painter: DonutChartPainter(
                   dataHeirs,
@@ -101,14 +107,14 @@ class DisplayLayout extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: MaterialButton(
-            height: 50,
+            height: 50.0,
             onPressed: () {
               navigator(context, DetailsScreen());
             },
             child: const Text(
               "التفاصيل",
               style: TextStyle(
-                fontSize: 25,
+                fontSize: fontSize,
                 fontWeight: FontWeight.bold,
               ),
             ),
