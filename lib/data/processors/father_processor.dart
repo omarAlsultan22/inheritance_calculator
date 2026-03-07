@@ -27,7 +27,6 @@ class FatherProcessor extends HeirProcessor {
     );
   }
 
-
   InheritanceState _createContext() {
     return InheritanceState(
       extra: state!.extra,

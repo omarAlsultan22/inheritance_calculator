@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:men/core/constants/fonts_constants.dart';
+import 'package:men/core/constants/colors_constants.dart';
 import 'package:men/core/constants/numbers/decimal_numbers.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class DetailsLayout extends StatelessWidget {
@@ -8,13 +9,16 @@ class DetailsLayout extends StatelessWidget {
 
   const DetailsLayout(this._heirsDetails, {super.key});
 
+  static const _white = ColorsConstants.white;
+  static const _grey900 = ColorsConstants.grey_900;
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: _buildDetailsAppBar(context),
-        backgroundColor: Colors.grey[NaturalNumbersConstants.nineHundred],
+        backgroundColor: _grey900,
         body: _buildDetailsBody(_heirsDetails),
       ),
     );
@@ -27,16 +31,16 @@ class DetailsLayout extends StatelessWidget {
       title: const Text(
         'الشرح',
         style: TextStyle(
-          fontSize: 25.0,
+          fontSize: FontsConstants.fontSize,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: _white,
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+        icon: const Icon(Icons.arrow_back_ios_new, color: _white),
         onPressed: () => Navigator.pop(context),
       ),
-      backgroundColor: Colors.grey[900],
+      backgroundColor: _grey900,
     );
   }
 
@@ -50,7 +54,7 @@ class DetailsLayout extends StatelessWidget {
         separatorBuilder: (context, index) =>
         const Divider(
           height: 1,
-          color: Colors.white,
+          color: _white,
           thickness: 0.1,
         ),
         itemBuilder: (context, index) {
@@ -75,7 +79,7 @@ class DetailsLayout extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.amber,
+                color: ColorsConstants.amber,
               ),
             ),
           ),
@@ -86,7 +90,7 @@ class DetailsLayout extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.normal,
-                color: Colors.white,
+                color: _white,
               ),
             ),
           ),

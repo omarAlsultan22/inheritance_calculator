@@ -7,8 +7,8 @@ import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class DisplayAnimationManager {
-  final TickerProvider vsync;
-  final DistributionSharesState state;
+  final TickerProvider _vsync;
+  final DistributionSharesState _state;
   late Timer _timer;
   late AnimationController _textController, _lineController;
   late Animation<double> animation;
@@ -21,14 +21,14 @@ class DisplayAnimationManager {
   VoidCallback? onUpdate;
   bool _chartCompleted = false;
 
-  static const zero = NaturalNumbersConstants.zero;
+  static const _zero = NaturalNumbersConstants.zero;
 
-  DisplayAnimationManager({required this.vsync, required this.state}) {
-    initDegreesAndShowLines();
+  DisplayAnimationManager({required TickerProvider vsync, required DistributionSharesState state}) : _state = state, _vsync = vsync {
+    _initDegreesAndShowLines();
   }
 
-  void initDegreesAndShowLines() {
-    for (var i = zero; i < state.heirsData!.length; i++) {
+  void _initDegreesAndShowLines() {
+    for (var i = _zero; i < _state.heirsData!.length; i++) {
       degrees.add(0);
       showLines.add(false);
     }
@@ -48,7 +48,7 @@ class DisplayAnimationManager {
   void _initTextAnimation() {
     _textController = AnimationController(
       duration: const Duration(seconds: 1),
-      vsync: vsync,
+      vsync: _vsync,
     );
     animation = Tween(begin: 200.0, end: -20.0).animate(_textController)
       ..addListener(() {
@@ -72,11 +72,11 @@ class DisplayAnimationManager {
   void _initLineAnimation() {
     _lineController = AnimationController(
       duration: const Duration(seconds: 3),
-      vsync: vsync,
+      vsync: _vsync,
     );
 
     // Initialize line animations
-    for (var item in state.heirsData!) {
+    for (var item in _state.heirsData!) {
       animations.add(
         Tween<double>(begin: DecimalNumbersConstants.zero, end: item.amount * 300).animate(
           CurvedAnimation(
@@ -101,20 +101,20 @@ class DisplayAnimationManager {
     _lineTimers.clear();
 
     // ابدأ timers جديدة لكل عنصر
-    for (int i = zero; i < state.heirsData!.length; i++) {
+    for (int i = _zero; i < _state.heirsData!.length; i++) {
       _startLineTimer(i);
     }
   }
 
   void _startLineTimer(int index) {
-    final targetValue = (state.heirsData![index].amount * DecimalNumbersConstants.oneHundred).toInt();
+    final targetValue = (_state.heirsData![index].amount * DecimalNumbersConstants.oneHundred).toInt();
     final duration = const Duration(seconds: 1); // مدة زيادة الرقم
     final steps = targetValue;
     final stepDuration = duration ~/ steps;
 
     showLines[index] = true; // أظهر الخط فوراً
 
-    int currentStep = zero;
+    int currentStep = _zero;
 
     final timer = Timer.periodic(stepDuration, (timer) {
       if (currentStep < steps) {

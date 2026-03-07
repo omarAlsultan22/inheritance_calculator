@@ -17,7 +17,6 @@ class DaughterProcessor extends HeirProcessor {
         _createContext());
     final result = calculator.calculate();
 
-
     return InheritingApplication(
         count: count,
         description: result.description,

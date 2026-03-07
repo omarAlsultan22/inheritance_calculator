@@ -8,7 +8,11 @@ abstract class HeirProcessor {
   HeirType heirType;
   InheritanceState? state;
 
-  HeirProcessor({this.state, required this.heirType, this.count = 0});
+  HeirProcessor({
+    this.state,
+    this.count = 0,
+    required this.heirType
+  });
 
   bool get isSingle => count < 2;
 

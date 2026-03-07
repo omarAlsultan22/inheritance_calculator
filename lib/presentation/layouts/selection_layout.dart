@@ -5,28 +5,33 @@ import '../cubits/management_items_cubit.dart';
 import '../../core/constants/heirs_constants.dart';
 import '../screens/display_screen/display_screen.dart';
 import 'package:men/core/constants/fonts_constants.dart';
+import 'package:men/core/constants/colors_constants.dart';
 import 'package:men/presentation/utils/navigation_utils.dart';
 import 'package:men/core/constants/numbers/decimal_numbers.dart';
 import 'package:men/presentation/cubits/distribution_shares_cubit.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
 class SelectionLayout extends StatelessWidget {
   ManagementItemsState _state;
   ManagementItemsCubit _dataCubit;
-  bool isLoading = false;
+  bool _isLoading = false;
 
   SelectionLayout(this._state, this._dataCubit, {super.key});
 
-  static const zero = DecimalNumbersConstants.zero;
-  static const nineHundred = NaturalNumbersConstants.nineHundred;
+  //numbers
+  static const _zero = DecimalNumbersConstants.zero;
+
+  //colors
+  static const _black = Colors.black;
+  static const _white = ColorsConstants.white;
+  static const _grey900 = ColorsConstants.grey_900;
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Colors.grey[nineHundred],
+        backgroundColor: _grey900,
         appBar: _buildSelectionAppBar(),
         body: Column(
           children: [
@@ -44,15 +49,15 @@ class SelectionLayout extends StatelessWidget {
 
   AppBar _buildSelectionAppBar() =>
       AppBar(
-        elevation: zero,
-        scrolledUnderElevation: zero,
-        backgroundColor: Colors.grey[nineHundred],
+        elevation: _zero,
+        scrolledUnderElevation: _zero,
+        backgroundColor: _grey900,
         title: const Text(
           "مواريث",
           style: TextStyle(
             fontSize: FontsConstants.fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: _white,
           ),
         ),
       );
@@ -64,7 +69,7 @@ class SelectionLayout extends StatelessWidget {
       style: TextStyle(
         fontSize: 40,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: _white,
       ),
       textAlign: TextAlign.center,
     );
@@ -81,17 +86,17 @@ class SelectionLayout extends StatelessWidget {
         menuMaxHeight: 200,
         hint: const Text(
           'أختر',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: _white),
         ),
         value: state.selectedItem,
-        dropdownColor: Colors.grey[800],
+        dropdownColor: const Color(0xFF424242),
         borderRadius: BorderRadius.circular(10),
         items: HeirsListsConstants.heirsList.map((String key) {
           return DropdownMenuItem<String>(
             value: key,
             child: Text(
               key,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: _white),
             ),
           );
         }).toList(),
@@ -109,7 +114,7 @@ class SelectionLayout extends StatelessWidget {
     return GestureDetector(
       onTap: () => _dataCubit.updateHeir(element),
       child: Card(
-        color: Colors.grey[700],
+        color: const Color(0xFF616161),
         child: Stack(
           children: [
             // Remove button
@@ -138,8 +143,7 @@ class SelectionLayout extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: element.backgroundColor ? Colors.white : Colors
-                        .black,
+                    color: element.backgroundColor ? _white : _black,
                   ),
                 ),
               ),
@@ -154,13 +158,13 @@ class SelectionLayout extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: _black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '${element.totalHeirs}',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: _white,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -193,27 +197,26 @@ class SelectionLayout extends StatelessWidget {
     );
   }
 
-
   Widget _calculateButton(BuildContext context) {
     final _isActive = _state.isActive!;
     return Container(
       width: double.infinity,
-      color: _isActive ? Colors.amber : Colors.grey[600],
+      color: _isActive ? ColorsConstants.amber : const Color(0xFF757575),
       child: MaterialButton(
         onPressed: () {
-          isLoading = true;
+          _isLoading = true;
           _isActive ? DistributionSharesCubit.get(context)
               .executeDistribution()
               .then((_) {
-            navigator(context, DisplayScreen());
-            isLoading = false;
+            NavigationUtils.navigator(context, DisplayScreen());
+            _isLoading = false;
           }) : null;
         },
-        child: isLoading
+        child: _isLoading
             ? const Padding(
           padding: EdgeInsets.all(8.0),
           child: Center(
-            child: CircularProgressIndicator(color: Colors.black),
+            child: CircularProgressIndicator(color: _black),
           ),
         )
             : const Text(
@@ -221,7 +224,7 @@ class SelectionLayout extends StatelessWidget {
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: _white,
           ),
         ),
       ),
