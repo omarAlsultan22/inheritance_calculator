@@ -34,7 +34,9 @@ void main() {
                     )
             )
           ],
-          child: const MyApp()));
+          child: const MyApp()
+      )
+  );
 }
 
 

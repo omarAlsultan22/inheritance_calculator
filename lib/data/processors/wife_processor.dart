@@ -2,7 +2,7 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import '../../core/constants/inheritance/inheritance_shares.dart';
+import '../../presentation/constants/inheritance_shares.dart';
 import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
@@ -16,7 +16,7 @@ class WifeProcessor extends HeirProcessor {
           count: count,
           description: "ترث $heirName الثمن في حالة وجود فرع وارث ذكر أو أنثي",
           heirName: heirName,
-          share: Shares.eighth,
+          share: InheritanceShares.eighth,
           colorIndex: NaturalNumbersConstants.zero
       );
     }
@@ -24,7 +24,7 @@ class WifeProcessor extends HeirProcessor {
         count: count,
         description: "ترث $heirName الربع في حالة عدم وجود فرع وارث ذكر أو أنثي",
         heirName: heirName,
-        share: Shares.quarter,
+        share: InheritanceShares.quarter,
         colorIndex: NaturalNumbersConstants.zero
     );
   }

@@ -4,7 +4,7 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import '../../core/constants/inheritance/inheritance_shares.dart';
+import '../../presentation/constants/inheritance_shares.dart';
 import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
@@ -27,7 +27,7 @@ class MotherProcessor extends HeirProcessor {
       return InheritingApplication(
           description: "ترث $heirName السدس في وجود أخوة او فرع وارث ذكر او انثي",
           heirName: heirName,
-          share: Shares.sixth,
+          share: InheritanceShares.sixth,
           colorIndex: NaturalNumbersConstants.tow
       );
     }
@@ -93,7 +93,7 @@ class MotherInheritanceCalculator {
 
   InheritanceResult CalculateOneThirdShare() {
     return InheritanceResult(
-      share: Shares.third,
+      share: InheritanceShares.third,
       description: "ترث الأم الثلث في غياب الفرع الوراث ذكور واناث والأخوة الأشقاء ذكور واناث والأخت لأب",
     );
   }

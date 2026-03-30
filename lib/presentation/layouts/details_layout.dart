@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:men/core/constants/fonts_constants.dart';
 import 'package:men/core/constants/colors_constants.dart';
 import 'package:men/core/constants/numbers/decimal_numbers.dart';
 
@@ -9,8 +8,20 @@ class DetailsLayout extends StatelessWidget {
 
   const DetailsLayout(this._heirsDetails, {super.key});
 
-  static const _white = ColorsConstants.white;
-  static const _grey900 = ColorsConstants.grey_900;
+  //colors
+  static const _white = AppConstants.white;
+  static const _grey900 = AppConstants.grey_900;
+
+  //paddings
+  static const _paddingAll = DecimalNumbersConstants.twenty;
+  static const _smallFont = _paddingAll;
+
+  //fonts
+  static const _midFont = 15.0;
+  static const _paddingSymmetric = _midFont;
+
+  //spacing
+  static const _spacing = DecimalNumbersConstants.ten;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +42,7 @@ class DetailsLayout extends StatelessWidget {
       title: const Text(
         'الشرح',
         style: TextStyle(
-          fontSize: FontsConstants.fontSize,
+          fontSize: AppConstants.fontSize,
           fontWeight: FontWeight.bold,
           color: _white,
         ),
@@ -47,13 +58,13 @@ class DetailsLayout extends StatelessWidget {
 
   Widget _buildDetailsBody(Map<String, String> detailsItems) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(_paddingAll),
       child: ListView.separated(
         shrinkWrap: true,
         itemCount: detailsItems.length,
         separatorBuilder: (context, index) =>
         const Divider(
-          height: 1,
+          height: 1.0,
           color: _white,
           thickness: 0.1,
         ),
@@ -69,7 +80,7 @@ class DetailsLayout extends StatelessWidget {
 
   Widget _buildDetailRow(String key, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      padding: const EdgeInsets.symmetric(vertical: _paddingSymmetric),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,18 +88,18 @@ class DetailsLayout extends StatelessWidget {
             child: Text(
               key,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: _midFont,
                 fontWeight: FontWeight.bold,
-                color: ColorsConstants.amber,
+                color: AppConstants.amber,
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: _spacing),
           Expanded(
             child: Text(
               value,
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: _smallFont,
                 fontWeight: FontWeight.normal,
                 color: _white,
               ),

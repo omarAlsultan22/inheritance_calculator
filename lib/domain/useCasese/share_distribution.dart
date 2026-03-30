@@ -1,7 +1,7 @@
 import '../services/inheritance_manager.dart';
 import '../entities/inheritance_state_model.dart';
-import '../../core/constants/heirs_constants.dart';
 import '../../core/services/inheritance_service.dart';
+import '../../presentation/constants/heirs_constants.dart';
 
 
 class ShareDistribution {

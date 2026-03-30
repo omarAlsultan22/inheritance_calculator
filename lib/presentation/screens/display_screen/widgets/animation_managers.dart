@@ -18,18 +18,27 @@ class DisplayAnimationManager {
   List<bool> showLines = [];
   List<Animation<double>> animations = [];
   List<Timer> _lineTimers = []; // لتتبع الـ timers النشطة
-  VoidCallback? onUpdate;
+  VoidCallback? _onUpdate;
   bool _chartCompleted = false;
 
-  static const _zero = NaturalNumbersConstants.zero;
+  //values
+  static const _endValue_ = 300;
+  static const _fullAngleValue = 360.0;
+  static const _milliseconds = 1000 ~/ 60;
+  static const _variableValue = NaturalNumbersConstants.zero;
+  static const _beginValue = DecimalNumbersConstants.towHundred;
+  static const _endValue = DecimalNumbersConstants.twenty;
 
-  DisplayAnimationManager({required TickerProvider vsync, required DistributionSharesState state}) : _state = state, _vsync = vsync {
+  DisplayAnimationManager({
+    required TickerProvider vsync,
+    required DistributionSharesState state
+  }) : _state = state, _vsync = vsync {
     _initDegreesAndShowLines();
   }
 
   void _initDegreesAndShowLines() {
-    for (var i = _zero; i < _state.heirsData!.length; i++) {
-      degrees.add(0);
+    for (var i = _variableValue; i < _state.heirsData!.length; i++) {
+      degrees.add(_variableValue);
       showLines.add(false);
     }
   }
@@ -39,7 +48,7 @@ class DisplayAnimationManager {
     _initDonutChartAnimation();
     _initLineAnimation();
     _textController.forward();
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: NaturalNumbersConstants.tow), () {
       _startAllLineTimers();
       _lineController.forward();
     });
@@ -47,38 +56,38 @@ class DisplayAnimationManager {
 
   void _initTextAnimation() {
     _textController = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: NaturalNumbersConstants.one),
       vsync: _vsync,
     );
-    animation = Tween(begin: 200.0, end: -20.0).animate(_textController)
+    animation = Tween(begin: _beginValue, end: -_endValue).animate(_textController)
       ..addListener(() {
-        onUpdate?.call();
+        _onUpdate?.call();
       });
   }
 
   void _initDonutChartAnimation() {
-    const threeHundredSixty = 360.0;
-    _timer = Timer.periodic(const Duration(milliseconds: 1000 ~/ 60), (timer) {
-      fullAngle += threeHundredSixty / (_secondsToComplete * 1000 / 60);
-      if (fullAngle >= threeHundredSixty) {
-        fullAngle = threeHundredSixty;
-        timer.cancel();
-        _chartCompleted = true;
-      }
-      onUpdate?.call();
-    });
+    _timer =
+        Timer.periodic(const Duration(milliseconds: _milliseconds), (timer) {
+          fullAngle += _fullAngleValue / (_secondsToComplete * _milliseconds);
+          if (fullAngle >= _fullAngleValue) {
+            fullAngle = _fullAngleValue;
+            timer.cancel();
+            _chartCompleted = true;
+          }
+          _onUpdate?.call();
+        });
   }
 
   void _initLineAnimation() {
     _lineController = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: NaturalNumbersConstants.there),
       vsync: _vsync,
     );
 
     // Initialize line animations
     for (var item in _state.heirsData!) {
       animations.add(
-        Tween<double>(begin: DecimalNumbersConstants.zero, end: item.amount * 300).animate(
+        Tween<double>(begin: DecimalNumbersConstants.zero, end: item.amount * _endValue_).animate(
           CurvedAnimation(
             parent: _lineController,
             curve: Curves.easeInOut,
@@ -89,7 +98,7 @@ class DisplayAnimationManager {
 
     // استمع لاكتمال أنيميشن الخطوط
     _lineController.addListener(() {
-      onUpdate?.call();
+      _onUpdate?.call();
     });
   }
 
@@ -101,7 +110,7 @@ class DisplayAnimationManager {
     _lineTimers.clear();
 
     // ابدأ timers جديدة لكل عنصر
-    for (int i = _zero; i < _state.heirsData!.length; i++) {
+    for (int i = _variableValue; i < _state.heirsData!.length; i++) {
       _startLineTimer(i);
     }
   }
@@ -114,18 +123,18 @@ class DisplayAnimationManager {
 
     showLines[index] = true; // أظهر الخط فوراً
 
-    int currentStep = _zero;
+    int currentStep = _variableValue;
 
     final timer = Timer.periodic(stepDuration, (timer) {
       if (currentStep < steps) {
         degrees[index] = ((currentStep + NaturalNumbersConstants.one) * targetValue ~/ steps);
         currentStep++;
-        onUpdate?.call();
+        _onUpdate?.call();
       } else {
         degrees[index] = targetValue; // التأكد من الوصول للقيمة النهائية
         timer.cancel();
         _lineTimers.remove(timer);
-        onUpdate?.call();
+        _onUpdate?.call();
       }
     });
 

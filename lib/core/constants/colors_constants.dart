@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 
-class ColorsConstants {
+class AppConstants {
+  //fonts
+  static const fontSize = 25.0;
 
+  //colors
   static const amber = Colors.amber;
   static const white = Colors.white;
   static const grey_900 = Color(0xFF212121);

@@ -5,7 +5,7 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import '../../core/constants/inheritance/inheritance_shares.dart';
+import '../../presentation/constants/inheritance_shares.dart';
 import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
@@ -100,7 +100,7 @@ class SonsDaughterInheritanceCalculator {
     final heirName = _context.heirName;
 
     return InheritanceResult(
-      share: Shares.sixth,
+      share: InheritanceShares.sixth,
       description: "ترث $heirName السدس في وجود البنت",
     );
   }
@@ -119,6 +119,6 @@ class SonsDaughterInheritanceCalculator {
   }
 
   double getShare() {
-    return _context.isHeirSingle! ? Shares.hafe : Shares.twoThirds;
+    return _context.isHeirSingle! ? InheritanceShares.hafe : InheritanceShares.twoThirds;
   }
 }

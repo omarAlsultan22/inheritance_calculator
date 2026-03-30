@@ -57,13 +57,13 @@ class InheritanceState {
       if (heirsCount != null && heirsCount > 1) {
         heirsData.add(ItemModel(amount: share,
             title: '${heirsCount.toString()} من $heirName',
-            color: ColorsConstants.getColor(colorIndex)));
+            color: AppConstants.getColor(colorIndex)));
       }
       else {
         heirsData.add(ItemModel(
             amount: share,
             title: heirName,
-            color: ColorsConstants.getColor(colorIndex)));
+            color: AppConstants.getColor(colorIndex)));
       }
       heirsDone[heirName] = true;
     }

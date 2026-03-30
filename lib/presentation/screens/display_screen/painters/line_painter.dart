@@ -11,16 +11,19 @@ class LinePainter extends CustomPainter {
 
   LinePainter(this._animation, this._lineColor, this._showLine);
 
+  static const _dx = DecimalNumbersConstants.zero;
+  static const _dy = NaturalNumbersConstants.five;
+  static const _value = DecimalNumbersConstants.ten;
+
   @override
   void paint(Canvas canvas, Size size) {
-    const five = NaturalNumbersConstants.five;
     if (_showLine) {
       final paint = Paint()
         ..color = _lineColor
-        ..strokeWidth = 10;
+        ..strokeWidth = _value;
 
-      final c = Offset(DecimalNumbersConstants.zero, size.height + five);
-      canvas.drawLine(c, Offset(-_animation.value, size.height + five), paint);
+      final c = Offset(_dx, size.height + _dy);
+      canvas.drawLine(c, Offset(-_animation.value, size.height + _dy), paint);
     }
   }
 

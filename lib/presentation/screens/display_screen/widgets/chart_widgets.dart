@@ -1,6 +1,6 @@
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
 import 'package:flutter/material.dart';
 import '../painters/line_painter.dart';
+import 'package:men/core/constants/numbers/decimal_numbers.dart';
 
 
 class ChartLabelWidget extends StatelessWidget {
@@ -23,11 +23,18 @@ class ChartLabelWidget extends StatelessWidget {
     required this.linePainter,
   }) : super(key: key);
 
+  static const _spacing = DecimalNumbersConstants.forty;
+  static const _dx = DecimalNumbersConstants.ten;
+
+  //padding
+  static const _paddingBottom = DecimalNumbersConstants.twenty;
+  static const _padding = 8.0;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          top: 8.0, right: 8.0, left: 8.0, bottom: 20.0),
+          top: _padding, right: _padding, left: _padding, bottom: _paddingBottom),
       child: Row(
         children: <Widget>[
           Container(
@@ -42,13 +49,13 @@ class ChartLabelWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 40.0),
+          const SizedBox(width: _spacing),
           Container(child: CustomPaint(painter: linePainter)),
           Transform.translate(
-              offset: Offset(-animation.value + -10.0, DecimalNumbersConstants.five),
+              offset: Offset(-animation.value + -_dx, DecimalNumbersConstants.five),
               child: Text("${value.toString()}%",
                   style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: isActive ? color : Colors.transparent
                   )

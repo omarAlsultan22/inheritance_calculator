@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import '../../core/constants/heirs_constants.dart';
+import '../constants/heirs_constants.dart';
 
 
 class ButtonLuck {

@@ -15,7 +15,10 @@ class SelectionScreen extends StatelessWidget {
     return BlocBuilder<ManagementItemsCubit, ManagementItemsState>(
       builder: (context, state) {
         _dataCubit = ManagementItemsCubit.get(context);
-        return SelectionLayout(state, _dataCubit);
+        return SelectionLayout(
+            state: state,
+            dataCubit: _dataCubit
+        );
       },
     );
   }

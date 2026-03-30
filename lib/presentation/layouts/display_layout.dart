@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../utils/navigation_utils.dart';
 import '../screens/details_screen.dart';
 import '../../data/models/data_model.dart';
-import 'package:men/core/constants/fonts_constants.dart';
 import 'package:men/core/constants/colors_constants.dart';
 import '../screens/display_screen/widgets/chart_widgets.dart';
 import '../screens/display_screen/painters/line_painter.dart';
@@ -24,12 +23,16 @@ class DisplayLayout extends StatelessWidget {
       : _animationManager = animationManager,
         _dataHeirs = dataHeirs;
 
-  //colors
-  static const _white = ColorsConstants.white;
-  static const _grey900 = ColorsConstants.grey_900;
+  //spacing
+  static const _spacing50 = 50.0;
+  static const _spacing300 = 300.0;
 
-  //fonts
-  static const _fontSize = FontsConstants.fontSize;
+  //colors
+  static const _white = AppConstants.white;
+  static const _grey900 = AppConstants.grey_900;
+
+  static const _fontSize = AppConstants.fontSize;
+  static const _padding = DecimalNumbersConstants.twenty;
 
   @override
   Widget build(BuildContext context) {
@@ -69,17 +72,16 @@ class DisplayLayout extends StatelessWidget {
   Widget _buildDisplayBody(List<ItemModel> dataHeirs,
       BuildContext context,
       DisplayAnimationManager animationManager) {
-    const threeHundred = 300.0;
     return Column(
       children: [
         Center(
           child: Container(
-            width: threeHundred,
-            height: threeHundred,
+            width: _spacing300,
+            height: _spacing300,
             child: CustomPaint(
               painter: DonutChartPainter(
-                  dataHeirs,
-                  animationManager.fullAngle
+                  dataset: dataHeirs,
+                  fullAngle: animationManager.fullAngle
               ),
             ),
           ),
@@ -89,7 +91,7 @@ class DisplayLayout extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.vertical,
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              padding: const EdgeInsets.only(top: _padding, bottom: _padding),
               itemCount: dataHeirs.length,
               itemBuilder: (context, index) {
                 return ChartLabelWidget(
@@ -112,7 +114,7 @@ class DisplayLayout extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: MaterialButton(
-            height: 50.0,
+            height: _spacing50,
             onPressed: () {
               NavigationUtils.navigator(context, DetailsScreen());
             },
@@ -123,7 +125,7 @@ class DisplayLayout extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            color: ColorsConstants.amber,
+            color: AppConstants.amber,
           ),
         ),
       ],

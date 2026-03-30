@@ -1,4 +1,4 @@
-import '../../core/constants/heirs_constants.dart';
+import '../../presentation/constants/heirs_constants.dart';
 
 
 class CheckKey {

@@ -5,7 +5,7 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import '../../core/constants/inheritance/inheritance_shares.dart';
+import '../../presentation/constants/inheritance_shares.dart';
 import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
@@ -79,14 +79,14 @@ class MaternalGrandmotherInheritanceCalculator{
 
   InheritanceResult CalculateOneHalfSixthShare() {
     return InheritanceResult(
-      share: Shares.thirtySecond,
+      share: InheritanceShares.thirtySecond,
       description: "ترث الجدة لأم مع الجدة لأب السدس في حالة غياب الأم والأب",
     );
   }
 
   InheritanceResult _calculateOneSixthShare() {
     return InheritanceResult(
-      share: Shares.sixth,
+      share: InheritanceShares.sixth,
       description: "ترث الجدة لأم السدس منفردة في حالة غياب الأب و الأم و الجدة لأم",
     );
   }

@@ -2,7 +2,7 @@ import '../../core/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
 import '../models/inheritance_update.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import '../../core/constants/inheritance/inheritance_shares.dart';
+import '../../presentation/constants/inheritance_shares.dart';
 import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
 
 
@@ -28,7 +28,7 @@ class FatherOrGrandfatherInheritanceCalculator {
 
   InheritanceResult _calculateOneSixthShare() {
     return InheritanceResult(
-      share: Shares.sixth,
+      share: InheritanceShares.sixth,
       description: "يرث الأب السدس في وجود فرع وارث ذكر",
     );
   }
@@ -40,7 +40,7 @@ class FatherOrGrandfatherInheritanceCalculator {
     _handleMotherPresence();
 
     return InheritanceResult(
-      share: Shares.sixth + _context.extra!,
+      share: InheritanceShares.sixth + _context.extra!,
       description: _getResidualDescription(),
     );
   }
@@ -67,7 +67,7 @@ class FatherOrGrandfatherInheritanceCalculator {
 
       final isSingle = daughterCount < tow;
 
-      final share = isSingle ? Shares.hafe : Shares.twoThirds;
+      final share = isSingle ? InheritanceShares.hafe : InheritanceShares.twoThirds;
       final finalShare = totalShare - share;
 
       _context.extra = finalShare;
@@ -77,7 +77,7 @@ class FatherOrGrandfatherInheritanceCalculator {
   void _getSonsDaughtersShare() {
     if (_hasDaughter()) {
       double totalShare = _context.extra!;
-      final finalShare = totalShare - Shares.sixth;
+      final finalShare = totalShare - InheritanceShares.sixth;
       _context.extra = finalShare;
       return;
     }
@@ -89,7 +89,7 @@ class FatherOrGrandfatherInheritanceCalculator {
 
       final isSingle = sonsDaughterCount < tow;
 
-      final share = isSingle ? Shares.hafe : Shares.twoThirds;
+      final share = isSingle ? InheritanceShares.hafe : InheritanceShares.twoThirds;
       final finalShare = totalShare - share;
 
       _context.extra = finalShare;

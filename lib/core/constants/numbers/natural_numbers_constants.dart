@@ -5,6 +5,4 @@ class NaturalNumbersConstants {
   static const there = 3;
   static const four = 4;
   static const five = 5;
-
-  static const nineHundred = 900;
 }
