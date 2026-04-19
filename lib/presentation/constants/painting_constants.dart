@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:men/core/constants/numbers/decimal_numbers.dart';
 
 
-class PaintingConstants {
+mixin PaintingConstants {
   // Paints
   static const _fontSize12 = DecimalNumbersConstants.twelve;
   static const _fontSize30 = DecimalNumbersConstants.thirty;

@@ -1,4 +1,4 @@
-class NaturalNumbersConstants {
+mixin NaturalNumbersConstants {
   static const zero = 0;
   static const one = 1;
   static const tow = 2;

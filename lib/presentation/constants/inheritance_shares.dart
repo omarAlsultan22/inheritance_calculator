@@ -1,4 +1,4 @@
-class InheritanceShares{
+mixin InheritanceShares{
   static const double hafe = 0.5;
   static const double quarter = 0.25;
   static const double eighth = 0.125;

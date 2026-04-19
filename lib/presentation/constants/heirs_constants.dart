@@ -1,7 +1,7 @@
 import '../../data/models/item_model.dart';
 
 
-class HeirsListsConstants {
+mixin HeirsListsConstants {
 
   static const List<String> heirsList = [
     'الزوج', 'الزوجة', 'الأب', 'الأم',

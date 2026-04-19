@@ -1,4 +1,4 @@
-class DecimalNumbersConstants {
+mixin DecimalNumbersConstants {
   static const zero = 0.0;
   static const tow = 2.0;
   static const five = 5.0;

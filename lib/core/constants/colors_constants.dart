@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-class AppConstants {
+mixin AppConstants {
   //fonts
   static const fontSize = 25.0;
 
