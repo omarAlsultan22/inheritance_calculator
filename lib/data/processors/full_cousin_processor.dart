@@ -4,7 +4,7 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class FullCousinProcessor extends HeirProcessor{
@@ -26,7 +26,7 @@ class FullCousinProcessor extends HeirProcessor{
     }
 
     return InheritingApplication(
-        colorIndex: NaturalNumbersConstants.five,
+        colorIndex: PersonCountConstants.five,
         heirName: heirName,
         share: state!.extra,
         description: "يرث $heirName العم الشقيق بالتعصيب باقي التركة",

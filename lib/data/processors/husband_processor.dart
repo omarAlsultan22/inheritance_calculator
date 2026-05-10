@@ -3,7 +3,7 @@ import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class HusbandProcessor extends HeirProcessor {
@@ -16,14 +16,14 @@ class HusbandProcessor extends HeirProcessor {
           description: "يرث الزوج الربع في حالة وجود فرع وارث ذكر أو أنثي",
           heirName: heirName,
           share: InheritanceShares.quarter,
-          colorIndex: NaturalNumbersConstants.zero
+          colorIndex: PersonCountConstants.zero
       );
     }
     return InheritingApplication(
         description: "يرث الزوج النصف في حالة عدم وجود فرع وارث ذكر أو أنثي",
         heirName: heirName,
         share: InheritanceShares.hafe,
-        colorIndex: NaturalNumbersConstants.zero
+        colorIndex: PersonCountConstants.zero
     );
   }
 

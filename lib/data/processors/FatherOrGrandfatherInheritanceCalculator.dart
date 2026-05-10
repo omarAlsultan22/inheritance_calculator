@@ -3,7 +3,7 @@ import '../models/inheritance_result.dart';
 import '../models/inheritance_update.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class FatherOrGrandfatherInheritanceCalculator {
@@ -12,7 +12,7 @@ class FatherOrGrandfatherInheritanceCalculator {
   FatherOrGrandfatherInheritanceCalculator(this._context);
 
   final update = InheritanceUpdate();
-  static const tow = NaturalNumbersConstants.tow;
+  static const tow = PersonCountConstants.tow;
 
   InheritanceResult calculate() {
     if (_hasMaleDescendant()) {

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../utils/navigation_utils.dart';
 import '../screens/details_screen.dart';
 import '../../data/models/data_model.dart';
-import 'package:men/core/constants/colors_constants.dart';
+import '../../core/constants/app_text_styles.dart';
+import 'package:men/core/constants/app_sizes.dart';
+import 'package:men/core/constants/app_colors.dart';
 import '../screens/display_screen/widgets/chart_widgets.dart';
 import '../screens/display_screen/painters/line_painter.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
 import '../screens/display_screen/widgets/animation_managers.dart';
 import '../screens/display_screen/painters/donut_chart_painter.dart';
 
@@ -23,23 +25,14 @@ class DisplayLayout extends StatelessWidget {
       : _animationManager = animationManager,
         _dataHeirs = dataHeirs;
 
-  //spacing
-  static const _spacing50 = 50.0;
-  static const _spacing300 = 300.0;
-
-  //colors
-  static const _white = AppConstants.white;
-  static const _grey900 = AppConstants.grey_900;
-
-  static const _fontSize = AppConstants.fontSize;
-  static const _padding = DecimalNumbersConstants.twenty;
+  static const _spacingSize = 300.0;
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: _grey900,
+        backgroundColor: AppColors.darkGrey,
         appBar: _buildDisplayAppBar(context),
         body: _buildDisplayBody(_dataHeirs, context, _animationManager),
       ),
@@ -49,22 +42,18 @@ class DisplayLayout extends StatelessWidget {
 
   AppBar _buildDisplayAppBar(BuildContext context) {
     return AppBar(
-      scrolledUnderElevation: DecimalNumbersConstants.zero,
+      scrolledUnderElevation: CalculationConstants.zero,
       title: const Text(
         'النتيجة',
-        style: TextStyle(
-          fontSize: _fontSize,
-          fontWeight: FontWeight.bold,
-          color: _white,
-        ),
+        style: AppTextStyles.textStyle,
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: _white),
+        icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.white),
         onPressed: () {
           Navigator.of(context).pop();
         },
       ),
-      backgroundColor: _grey900,
+      backgroundColor: AppColors.darkGrey,
     );
   }
 
@@ -76,8 +65,8 @@ class DisplayLayout extends StatelessWidget {
       children: [
         Center(
           child: Container(
-            width: _spacing300,
-            height: _spacing300,
+            width: _spacingSize,
+            height: _spacingSize,
             child: CustomPaint(
               painter: DonutChartPainter(
                   dataset: dataHeirs,
@@ -91,7 +80,9 @@ class DisplayLayout extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.vertical,
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(top: _padding, bottom: _padding),
+              padding: const EdgeInsets.only(
+                  top: CalculationConstants.twenty,
+                  bottom: CalculationConstants.twenty),
               itemCount: dataHeirs.length,
               itemBuilder: (context, index) {
                 return ChartLabelWidget(
@@ -114,18 +105,18 @@ class DisplayLayout extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: MaterialButton(
-            height: _spacing50,
+            height: 50.0,
             onPressed: () {
               NavigationUtils.navigator(context, DetailsScreen());
             },
             child: const Text(
               "التفاصيل",
               style: TextStyle(
-                fontSize: _fontSize,
+                fontSize: AppSizes.fontSize25,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            color: AppConstants.amber,
+            color: AppColors.amber,
           ),
         ),
       ],

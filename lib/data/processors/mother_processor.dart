@@ -5,7 +5,7 @@ import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class MotherProcessor extends HeirProcessor {
@@ -28,7 +28,7 @@ class MotherProcessor extends HeirProcessor {
           description: "ترث $heirName السدس في وجود أخوة او فرع وارث ذكر او انثي",
           heirName: heirName,
           share: InheritanceShares.sixth,
-          colorIndex: NaturalNumbersConstants.tow
+          colorIndex: PersonCountConstants.tow
       );
     }
     final calculator = MotherInheritanceCalculator(
@@ -40,7 +40,7 @@ class MotherProcessor extends HeirProcessor {
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: NaturalNumbersConstants.tow
+        colorIndex: PersonCountConstants.tow
     );
   }
 
@@ -86,7 +86,7 @@ class MotherInheritanceCalculator {
 
   InheritanceResult CalculateShareRemainingThird() {
     return InheritanceResult(
-      share: _context.extra! / NaturalNumbersConstants.there,
+      share: _context.extra! / PersonCountConstants.three,
       description: "ترث الأم ثلث الباقي في أحد العمرتين مع الأب وأحد الزوجين",
     );
   }

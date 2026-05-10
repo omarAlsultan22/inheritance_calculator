@@ -5,8 +5,8 @@ import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 import 'package:men/data/processors/FatherOrGrandfatherInheritanceCalculator.dart';
 
 
@@ -32,7 +32,7 @@ class GrandfatherProcessor extends HeirProcessor {
         description: result.description,
         heirName: heirName,
         share: result.share,
-        colorIndex: NaturalNumbersConstants.one
+        colorIndex: PersonCountConstants.one
     );
   }
 
@@ -46,7 +46,7 @@ class GrandfatherProcessor extends HeirProcessor {
   }
 
   void _applyUpdates(InheritanceUpdate update) {
-    if (update.extraAdjustment != DecimalNumbersConstants.zero) {
+    if (update.extraAdjustment != CalculationConstants.zero) {
       state!.updateExtra(); //
     }
 

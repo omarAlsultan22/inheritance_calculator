@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 // Line Painter for percentage indicators
@@ -11,19 +11,15 @@ class LinePainter extends CustomPainter {
 
   LinePainter(this._animation, this._lineColor, this._showLine);
 
-  static const _dx = DecimalNumbersConstants.zero;
-  static const _dy = NaturalNumbersConstants.five;
-  static const _value = DecimalNumbersConstants.ten;
-
   @override
   void paint(Canvas canvas, Size size) {
     if (_showLine) {
       final paint = Paint()
         ..color = _lineColor
-        ..strokeWidth = _value;
+        ..strokeWidth = CalculationConstants.ten;
 
-      final c = Offset(_dx, size.height + _dy);
-      canvas.drawLine(c, Offset(-_animation.value, size.height + _dy), paint);
+      final c = Offset(CalculationConstants.zero, size.height + PersonCountConstants.five);
+      canvas.drawLine(c, Offset(-_animation.value, size.height + PersonCountConstants.five), paint);
     }
   }
 

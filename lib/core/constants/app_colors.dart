@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
 
-mixin AppConstants {
-  //fonts
-  static const fontSize = 25.0;
-
-  //colors
-  static const amber = Colors.amber;
-  static const white = Colors.white;
-  static const grey_900 = Color(0xFF212121);
+abstract class AppColors {
+  static const Color amber = Colors.amber;
+  static const Color white = Colors.white;
+  static const Color darkGrey = Color(0xFF212121);
 
   static const List<Color> palette = [
     Color(0xFFF2387C),

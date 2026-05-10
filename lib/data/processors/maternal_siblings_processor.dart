@@ -5,7 +5,7 @@ import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class MaternalSiblingsProcessor extends HeirProcessor {
@@ -32,7 +32,7 @@ class MaternalSiblingsProcessor extends HeirProcessor {
         : "يرث $heirName الثلث في حالة عدم أصل أو فرع وارث";
 
     return InheritingApplication(
-      colorIndex: NaturalNumbersConstants.four,
+      colorIndex: PersonCountConstants.four,
       heirName: heirName,
       share: share,
       count: count,

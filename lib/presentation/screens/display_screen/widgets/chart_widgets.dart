@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../painters/line_painter.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
+import 'package:men/core/constants/app_text_styles.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
 
 
 class ChartLabelWidget extends StatelessWidget {
@@ -23,36 +24,31 @@ class ChartLabelWidget extends StatelessWidget {
     required this.linePainter,
   }) : super(key: key);
 
-  static const _spacing = DecimalNumbersConstants.forty;
-  static const _dx = DecimalNumbersConstants.ten;
-
-  //padding
-  static const _paddingBottom = DecimalNumbersConstants.twenty;
   static const _padding = 8.0;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          top: _padding, right: _padding, left: _padding, bottom: _paddingBottom),
+          top: _padding,
+          right: _padding,
+          left: _padding,
+          bottom: CalculationConstants.twenty),
       child: Row(
         children: <Widget>[
           Container(
             child: Transform.translate(
-              offset: Offset(anime, DecimalNumbersConstants.zero),
+              offset: Offset(anime, CalculationConstants.zero),
               child: Text(label,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold
-                  )
+                  style: AppTextStyles.textStyle
               ),
             ),
           ),
-          const SizedBox(width: _spacing),
+          const SizedBox(width: 40.0),
           Container(child: CustomPaint(painter: linePainter)),
           Transform.translate(
-              offset: Offset(-animation.value + -_dx, DecimalNumbersConstants.five),
+              offset: Offset(-animation.value + -CalculationConstants.ten,
+                  CalculationConstants.five),
               child: Text("${value.toString()}%",
                   style: TextStyle(
                       fontSize: 18,

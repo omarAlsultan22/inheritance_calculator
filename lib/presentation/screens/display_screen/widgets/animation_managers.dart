@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 import '../../../states/distribution_shares_state.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class DisplayAnimationManager {
@@ -12,8 +12,8 @@ class DisplayAnimationManager {
   late Timer _timer;
   late AnimationController _textController, _lineController;
   late Animation<double> animation;
-  double fullAngle = DecimalNumbersConstants.zero;
-  final double _secondsToComplete = DecimalNumbersConstants.five;
+  double fullAngle = CalculationConstants.zero;
+  final double _secondsToComplete = CalculationConstants.five;
   List<int> degrees = [];
   List<bool> showLines = [];
   List<Animation<double>> animations = [];
@@ -21,18 +21,16 @@ class DisplayAnimationManager {
   VoidCallback? _onUpdate;
   bool _chartCompleted = false;
 
-  //values
-  static const _endValue_ = 300;
   static const _fullAngleValue = 360.0;
   static const _milliseconds = 1000 ~/ 60;
-  static const _variableValue = NaturalNumbersConstants.zero;
-  static const _beginValue = DecimalNumbersConstants.towHundred;
-  static const _endValue = DecimalNumbersConstants.twenty;
+  static const _variableValue = PersonCountConstants.zero;
 
   DisplayAnimationManager({
     required TickerProvider vsync,
     required DistributionSharesState state
-  }) : _state = state, _vsync = vsync {
+  })
+      : _state = state,
+        _vsync = vsync {
     _initDegreesAndShowLines();
   }
 
@@ -48,7 +46,7 @@ class DisplayAnimationManager {
     _initDonutChartAnimation();
     _initLineAnimation();
     _textController.forward();
-    Future.delayed(const Duration(seconds: NaturalNumbersConstants.tow), () {
+    Future.delayed(const Duration(seconds: PersonCountConstants.tow), () {
       _startAllLineTimers();
       _lineController.forward();
     });
@@ -56,10 +54,11 @@ class DisplayAnimationManager {
 
   void _initTextAnimation() {
     _textController = AnimationController(
-      duration: const Duration(seconds: NaturalNumbersConstants.one),
+      duration: const Duration(seconds: PersonCountConstants.one),
       vsync: _vsync,
     );
-    animation = Tween(begin: _beginValue, end: -_endValue).animate(_textController)
+    animation = Tween(begin: CalculationConstants.twoHundred,
+        end: -CalculationConstants.twenty).animate(_textController)
       ..addListener(() {
         _onUpdate?.call();
       });
@@ -80,14 +79,16 @@ class DisplayAnimationManager {
 
   void _initLineAnimation() {
     _lineController = AnimationController(
-      duration: const Duration(seconds: NaturalNumbersConstants.there),
+      duration: const Duration(seconds: PersonCountConstants.three),
       vsync: _vsync,
     );
 
     // Initialize line animations
     for (var item in _state.heirsData!) {
       animations.add(
-        Tween<double>(begin: DecimalNumbersConstants.zero, end: item.amount * _endValue_).animate(
+        Tween<double>(
+            begin: CalculationConstants.zero, end: item.amount * 300)
+            .animate(
           CurvedAnimation(
             parent: _lineController,
             curve: Curves.easeInOut,
@@ -116,7 +117,8 @@ class DisplayAnimationManager {
   }
 
   void _startLineTimer(int index) {
-    final targetValue = (_state.heirsData![index].amount * DecimalNumbersConstants.oneHundred).toInt();
+    final targetValue = (_state.heirsData![index].amount *
+        CalculationConstants.oneHundred).toInt();
     final duration = const Duration(seconds: 1); // مدة زيادة الرقم
     final steps = targetValue;
     final stepDuration = duration ~/ steps;
@@ -127,7 +129,8 @@ class DisplayAnimationManager {
 
     final timer = Timer.periodic(stepDuration, (timer) {
       if (currentStep < steps) {
-        degrees[index] = ((currentStep + NaturalNumbersConstants.one) * targetValue ~/ steps);
+        degrees[index] =
+        ((currentStep + PersonCountConstants.one) * targetValue ~/ steps);
         currentStep++;
         _onUpdate?.call();
       } else {

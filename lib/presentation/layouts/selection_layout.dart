@@ -3,12 +3,13 @@ import '../../data/models/item_model.dart';
 import '../constants/heirs_constants.dart';
 import '../states/management_items_state.dart';
 import '../cubits/management_items_cubit.dart';
+import 'package:men/core/constants/app_colors.dart';
 import '../screens/display_screen/display_screen.dart';
-import 'package:men/core/constants/colors_constants.dart';
+import 'package:men/core/constants/app_text_styles.dart';
 import 'package:men/presentation/utils/navigation_utils.dart';
-import 'package:men/core/constants/numbers/decimal_numbers.dart';
+import 'package:men/core/constants/numbers/calculation_constants.dart';
 import 'package:men/presentation/cubits/distribution_shares_cubit.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class SelectionLayout extends StatelessWidget {
@@ -22,70 +23,41 @@ class SelectionLayout extends StatelessWidget {
     super.key
   });
 
-  //sizes
-  static const _radius = _paddingHorizontal;
-
-  //colors
-  static const _black = Colors.black;
-  static const _white = AppConstants.white;
-  static const _grey900 = AppConstants.grey_900;
-
-  //fonts
-  static const _fontSize40 = DecimalNumbersConstants.forty;
-  static const _fontSize30 = DecimalNumbersConstants.thirty;
-  static const _fontSize12 = DecimalNumbersConstants.twelve;
-
-  //spacing
-  static const _spacing50 = DecimalNumbersConstants.fifty;
-  static const _axisSpacing = DecimalNumbersConstants.eight;
-  static const _menuMaxHeight = DecimalNumbersConstants.towHundred;
-  static const _childAspectRatio = DecimalNumbersConstants.zeroPointNine;
-
-  //paddings
+  static const _axisSpacing = 8.0;
+  static final _borderRadius = BorderRadius.circular(10.0);
   static const _paddingAll = EdgeInsets.all(_axisSpacing);
-  static const _paddingVertical = DecimalNumbersConstants.tow;
-  static const _paddingHorizontal = DecimalNumbersConstants.ten;
-
-  //values
-  static const _positionValue = 4.0;
-  static const _numberValue = DecimalNumbersConstants.zero;
-  static const _opacityValue = DecimalNumbersConstants.zeroPointSix;
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: _grey900,
+        backgroundColor: AppColors.darkGrey,
         appBar: _buildSelectionAppBar(),
         body: Column(
-            children: [
-            const SizedBox(height: _spacing50),
-        _headline(),
-        _itemsMenu(
-            state: this.state,
-            dataCubit: this.dataCubit
+          children: [
+            const SizedBox(height: 50.0),
+            _headline(),
+            _itemsMenu(
+                state: this.state,
+                dataCubit: this.dataCubit
+            ),
+            _selectedItems(),
+            _calculateButton(context),
+          ],
         ),
-        _selectedItems(),
-        _calculateButton(context),
-        ],
-      ),
-    ),);
+      ),);
   }
 
 
   AppBar _buildSelectionAppBar() =>
       AppBar(
-        elevation: _numberValue,
-        scrolledUnderElevation: _numberValue,
-        backgroundColor: _grey900,
+        elevation: CalculationConstants.zero,
+        scrolledUnderElevation: CalculationConstants.zero,
+        backgroundColor: AppColors.darkGrey,
         title: const Text(
           "مواريث",
-          style: TextStyle(
-            fontSize: AppConstants.fontSize,
-            fontWeight: FontWeight.bold,
-            color: _white,
-          ),
+          style: AppTextStyles.textStyle,
         ),
       );
 
@@ -94,9 +66,9 @@ class SelectionLayout extends StatelessWidget {
     return const Text(
       "مات وترك ؟",
       style: TextStyle(
-        fontSize: _fontSize40,
+        fontSize: 40.0,
         fontWeight: FontWeight.bold,
-        color: _white,
+        color: AppColors.white,
       ),
       textAlign: TextAlign.center,
     );
@@ -112,20 +84,20 @@ class SelectionLayout extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: DropdownButton<String>(
-        menuMaxHeight: _menuMaxHeight,
+        menuMaxHeight: CalculationConstants.twoHundred,
         hint: const Text(
           'أختر',
-          style: TextStyle(color: _white),
+          style: TextStyle(color: AppColors.white),
         ),
         value: state.selectedItem,
         dropdownColor: const Color(0xFF424242),
-        borderRadius: BorderRadius.circular(_radius),
+        borderRadius: _borderRadius,
         items: HeirsListsConstants.heirsList.map((String key) {
           return DropdownMenuItem<String>(
             value: key,
             child: Text(
               key,
-              style: const TextStyle(color: _white),
+              style: const TextStyle(color: AppColors.white),
             ),
           );
         }).toList(),
@@ -172,7 +144,8 @@ class SelectionLayout extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
-                    color: element.backgroundColor ? _white : _black,
+                    color: element.backgroundColor ? AppColors.white : Colors
+                        .black,
                   ),
                 ),
               ),
@@ -181,21 +154,22 @@ class SelectionLayout extends StatelessWidget {
             // Sum badge
             if (!element.isShowing)
               Positioned(
-                bottom: _positionValue,
-                right: _positionValue,
+                bottom: 4.0,
+                right: 4.0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0, vertical: _paddingVertical),
+                      horizontal: 6.0, vertical: 2.0),
                   decoration: BoxDecoration(
-                    color: _black.withOpacity(_opacityValue),
-                    borderRadius: BorderRadius.circular(_radius),
+                    color: Colors.black.withOpacity(
+                        CalculationConstants.zeroPointSix),
+                    borderRadius: _borderRadius,
                   ),
                   child: Text(
                     '${element.totalHeirs}',
                     style: const TextStyle(
-                      color: _white,
+                      color: AppColors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: _fontSize12,
+                      fontSize: 12.0,
                     ),
                   ),
                 ),
@@ -210,13 +184,14 @@ class SelectionLayout extends StatelessWidget {
   Widget _selectedItems() {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: _paddingHorizontal),
+        padding: const EdgeInsets.symmetric(
+            horizontal: CalculationConstants.ten),
         child: GridView.count(
           physics: const BouncingScrollPhysics(),
-          crossAxisCount: NaturalNumbersConstants.there,
+          crossAxisCount: PersonCountConstants.three,
           crossAxisSpacing: _axisSpacing,
           mainAxisSpacing: _axisSpacing,
-          childAspectRatio: _childAspectRatio,
+          childAspectRatio: CalculationConstants.zeroPointNine,
           children: HeirsListsConstants.multiList
               .expand((list) => list)
               .map((element) => _buildGridItem(element))
@@ -230,7 +205,7 @@ class SelectionLayout extends StatelessWidget {
     final _isActive = state.isActive!;
     return Container(
       width: double.infinity,
-      color: _isActive ? AppConstants.amber : const Color(0xFF757575),
+      color: _isActive ? AppColors.amber : const Color(0xFF757575),
       child: MaterialButton(
         onPressed: () {
           _isLoading = true;
@@ -245,15 +220,15 @@ class SelectionLayout extends StatelessWidget {
             ? const Padding(
           padding: _paddingAll,
           child: Center(
-            child: CircularProgressIndicator(color: _black),
+            child: CircularProgressIndicator(color: Colors.black),
           ),
         )
             : const Text(
           'أحسب',
           style: TextStyle(
-            fontSize: _fontSize30,
+            fontSize: 30.0,
             fontWeight: FontWeight.bold,
-            color: _white,
+            color: AppColors.white,
           ),
         ),
       ),

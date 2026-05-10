@@ -1,7 +1,7 @@
 import 'heir_processor_model.dart';
 import '../../core/enums/heir_type.dart';
 import '../../data/models/data_model.dart';
-import 'package:men/core/constants/colors_constants.dart';
+import 'package:men/core/constants/app_colors.dart';
 
 
 class InheritanceState {
@@ -57,13 +57,13 @@ class InheritanceState {
       if (heirsCount != null && heirsCount > 1) {
         heirsData.add(ItemModel(amount: share,
             title: '${heirsCount.toString()} من $heirName',
-            color: AppConstants.getColor(colorIndex)));
+            color: AppColors.getColor(colorIndex)));
       }
       else {
         heirsData.add(ItemModel(
             amount: share,
             title: heirName,
-            color: AppConstants.getColor(colorIndex)));
+            color: AppColors.getColor(colorIndex)));
       }
       heirsDone[heirName] = true;
     }

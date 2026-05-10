@@ -6,7 +6,7 @@ import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/natural_numbers_constants.dart';
+import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class MaternalGrandmotherProcessor extends HeirProcessor {
@@ -34,7 +34,7 @@ class MaternalGrandmotherProcessor extends HeirProcessor {
         description: result.description,
         share: result.share,
         heirName: heirName,
-        colorIndex: NaturalNumbersConstants.tow
+        colorIndex: PersonCountConstants.tow
     );
   }
 
