@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
+import '../../../../constants/numbers/calculation_constants.dart';
+import '../../../../constants/numbers/person_count_constants.dart';
 
 
 // Line Painter for percentage indicators

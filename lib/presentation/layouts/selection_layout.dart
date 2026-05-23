@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 import '../../data/models/item_model.dart';
 import '../constants/heirs_constants.dart';
+import '../../constants/app_text_styles.dart';
 import '../states/management_items_state.dart';
 import '../cubits/management_items_cubit.dart';
-import 'package:men/core/constants/app_colors.dart';
 import '../screens/display_screen/display_screen.dart';
-import 'package:men/core/constants/app_text_styles.dart';
+import '../../constants/numbers/calculation_constants.dart';
+import '../../constants/numbers/person_count_constants.dart';
 import 'package:men/presentation/utils/navigation_utils.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
 import 'package:men/presentation/cubits/distribution_shares_cubit.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class SelectionLayout extends StatelessWidget {
@@ -179,7 +179,6 @@ class SelectionLayout extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _selectedItems() {
     return Expanded(

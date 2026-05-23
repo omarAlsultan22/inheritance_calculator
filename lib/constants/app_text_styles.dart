@@ -1,6 +1,6 @@
+import 'app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:men/core/constants/app_sizes.dart';
-import 'package:men/core/constants/app_colors.dart';
+import 'package:men/constants/app_sizes.dart';
 
 
 abstract class AppTextStyles {

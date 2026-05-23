@@ -1,12 +1,12 @@
-import '../../core/enums/heir_type.dart';
+import 'package:men/enums/heir_type.dart';
 import '../models/inheritance_result.dart';
 import '../../domain/rules/blocked_application.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
 import '../../domain/entities/inheritance_state_model.dart';
+import '../../constants/numbers/person_count_constants.dart';
 import '../../presentation/constants/inheritance_shares.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 class PaternalSisterProcessor extends HeirProcessor{

@@ -2,9 +2,9 @@ import '../models/inheritance_update.dart';
 import '../../domain/rules/inheriting_application.dart';
 import '../../domain/entities/heir_processor_model.dart';
 import '../../domain/entities/rule_application_model.dart';
+import '../../constants/numbers/calculation_constants.dart';
 import '../../domain/entities/inheritance_state_model.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
+import '../../constants/numbers/person_count_constants.dart';
 import 'package:men/data/processors/FatherOrGrandfatherInheritanceCalculator.dart';
 
 

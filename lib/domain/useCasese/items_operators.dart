@@ -1,8 +1,8 @@
 import 'check_key.dart';
 import 'package:flutter/cupertino.dart';
 import '../../data/models/item_model.dart';
+import '../../services/inheritance_service.dart';
 import '../../presentation/utils/button_luck.dart';
-import '../../core/services/inheritance_service.dart';
 import '../../presentation/constants/heirs_constants.dart';
 import 'package:men/presentation/states/management_items_state.dart';
 

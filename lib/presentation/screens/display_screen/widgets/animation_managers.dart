@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 import '../../../states/distribution_shares_state.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
+import '../../../../constants/numbers/calculation_constants.dart';
+import 'package:men/constants/numbers/person_count_constants.dart';
 
 
 class DisplayAnimationManager {

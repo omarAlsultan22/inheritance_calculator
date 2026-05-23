@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../../data/models/item_model.dart';
-import '../../core/services/inheritance_service.dart';
+import '../../services/inheritance_service.dart';
 
 
 class UpdateHeirCount {

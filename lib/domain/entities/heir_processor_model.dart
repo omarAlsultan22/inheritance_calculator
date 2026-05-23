@@ -1,6 +1,6 @@
 import 'package:men/domain/entities/rule_application_model.dart';
-import '../../core/enums/heir_type.dart';
 import 'inheritance_state_model.dart';
+import '../../enums/heir_type.dart';
 
 
 abstract class HeirProcessor {

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../utils/navigation_utils.dart';
 import '../screens/details_screen.dart';
 import '../../data/models/data_model.dart';
-import '../../core/constants/app_text_styles.dart';
-import 'package:men/core/constants/app_sizes.dart';
-import 'package:men/core/constants/app_colors.dart';
+import 'package:men/constants/app_sizes.dart';
+import '../../constants/app_text_styles.dart';
+import 'package:men/constants/app_colors.dart';
 import '../screens/display_screen/widgets/chart_widgets.dart';
 import '../screens/display_screen/painters/line_painter.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
+import 'package:men/constants/numbers/calculation_constants.dart';
 import '../screens/display_screen/widgets/animation_managers.dart';
 import '../screens/display_screen/painters/donut_chart_painter.dart';
 

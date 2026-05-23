@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import '../painters/line_painter.dart';
-import 'package:men/core/constants/app_text_styles.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
+import 'package:flutter/material.dart';
+import '../../../../constants/app_text_styles.dart';
+import 'package:men/constants/numbers/calculation_constants.dart';
 
 
 class ChartLabelWidget extends StatelessWidget {

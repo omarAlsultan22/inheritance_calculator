@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../data/models/data_model.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
+import '../../../../constants/numbers/calculation_constants.dart';
+import '../../../../constants/numbers/person_count_constants.dart';
 import 'package:men/presentation/constants/painting_constants.dart';
-import 'package:men/core/constants/numbers/person_count_constants.dart';
 
 
 // Donut Chart Painter
@@ -63,7 +63,7 @@ class DonutChartPainter extends CustomPainter {
 
   void _drawLabel(Canvas canvas, Offset c, double radius, double startAngle,
       double sweepAngle, ItemModel di) {
-    const five = PersonCountConstants.five;
+    final five = PersonCountConstants.five;
 
     final r = radius * 0.4;
     final dx = r * cos(startAngle + sweepAngle / _divideValue);

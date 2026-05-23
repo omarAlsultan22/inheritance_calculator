@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:men/core/constants/app_colors.dart';
-import 'package:men/core/constants/app_text_styles.dart';
-import 'package:men/core/constants/numbers/calculation_constants.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_text_styles.dart';
+import '../../constants/numbers/calculation_constants.dart';
 
 
 class DetailsLayout extends StatelessWidget {

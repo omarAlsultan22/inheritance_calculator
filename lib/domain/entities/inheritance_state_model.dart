@@ -1,7 +1,7 @@
 import 'heir_processor_model.dart';
-import '../../core/enums/heir_type.dart';
+import '../../enums/heir_type.dart';
+import '../../constants/app_colors.dart';
 import '../../data/models/data_model.dart';
-import 'package:men/core/constants/app_colors.dart';
 
 
 class InheritanceState {
