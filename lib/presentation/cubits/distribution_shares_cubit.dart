@@ -15,7 +15,7 @@ class DistributionSharesCubit extends Cubit<DistributionSharesState> {
       :
         _restTheExtra = restTheExtra,
         _shareDistribution = shareDistribution,
-        super(DistributionSharesState(heirsData: [], heirsDetails: {}));
+        super(DistributionSharesState.initial());
 
 
   static DistributionSharesCubit get(context) => BlocProvider.of(context);

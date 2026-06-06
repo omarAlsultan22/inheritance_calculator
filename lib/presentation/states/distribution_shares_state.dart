@@ -9,4 +9,11 @@ class DistributionSharesState {
     this.heirsData,
     this.heirsDetails
   });
+
+  factory DistributionSharesState.initial(){
+    return DistributionSharesState(
+        heirsData: [],
+        heirsDetails: {}
+    );
+  }
 }
