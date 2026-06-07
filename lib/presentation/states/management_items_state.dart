@@ -7,7 +7,6 @@ class ManagementItemsState {
   String? selectedItem;
   List<List<HeirModel>>? selectedItems;
 
-
   ManagementItemsState({
     this.isLoading,
     this.isActive,
@@ -20,7 +19,6 @@ class ManagementItemsState {
     selectedItems = selectedItems ?? [];
   }
 
-
   ManagementItemsState copyWith({
     bool? isLoading,
     bool? isActive,
@@ -28,10 +26,10 @@ class ManagementItemsState {
     List<List<HeirModel>>? selectedItems
   }) {
     return ManagementItemsState(
-      isLoading: isLoading ?? this.isLoading,
-      isActive: isActive ?? this.isActive,
-      selectedItem: selectedItem ?? this.selectedItem,
-      selectedItems: selectedItems ?? this.selectedItems
+        isLoading: isLoading ?? this.isLoading,
+        isActive: isActive ?? this.isActive,
+        selectedItem: selectedItem ?? this.selectedItem,
+        selectedItems: selectedItems ?? this.selectedItems
     );
   }
 }
