@@ -26,7 +26,7 @@ class ManagementItemsCubit extends Cubit<ManagementItemsState> {
     emit(state.copyWith(
         isActive: newState.isActive,
         selectedItem: newState.selectedItem,
-        selectedItems: [...state.selectedItems!, ...newState.selectedItems!]));
+        selectedItems: [...state.selectedItems, ...newState.selectedItems]));
   }
 
   void updateHeir(HeirModel heirModel) {
@@ -37,6 +37,6 @@ class ManagementItemsCubit extends Cubit<ManagementItemsState> {
     final newState = _itemsOperators.removeItem(item);
     emit(state.copyWith(
         isActive: newState.isActive,
-        selectedItems: [...state.selectedItems!, ...newState.selectedItems!]));
+        selectedItems: [...state.selectedItems, ...newState.selectedItems]));
   }
 }

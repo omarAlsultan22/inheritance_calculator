@@ -5,19 +5,14 @@ class ManagementItemsState {
   bool? isLoading;
   bool? isActive;
   String? selectedItem;
-  List<List<HeirModel>>? selectedItems;
+  List<List<HeirModel>> selectedItems;
 
   ManagementItemsState({
-    this.isLoading,
-    this.isActive,
-    this.selectedItem,
-    this.selectedItems,
-  }) {
-    isLoading = isLoading ?? false;
-    isActive = isActive ?? false;
-    selectedItem = selectedItem ?? 'أختر';
-    selectedItems = selectedItems ?? [];
-  }
+    this.isLoading = false,
+    this.isActive = false,
+    this.selectedItem = 'أختر',
+    this.selectedItems = const[],
+  });
 
   ManagementItemsState copyWith({
     bool? isLoading,
