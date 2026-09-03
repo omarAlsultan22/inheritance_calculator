@@ -2,12 +2,12 @@ import '../../data/models/item_model.dart';
 
 
 class ManagementItemsState {
-  bool? isLoading;
-  bool? isActive;
-  String? selectedItem;
-  List<List<HeirModel>> selectedItems;
+  final bool? isLoading;
+  final bool? isActive;
+  final String? selectedItem;
+  final List<List<HeirModel>> selectedItems;
 
-  ManagementItemsState({
+  const ManagementItemsState({
     this.isLoading = false,
     this.isActive = false,
     this.selectedItem = 'أختر',

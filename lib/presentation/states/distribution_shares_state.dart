@@ -5,13 +5,13 @@ class DistributionSharesState {
   final List<ItemModel>? heirsData;
   final Map<String, String>? heirsDetails;
 
-  DistributionSharesState({
+  const DistributionSharesState({
     this.heirsData,
     this.heirsDetails
   });
 
   factory DistributionSharesState.initial(){
-    return DistributionSharesState(
+    return const DistributionSharesState(
         heirsData: [],
         heirsDetails: {}
     );
