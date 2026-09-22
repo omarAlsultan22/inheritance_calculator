@@ -1,8 +1,8 @@
 import '../../data/models/item_model.dart';
 import '../states/management_items_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/useCasese/items_operators.dart';
-import '../../domain/useCasese/update_heir_count.dart';
+import '../../domain/use_cases/items_operators.dart';
+import '../../domain/use_cases/update_heir_count.dart';
 
 
 class ManagementItemsCubit extends Cubit<ManagementItemsState> {

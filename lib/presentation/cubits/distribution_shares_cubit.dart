@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../states/distribution_shares_state.dart';
-import '../../domain/useCasese/rest_the_extra.dart';
-import '../../domain/useCasese/share_distribution.dart';
+import '../../domain/use_cases/rest_the_extra.dart';
+import '../../domain/use_cases/share_distribution.dart';
 
 
 class DistributionSharesCubit extends Cubit<DistributionSharesState> {

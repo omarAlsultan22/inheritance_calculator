@@ -6,15 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class SelectionScreen extends StatelessWidget {
-  SelectionScreen({super.key});
-
-  late ManagementItemsCubit _dataCubit;
+  const SelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ManagementItemsCubit, ManagementItemsState>(
       builder: (context, state) {
-        _dataCubit = ManagementItemsCubit.get(context);
+        final _dataCubit = ManagementItemsCubit.get(context);
         return SelectionLayout(
             state: state,
             dataCubit: _dataCubit

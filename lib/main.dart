@@ -1,10 +1,10 @@
 import 'app/my_app.dart';
 import 'package:flutter/material.dart';
-import 'domain/useCasese/rest_the_extra.dart';
-import 'domain/useCasese/items_operators.dart';
+import 'domain/use_cases/rest_the_extra.dart';
+import 'domain/use_cases/items_operators.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'domain/useCasese/update_heir_count.dart';
-import 'domain/useCasese/share_distribution.dart';
+import 'domain/use_cases/update_heir_count.dart';
+import 'domain/use_cases/share_distribution.dart';
 import 'package:men/presentation/cubits/management_items_cubit.dart';
 import 'package:men/presentation/cubits/distribution_shares_cubit.dart';
 
